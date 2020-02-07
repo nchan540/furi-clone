@@ -21,7 +21,7 @@ public class App extends JFrame {
     private static final String PLAYERIMGPATH = ("playerSprites" + fileSeparator);
     private static final String png = ".png";
     public static String currentPlayerSprite;
-    public static BufferedImage img;
+    public static BufferedImage playerImg;
 
     private static int count = 0;
 
@@ -33,29 +33,30 @@ public class App extends JFrame {
         window.setSize(800, 500);
         window.setVisible(true);
         g = window.getGraphics();
-        window.add(new JLabel(new ImageIcon("")));
+
+        window.add(new JLabel(new ImageIcon(""))); // I don't understand what this is, but it's necessary
 
         System.out.println(fileSeparator + " " + currentPlayerSprite);
         while (true) {
             g.clearRect(0, 0, 800, 500);
             try {
                 count = ++count % 8;
-                currentPlayerSprite = PLAYERIMGPATH + "Walk" + count + png;
-                loadImage(currentPlayerSprite);
+                currentPlayerSprite = PLAYERIMGPATH + "Idle" + png;
+                loadPlayerImage(currentPlayerSprite);
                 try {
-                    g.drawImage(img, 50, 50, null);
+                    g.drawImage(playerImg, 50, 50, null);
                 } catch (NullPointerException e) {
                     System.out.println(g == null);
                 }
-                Thread.sleep(150);
+                Thread.sleep(50);
                 
             } catch (InterruptedException e) {}
         }
     }
 
-    public static void loadImage (String read) {
+    public static void loadPlayerImage (String read) {
         File file = new File(read);
-        try { img = ImageIO.read(file); }
+        try { playerImg = ImageIO.read(file); }
         catch (IOException e) {
             // change image to error image
         }
