@@ -9,7 +9,7 @@ public class Line {
         this.b = b;
     }
 
-    public float GetY(float x) {
+    public float getY(float x) {
         return this.m * x + b;
     }
 }

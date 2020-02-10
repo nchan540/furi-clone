@@ -19,19 +19,19 @@ public abstract class Unit {
         this.spd = spd;
     }
 
-    public int GetX() { return Math.round(this.location.x); }
+    public int getX() { return Math.round(this.location.x); }
 
-    public int GetY() { return Math.round(this.location.y); }
+    public int getY() { return Math.round(this.location.y); }
 
-    public int GetRadius() { return Math.round(this.radius); }
+    public int getRadius() { return Math.round(this.radius); }
 
-    public int GetMaxHP() { return this.maxHp; }
+    public int getMaxHP() { return this.maxHp; }
     
-    public int GetHP() { return this.hp; }
+    public int getHP() { return this.hp; }
 
-    public int GetDmg() { return this.dmg; }
+    public int getDmg() { return this.dmg; }
 
-    public float GetSpeed() { return this.spd; }
+    public float getSpeed() { return this.spd; }
 
     /**
      * Moves the unit by its speed value
@@ -39,7 +39,7 @@ public abstract class Unit {
      * @param moveY -1 if moving up, 0 if not moving, 1 if moving down.
      * @return if move was successful (parameters within bounds)
      */
-    public boolean Move(int moveX, int moveY) {
+    public boolean move(int moveX, int moveY) {
         if (moveX < -1 || moveX > 1 || moveY < -1 || moveY > 1) return false;
         
         float moveSpd = this.spd;

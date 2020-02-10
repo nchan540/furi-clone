@@ -7,7 +7,7 @@ public abstract class Add extends Unit {
         super(1, dmg, x, y, radius, spd);
     }
 
-    public void Attack() {
-        
+    public void attack() {
+
     }
 }
