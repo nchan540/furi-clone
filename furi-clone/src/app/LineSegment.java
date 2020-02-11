@@ -45,12 +45,17 @@ public class LineSegment {
         Point intersection = this.getIntersection(line);
         if (intersection == null) return false;
         if (intersection.x == -1 && intersection.y == -1) return true;
-        if (intersection.x > this.p1.x + this.p2.x || intersection.x < this.p1.x
-            || intersection.y > this.p1.y + this.p2.y || intersection.y < this.p1.y) return false;
-        return true;
+        if (this.p1.x <= intersection.x && intersection.x <= this.p2.x) return true;
+        return false;
     }
 
     public boolean doesIntersect(LineSegment segment) {
-        return this.doesIntersect(segment.equation);
+        Point intersection = this.getIntersection(segment);
+        if (intersection == null) return false;
+        if (intersection.x == -1 && intersection.y == -1) return true;
+        if (segment.p1.x <= intersection.x && intersection.x <= segment.p2.x) {
+            if (this.p1.x <= intersection.x && intersection.x <= this.p2.x) return true;
+        }
+        return false;
     }
 }
