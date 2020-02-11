@@ -2,13 +2,13 @@ package app;
 
 public class Player extends Unit {
     Player(int x, int y, int r) {
-            super (3, 100000, x, y, r, 25);
+            super (Constants.Player.HEALTH, Constants.Player.DAMAGE, x, y, r, Constants.Player.SPEED);
         }
 
     public void dash(int x, int y) {
-        spd = 250;
+        spd = Constants.Player.DASH_DISTANCE;
         move(x, y);
-        spd = 25;
+        spd = Constants.Player.SPEED;
     }
     
 }
