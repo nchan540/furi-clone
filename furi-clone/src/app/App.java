@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -33,10 +34,18 @@ public class App extends JPanel {
     
     private static final String BACKGROUND = ("Screenshot (85).png");
 
-    private static final long TICKSPERFRAME = 75;
+    //FPS constants
+    private static final int FPS = 30;
+    private static final int TICKSPERFRAME = 1000/30;
+    private static final int MAXFRAMESKIP = 5;
+    private static long nextGameTick;
+
 
     public static Player player = new Player(720, 450, 100);
+    public static int[] dashAnim = {0, 0, 0};
+    public static int dashTimer = 0;
 
+    private static final HashSet<Integer> keyIn = new HashSet<>();
     public static int placeholderX = 0;
     public static int placeholderY = 0;
 
@@ -51,11 +60,56 @@ public class App extends JPanel {
     public void paintComponent (Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgroundImg, 0, 0, null);
-        g.setColor(HITBOXCOLOURS[0]);
-        g.fillOval(player.getX() + 45, player.getY() + 170, player.getRadius(), Math.round(Math.round(player.radius*0.5)));
+
+        if (dashTimer > 0) {
+            g.setColor(HITBOXCOLOURS[1]);
+        } else {
+            g.setColor(HITBOXCOLOURS[0]);
+        }
+        
+        g.fillOval(player.getX(), player.getY(), player.getRadius(), Math.round(Math.round(player.radius*0.5)));
+
+        if (dashAnim[0] > 0) {
+            g.setColor(Color.white);
+            g.fillOval(dashAnim[1], dashAnim[2], dashAnim[0] * 20, dashAnim[0] * 20);
+            dashAnim[0] -= 1;
+        }
+    }
+
+    public static void dash() {
+            dashAnim[0] = 5;
+            dashAnim[1] = player.getX();
+            dashAnim[2] = player.getY();
+            player.dash(placeholderX, placeholderY);
+            dashTimer = 30;
     }
 
     public static void gameLoop() {
+
+        //movement
+        for (int i = 0; i < 4; ++i) {
+            if (keyIn.contains(placeholder[i][0])) {
+                if (i % 2 == 0) {
+                    placeholderX += placeholder[i][1];
+                    if (placeholderX > 1) placeholderX = 1;
+                    if (placeholderX < -1) placeholderX = -1;
+                } else {
+                    placeholderY += placeholder[i][1];
+                    if (placeholderY > 1) placeholderY = 1;
+                    if (placeholderY < -1) placeholderY = -1;
+                }
+            }
+        }
+        if(keyIn.contains(KeyEvent.VK_SPACE)) {
+            if (dashTimer == 0) dash();
+            keyIn.remove(KeyEvent.VK_SPACE);
+        } else {
+            player.move(placeholderX, placeholderY);
+        }
+        placeholderX = 0;
+        placeholderY = 0;
+        if (dashTimer > 0) --dashTimer;
+
 
     }
     public static void main(String[] args) throws Exception {
@@ -64,39 +118,19 @@ public class App extends JPanel {
 
         window.addKeyListener(new KeyListener() {
 
-            int keyCode;
-
             @Override
             public void keyPressed(KeyEvent e) {
-                keyCode = e.getKeyCode();
-                for (int i = 0; i < 4; ++i) {
-                    if (keyCode == placeholder[i][0]) {
-                        if (i % 2 == 0) {
-                            placeholderX = placeholder[i][1];
-                        } else {
-                            placeholderY = placeholder[i][1];
-                        }
-                    }
-                }
+                keyIn.add(e.getKeyCode());
             }
             
             @Override
             public void keyReleased(KeyEvent e) {
-                keyCode = e.getKeyCode();
-                for (int i = 0; i < 4; ++i) {
-                    if (keyCode == placeholder[i][0]) {
-                        if (i % 2 == 0) {
-                            placeholderX = 0;
-                        } else {
-                            placeholderY = 0;
-                        }
-                    }
-                }
+                keyIn.remove(e.getKeyCode());
             }
         
             @Override
             public void keyTyped(KeyEvent e) {
-        
+                keyIn.add(e.getKeyCode());
             }
         });
         
@@ -109,15 +143,17 @@ public class App extends JPanel {
         }
 
         while (true) {
+
+            nextGameTick = System.currentTimeMillis();
+            gameLoop();
+            
+            //graphics, rewriting old surface
             App panel = new App();
             window.add(panel, 0);
             window.setVisible(true);
-            try {
-                player.move(placeholderX, placeholderY);
-                Thread.sleep(50);
-            } catch (InterruptedException e) {}
-            System.out.println(player.getX() + ", " + player.getY());
-        }
+
+            if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
+        } 
     }
 
     public static void loadPlayerImage (String read) {
