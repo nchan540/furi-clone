@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.awt.Point;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -15,6 +16,10 @@ import java.awt.Color;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
+import java.awt.MouseInfo;
 
 
 
@@ -35,17 +40,19 @@ public class App extends JPanel {
     private static final String BACKGROUND = ("Screenshot (85).png");
 
     //FPS constants
-    private static final int FPS = 30;
-    private static final int TICKSPERFRAME = 1000/30;
-    private static final int MAXFRAMESKIP = 5;
+    private static final int FPS = 60;
+    private static final int TICKSPERFRAME = 1000/FPS;
     private static long nextGameTick;
 
 
-    public static Player player = new Player(720, 450, 100);
+    public static Player player = new Player(720, 450, 50);
     public static int[] dashAnim = {0, 0, 0};
     public static int dashTimer = 0;
 
-    private static final HashSet<Integer> keyIn = new HashSet<>();
+    private static HashSet<Integer> keyIn = new HashSet<>();
+    private static Point mouse = new Point(-100, -100);
+    private static boolean mouseClicked = false;
+
     public static int placeholderX = 0;
     public static int placeholderY = 0;
 
@@ -61,17 +68,22 @@ public class App extends JPanel {
         super.paintComponent(g);
         g.drawImage(backgroundImg, 0, 0, null);
 
+
+        //draw player
         if (dashTimer > 0) {
             g.setColor(HITBOXCOLOURS[1]);
         } else {
             g.setColor(HITBOXCOLOURS[0]);
         }
+        g.fillOval(player.getX() - player.getRadius()/2, player.getY() - player.getRadius()/2, player.getRadius(), player.getRadius());
         
-        g.fillOval(player.getX(), player.getY(), player.getRadius(), Math.round(Math.round(player.radius*0.5)));
+        //draw mouse
+        g.setColor(HITBOXCOLOURS[2]);
+        g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), 20, 20);
 
         if (dashAnim[0] > 0) {
             g.setColor(Color.white);
-            g.fillOval(dashAnim[1], dashAnim[2], dashAnim[0] * 20, dashAnim[0] * 20);
+            g.fillOval(dashAnim[1] + player.getRadius()/2 - dashAnim[0] * 10, dashAnim[2] + player.getRadius()/2 - dashAnim[0] * 10, dashAnim[0] * 20, dashAnim[0] * 20);
             dashAnim[0] -= 1;
         }
     }
@@ -81,7 +93,7 @@ public class App extends JPanel {
             dashAnim[1] = player.getX();
             dashAnim[2] = player.getY();
             player.dash(placeholderX, placeholderY);
-            dashTimer = 30;
+            dashTimer = 60;
     }
 
     public static void gameLoop() {
@@ -115,6 +127,9 @@ public class App extends JPanel {
     public static void main(String[] args) throws Exception {
 
         JFrame window = new JFrame("Game");
+        window.setCursor(window.getToolkit().createCustomCursor(
+            new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
+            "null"));
 
         window.addKeyListener(new KeyListener() {
 
@@ -133,6 +148,34 @@ public class App extends JPanel {
                 keyIn.add(e.getKeyCode());
             }
         });
+
+        window.addMouseListener(new MouseListener() {
+            @Override
+            public void mousePressed(MouseEvent e)  {
+            }
+            public void mouseExited(MouseEvent e)  {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            }
+            public void mouseReleased(MouseEvent e)  {
+                
+            }
+            public void mouseClicked(MouseEvent e)  {
+                
+            }
+            public void mouseEntered(MouseEvent e)  {
+                mouse = new Point(e.getX(), e.getY());
+            }
+        });
+
+        window.addMouseMotionListener(new MouseMotionListener() {
+            public void mouseMoved(MouseEvent e) {
+                mouse = new Point(e.getX(), e.getY());
+            }
+            public void mouseDragged(MouseEvent e) {
+                mouse = new Point(e.getX(), e.getY());
+            }
+        });
         
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(1440, 900);
@@ -145,6 +188,8 @@ public class App extends JPanel {
         while (true) {
 
             nextGameTick = System.currentTimeMillis();
+
+
             gameLoop();
             
             //graphics, rewriting old surface
