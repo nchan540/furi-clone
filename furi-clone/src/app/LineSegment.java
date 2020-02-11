@@ -2,19 +2,27 @@ package app;
 
 public class LineSegment {
     public Line equation;
-    private Point loc1, loc2;
+    
+    // Points for a line segment AB if p1 is A and p2 is B
+    private Point p1, p2;
 
     public LineSegment(float m, float b, float x1, float x2) {
         this.equation = new Line(m, b);
-        this.loc1.x = x1;
-        this.loc1.y = this.equation.getY(x1);
-        this.loc2.x = x2;
-        this.loc2.y = this.equation.getY(x2);
+        this.p1 = new Point(x1, this.equation.getY(x1));
+        this.p2 = new Point(x2, this.equation.getY(x2));
     }
 
-    public int getX() { return Math.round(this.loc1.x); }
+    public LineSegment(Point p1, Point p2) {
+        this.p1 = new Point(p1.x, p1.y);
+        this.p2 = new Point(p2.x, p2.y);
+        float m = (this.p2.y - this.p1.y) / (this.p2.x - this.p1.x);
+        float b = this.p1.y - m*this.p1.x;
+        this.equation = new Line(m, b);
+    }
 
-    public int getY() { return Math.round(this.loc1.y); }
+    public int getX() { return Math.round(this.p1.x); }
+
+    public int getY() { return Math.round(this.p1.y); }
 
     public Point getIntersection(Line line) {
         if (this.equation.m == line.m) {
@@ -37,12 +45,17 @@ public class LineSegment {
         Point intersection = this.getIntersection(line);
         if (intersection == null) return false;
         if (intersection.x == -1 && intersection.y == -1) return true;
-        if (intersection.x > this.loc1.x + this.loc2.x || intersection.x < this.loc1.x
-            || intersection.y > this.loc1.y + this.loc2.y || intersection.y < this.loc1.y) return false;
-        return true;
+        if (this.p1.x <= intersection.x && intersection.x <= this.p2.x) return true;
+        return false;
     }
 
     public boolean doesIntersect(LineSegment segment) {
-        return this.doesIntersect(segment.equation);
+        Point intersection = this.getIntersection(segment);
+        if (intersection == null) return false;
+        if (intersection.x == -1 && intersection.y == -1) return true;
+        if (segment.p1.x <= intersection.x && intersection.x <= segment.p2.x) {
+            if (this.p1.x <= intersection.x && intersection.x <= this.p2.x) return true;
+        }
+        return false;
     }
 }
