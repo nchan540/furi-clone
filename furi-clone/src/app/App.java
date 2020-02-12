@@ -24,35 +24,41 @@ import java.awt.event.MouseEvent;
 
 public class App extends JPanel {
 
+    //unused right now; graphics system
     private static final long serialVersionUID = 1L;
     private static final String fileSeparator = System.getProperty("file.separator");
     private static final String PLAYERIMGPATH = ("playerSprites" + fileSeparator);
     private static final String png = ".png";
 
+    //unused right now; graphics system
     public static String currentPlayerSprite;
     public static BufferedImage playerImg;
     public static BufferedImage backgroundImg;
-
-    public static final Color[] HITBOXCOLOURS ={new Color(64, 159, 255, 127), new Color(0, 0, 0, 127), new Color(186, 0, 0, 180)};
-    //dash available, dash unavailable, hit
-    
     private static final String BACKGROUND = ("Screenshot (85).png");
-
+    
+    //dash available, dash unavailable, hit
+    public static final Color[] HITBOXCOLOURS ={new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180)};
+    
     //FPS constants
-    private static final int FPS = 15;
+    private static final int FPS = 60;
     private static final int TICKSPERFRAME = 1000/FPS;
     private static long nextGameTick;
 
-    public static Boss boss;
-
+    //player info
     public static Player player = new Player(720, 450, 50);
     public static int[] dashAnim = {0, 0, 0};
     public static int dashTimer = 0;
 
+    //boss info
+    public static Boss boss = new Charger(0, 0, 0, player);
+    public static int bossTimer = 120;
+
+    //player input info
     private static HashSet<Integer> keyIn = new HashSet<>();
     private static Point mouse = new Point(-100, -100);
     private static boolean mouseClicked = false;
 
+    //player movement info
     public static int placeholderX = 0;
     public static int placeholderY = 0;
 
@@ -60,7 +66,8 @@ public class App extends JPanel {
 
     public App() {
         setBackground(Color.WHITE);
-        setPreferredSize(new Dimension(1439, 900));
+        setPreferredSize(new Dimension(Constants.Graphics.WIDTH, Constants.Graphics.HEIGHT));
+        setFont(Constants.FONT);
     }
 
     @Override
@@ -68,9 +75,10 @@ public class App extends JPanel {
         super.paintComponent(g);
         g.drawImage(backgroundImg, 0, 0, null);
 
-
         //draw player
-        if (dashTimer > 0) {
+        if(player.iFrames > 0) {
+            g.setColor(HITBOXCOLOURS[2]);
+        } else if (dashTimer > 0) {
             g.setColor(HITBOXCOLOURS[1]);
         } else {
             g.setColor(HITBOXCOLOURS[0]);
@@ -82,13 +90,45 @@ public class App extends JPanel {
         g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), 20, 20);
 
         //draw boss
-        g.fillOval(Math.round(boss.location.x-boss.radius), Math.round(boss.location.y-boss.radius), boss.getRadius(), boss.getRadius());
+        if (boss.hp > 0) {
+            g.fillOval(Math.round(boss.location.x-(boss.radius/2)), Math.round(boss.location.y-(boss.radius/2)), boss.getRadius(), boss.getRadius());
+        }
 
+        //draw blink
         if (dashAnim[0] > 0) {
             g.setColor(Color.white);
-            g.fillOval(dashAnim[1] + player.getRadius()/2 - dashAnim[0] * 10, dashAnim[2] + player.getRadius()/2 - dashAnim[0] * 10, dashAnim[0] * 20, dashAnim[0] * 20);
+            g.fillOval(dashAnim[1]  - dashAnim[0] * 10, dashAnim[2]  - dashAnim[0] * 10, dashAnim[0] * 20, dashAnim[0] * 20);
             dashAnim[0] -= 1;
         }
+
+        //draw health
+        
+        g.setColor(Color.BLACK);
+        g.fillRect(30, 25, 240, 40);
+        g.setColor(Color.GRAY);
+        g.fillRect(20, 20, 240, 40);
+        for (int i = player.hp; i > 0; i--) {
+            g.setColor(HITBOXCOLOURS[2]);
+            g.fillRect(55*i + 35, 30, 45, 20);
+        }
+        g.setColor(Color.WHITE);
+        g.drawString("HP", 30, 50);
+
+        if (bossTimer > 30 && bossTimer < 70) {
+            if (bossTimer > 20) {
+                g.setColor(Color.BLACK);
+            } else {
+                g.setColor(HITBOXCOLOURS[2]);
+            }
+            g.fillOval(720 - ((int)(Math.pow(bossTimer-30,2) / 2)), 450 - ((int)(Math.pow(bossTimer-30,2) / 2)), (int)(Math.pow(bossTimer-30, 2)), (int)(Math.pow(bossTimer-30,2)));
+        } else if (bossTimer > 10 && bossTimer <= 30) {
+            g.setColor(Color.WHITE);
+            int rad = 31 - bossTimer;
+            g.fillOval((int)(720 - rad * 1.5), (int)(450 - rad * 1.5), rad * 3, rad * 3);
+        } else if (bossTimer <= 10 && bossTimer > 0) {
+            g.fillOval(690, 420, 60, 60);
+        }
+
     }
 
     public static void dash() {
@@ -100,6 +140,9 @@ public class App extends JPanel {
     }
 
     public static void gameLoop() {
+
+        //boss spawning
+        spawnBoss();  
 
         //movement
         for (int i = 0; i < 4; ++i) {
@@ -122,8 +165,16 @@ public class App extends JPanel {
             player.move(placeholderX, placeholderY);
         }
 
-        boss.update();
+        //update units
+        player.update();
+        if (boss.hp > 0) boss.update();
 
+        //check player hit by boss (collision)
+        if (Constants.distanceFormula(boss.location, player.location) < (boss.radius + player.radius)/2) {
+            player.hit();
+        }
+
+        //resetting movement
         placeholderX = 0;
         placeholderY = 0;
         if (dashTimer > 0) --dashTimer;
@@ -132,7 +183,10 @@ public class App extends JPanel {
     }
 
     public static void spawnBoss() {
-        boss = new Charger(720, 450, player);
+        if (boss.hp <= 0) {
+            if (bossTimer == 0) boss = new Charger(300, 720, 450, player);
+            else --bossTimer;
+        }
     }
     public static void main(String[] args) throws Exception {
 
@@ -188,16 +242,15 @@ public class App extends JPanel {
         });
         
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setSize(1440, 900);
+        window.setSize(Constants.Graphics.WIDTH, Constants.Graphics.HEIGHT);
         File f = new File(BACKGROUND);
         try{backgroundImg = ImageIO.read(f);} 
         catch (Exception e){
 
         }
 
-        spawnBoss();  
+        while (player.hp > 0) {
 
-        while (true) {
 
             nextGameTick = System.currentTimeMillis();          
 
@@ -207,6 +260,8 @@ public class App extends JPanel {
             App panel = new App();
             window.add(panel, 0);
             window.setVisible(true);
+
+            if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
 
             if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
         } 

@@ -41,6 +41,8 @@ public abstract class Unit {
 
     public float getSpeed() { return this.spd; }
 
+    public abstract void update();
+
     /**
      * Moves the unit by its speed value
      * @param moveX -1 if moving left, 0 if not moving, 1 if moving right.
