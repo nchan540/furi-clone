@@ -18,7 +18,7 @@ public class Constants {
 
     public class Graphics {
         public static final int HEIGHT = 800;
-        public static final int WIDTH = 1300;
+        public static final int WIDTH = 1440;
     }
 
     public static float distanceFormula(Point p1, Point p2) {

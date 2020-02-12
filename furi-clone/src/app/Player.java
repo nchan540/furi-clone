@@ -11,9 +11,9 @@ public class Player extends Unit {
 
     public void update() {
         if (iFrames > 0) --iFrames;
-        if (location.y > Constants.Graphics.HEIGHT - radius/2) location.y = Constants.Graphics.HEIGHT - radius/2;
+        if (location.y > Constants.Graphics.HEIGHT - radius - 15) location.y = Constants.Graphics.HEIGHT - radius - 15;
         if (location.y < radius/2) location.y = radius/2;
-        if (location.x > Constants.Graphics.WIDTH - radius/2) location.x = Constants.Graphics.WIDTH-radius/2;
+        if (location.x > Constants.Graphics.WIDTH - radius + 10) location.x = Constants.Graphics.WIDTH-radius+10;
         if (location.x < radius/2) location.x = radius/2;
     }
 

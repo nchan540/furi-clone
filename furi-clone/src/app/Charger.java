@@ -11,9 +11,9 @@ public class Charger extends Boss {
     public void update() {
         changeDir();
         move();
-        if (location.y > Constants.Graphics.HEIGHT - radius*0.75f) {location.y = Constants.Graphics.HEIGHT - radius*0.75f; dir[1] = -dir[1] * 0.2f;}
+        if (location.y > Constants.Graphics.HEIGHT - radius + 10) {location.y = Constants.Graphics.HEIGHT - radius + 10;}
         if (location.y < radius/2) {location.y = radius/2; dir[1]  = -dir[1] * 0.1f;}
-        if (location.x > Constants.Graphics.WIDTH - radius/2) {location.x = Constants.Graphics.WIDTH-radius/2; dir[0] = -dir[0] * 0.2f;}
+        if (location.x > Constants.Graphics.WIDTH - radius + 35) {location.x = Constants.Graphics.WIDTH-radius + 35;}
         if (location.x < radius/2) {location.x = radius/2; dir[0] = -dir[0] * 0.1f;}
     }
 
