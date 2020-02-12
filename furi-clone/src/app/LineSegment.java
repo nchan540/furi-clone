@@ -1,6 +1,6 @@
 package app;
 
-public class LineSegment {
+public class LineSegment implements Shape {
     public Line equation;
     
     // Points for a line segment AB if p1 is A and p2 is B
@@ -57,5 +57,17 @@ public class LineSegment {
             if (this.p1.x <= intersection.x && intersection.x <= this.p2.x) return true;
         }
         return false;
+    }
+
+    public float[] getXatY(int y) {
+        if (!((p1.y > y && y > p2.y) || (p2.y > y && p1.y > y))) return new float[]{-1000};
+
+        return new float[]{equation.getX(y)};
+    }
+
+    public float[] getYatX(int x) {
+        if (!((p1.x > x && x > p2.x) || (p2.x > x && p1.x > x))) return new float[]{-1000};
+
+        return new float[]{equation.getY(x)};
     }
 }

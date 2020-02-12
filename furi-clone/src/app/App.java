@@ -19,7 +19,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
-import java.awt.MouseInfo;
 
 
 
@@ -40,10 +39,11 @@ public class App extends JPanel {
     private static final String BACKGROUND = ("Screenshot (85).png");
 
     //FPS constants
-    private static final int FPS = 60;
+    private static final int FPS = 15;
     private static final int TICKSPERFRAME = 1000/FPS;
     private static long nextGameTick;
 
+    public static Boss boss;
 
     public static Player player = new Player(720, 450, 50);
     public static int[] dashAnim = {0, 0, 0};
@@ -80,6 +80,9 @@ public class App extends JPanel {
         //draw mouse
         g.setColor(HITBOXCOLOURS[2]);
         g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), 20, 20);
+
+        //draw boss
+        g.fillOval(Math.round(boss.location.x-boss.radius), Math.round(boss.location.y-boss.radius), boss.getRadius(), boss.getRadius());
 
         if (dashAnim[0] > 0) {
             g.setColor(Color.white);
@@ -118,11 +121,18 @@ public class App extends JPanel {
         } else {
             player.move(placeholderX, placeholderY);
         }
+
+        boss.update();
+
         placeholderX = 0;
         placeholderY = 0;
         if (dashTimer > 0) --dashTimer;
 
 
+    }
+
+    public static void spawnBoss() {
+        boss = new Charger(720, 450, player);
     }
     public static void main(String[] args) throws Exception {
 
@@ -185,10 +195,11 @@ public class App extends JPanel {
 
         }
 
+        spawnBoss();  
+
         while (true) {
 
-            nextGameTick = System.currentTimeMillis();
-
+            nextGameTick = System.currentTimeMillis();          
 
             gameLoop();
             

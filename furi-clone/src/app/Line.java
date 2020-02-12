@@ -12,4 +12,8 @@ public class Line {
     public float getY(float x) {
         return this.m * x + b;
     }
+
+    public float getX(float y) {
+        return (y - b)/m;
+    }
 }
