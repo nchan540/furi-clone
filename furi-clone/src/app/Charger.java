@@ -81,4 +81,8 @@ public class Charger extends Boss {
             }
         }
     }
+
+    public String toString() {
+        return "The Charger";
+    }
 }

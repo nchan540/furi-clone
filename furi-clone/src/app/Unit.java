@@ -3,7 +3,7 @@ package app;
 public abstract class Unit {
     
     protected int maxHp;
-    protected int hp;
+    public int hp;
     protected int dmg;
     public Point_ location;
     protected float radius;

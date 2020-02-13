@@ -38,7 +38,7 @@ public class Circle implements Shape {
      * @return true or false for overlap
      */
     public boolean checkOverlap(LineSegment target) {
-        LineSegment tangent = new LineSegment(new Line(-1 / target.equation.m, this.p), this.p, this.diameter);
+        LineSegment tangent = new LineSegment(new Line(-1 / target.equation.m, this.p), this.p, this.diameter/2);
 
         return (tangent.checkOverlap(target));
     }
@@ -62,7 +62,7 @@ public class Circle implements Shape {
      * Gets the area of the circle
      * @return area of the circle
      */
-    public double getArea() { return Math.pow(this.diameter, 2) * Math.PI;}
+    public double getArea() { return Math.pow(this.diameter/2, 2) * Math.PI;}
 
     /**
      * Gets the x coordinates at a y location

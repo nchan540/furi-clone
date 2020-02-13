@@ -1,10 +1,13 @@
 package app;
+import java.util.HashSet;
 
 public class Player extends Unit {
 
-    public int iFrames = 0;
-    public int attackFrames = 0;
-    public boolean dramaticPause = false;
+    float difX, difY, difR;
+
+    public int iFrames, attackFrames, score = 1;
+    public boolean dramaticPause, dashQueued = false;
+    public HashSet<Unit> attacked = new HashSet<>();
 
     public Attack curAttack = new Attack();
 
@@ -22,43 +25,63 @@ public class Player extends Unit {
         if (location.x > Constants.Graphics.WIDTH - radius + 10) location.x = Constants.Graphics.WIDTH-radius+10;
         if (location.x < radius/2) location.x = radius/2;
 
-        if (attackFrames > 0) {
-            if (attackFrames > 10 && attackFrames <= 20) {
-                //active frames, check for impact
+        setAttack();
+        if (attackFrames > 0 && attackFrames-- <= 1) {
+            if (!attacked.isEmpty()) {
+                for (Unit u : attacked) {
+                    if (!u.takeDamage(this.dmg) && u instanceof Boss && hp < 3) {
+                        ++hp;
+                        ++score;
+                    }
+                }
             }
-            if (attackFrames-- <= 1) spd = Constants.Player.SPEED;
+            spd = Constants.Player.SPEED;
+            attacked.clear();
         }
-
     }
 
     public void attack() {
         if (attackFrames <= 0) {
             spd = 0;
-            attackFrames = 40;
+            attackFrames = 30;
         }
     }
 
     public void dash(int x, int y) {
-        float prevSpd = spd;
-        spd = Constants.Player.DASH_DISTANCE;
-        move(x, y);
-        spd = prevSpd;
+        if (attackFrames <= 5 || attackFrames > 10 || dashQueued) {
+            float prevSpd = spd;
+            spd = Constants.Player.DASH_DISTANCE;
+            move(x, y);
+            spd = prevSpd;
+        } else {
+            dashQueued = true;
+        }
     }
 
     public void setAttack(Point_ p) {
         if (!(Math.abs(p.x - this.getX()) < 1 && Math.abs(p.y-this.getY()) < 1)) {
 
-            float difX = (p.x-this.location.x);
-            float difY = (p.y-this.location.y);
-            float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
+            difX = (p.x-this.location.x);
+            difY = (p.y-this.location.y);
+            difR = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
 
-            for (int i = 0; i < 5; ++i) {
-                curAttack.hitboxes[i] = new Circle(new Point_(location.x + difX * ATTACK_LENGTHS[i] / r, location.y + difY * ATTACK_LENGTHS[i] / r), (25 - 3*i));
-            }
+            
+        }
+    }
+    public void setAttack() {
+        for (int i = 0; i < 5; ++i) {
+            curAttack.hitboxes[i] = new Circle(new Point_(location.x + difX * ATTACK_LENGTHS[i] / difR, location.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
         }
     }
 
-
+    public boolean checkAttack(Unit enemy) {
+        if (!attacked.contains(enemy) && curAttack.checkHit(new Circle(enemy.location, enemy.getRadius()))) {
+            dramaticPause = true;
+            attacked.add(enemy);
+            return true;
+        }
+        return false;
+    }
     
     public void hit () {
         if(iFrames == 0) {hp -= 1;iFrames = 60;dramaticPause = true;}

@@ -117,6 +117,34 @@ public class App extends JPanel {
         g.setColor(Color.WHITE);
         g.drawString("HP", 30, 50);
 
+        //draw score
+        if (player.score > 0) {
+            g.setColor(Color.BLACK);
+            g.fillRect(30, 75, (130 + Integer.toString(player.score).length() * 18), 40);
+            g.setColor(Color.GRAY);
+            g.fillRect(20, 70, (130 + Integer.toString(player.score).length() * 18), 40);
+            g.setColor(Color.WHITE);
+            g.drawString("SCORE " + player.score, 28, 101);
+        }
+
+        //draw boss health
+
+        g.setColor(Color.BLACK);
+        g.fillRect(30, 710, 545, 40);
+        g.setColor(Color.GRAY);
+        g.fillRect(20, 705, 545, 40);
+        g.setColor(Color.BLACK);
+        g.fillRect(25, 710, 200, 30);
+        g.fillRect(235, 705, 10, 40);
+        g.setColor(Color.WHITE);
+        g.drawString(boss.toString(), 30, 735);
+        if (boss.maxHp > 0) {
+            g.setColor(Color.BLACK);
+            g.fillRect(255, 710, 300, 30);
+            g.setColor(Color.RED);
+            g.fillRect(255, 710, (int)(300 * ((float)boss.hp / boss.maxHp)), 30);
+        }
+
         //draw boss spawning
         if (bossTimer > 30 && bossTimer < 70) {
             if (bossTimer > 20) {
@@ -143,8 +171,8 @@ public class App extends JPanel {
                         } else {
                             g.setColor(Color.BLACK);
                         }
+                        drawCircle(g, player.curAttack.hitboxes[i]);
                     }
-                    drawCircle(g, player.curAttack.hitboxes[i]);
                 }
             }
         }
@@ -160,8 +188,16 @@ public class App extends JPanel {
 
     public static void gameLoop() {
 
+        //update units
+        player.update();
+        if (boss.hp > 0) boss.update();
+        else {
+            boss.location.x = -100; 
+            boss.location.y = -100; 
+        }
+
         //boss spawning
-        //spawnBoss();  
+        spawnBoss();  
 
         //movement
         for (int i = 0; i < 4; ++i) {
@@ -183,16 +219,16 @@ public class App extends JPanel {
         } else {
             player.move(placeholderX, placeholderY);
         }
-        if (mouse.getX() > -1 && mouse.getY() > -1) player.setAttack(new Point_(mouse.getX(), mouse.getY()));
-
-        //update units
-        player.update();
-        if (boss.hp > 0) boss.update();
+        if (player.attackFrames > 5 && player.attackFrames <= 10) {
+            player.checkAttack(boss);
+        }
 
         //check player hit by boss (collision)
         if (Constants.distanceFormula(boss.location, player.location) < (boss.radius + player.radius)/2) {
             player.hit();
         }
+
+        
 
         //resetting movement
         placeholderX = 0;
@@ -204,8 +240,12 @@ public class App extends JPanel {
 
     public static void spawnBoss() {
         if (boss.hp <= 0) {
-            if (bossTimer == 0) boss = new Charger(300, 720, 450, player);
-            else --bossTimer;
+            if (bossTimer == 0) {
+                boss = new Charger(300, 720, 450, player);
+                bossTimer = 120;
+            } else {
+                --bossTimer;
+            }
         }
     }
     public static void main(String[] args) throws Exception {
@@ -240,6 +280,7 @@ public class App extends JPanel {
         window.addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e)  {
+                if (mouse.getX() > -1 && mouse.getY() > -1) player.setAttack(new Point_(mouse.getX(), mouse.getY()));
                 player.attack();
             }
             public void mouseExited(MouseEvent e)  {
@@ -269,6 +310,7 @@ public class App extends JPanel {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(Constants.Graphics.WIDTH, Constants.Graphics.HEIGHT);
         File f = new File(BACKGROUND);
+        window.setResizable(false);
         try{backgroundImg = ImageIO.read(f);} 
         catch (Exception e){
 
