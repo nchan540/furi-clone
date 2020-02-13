@@ -40,7 +40,7 @@ public class App extends JPanel {
     public static final Color[] HITBOXCOLOURS ={new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180)};
     
     //FPS constants
-    private static final int FPS = 30;
+    private static final int FPS = 60;
     private static final int TICKSPERFRAME = 1000/FPS;
     private static long nextGameTick;
 
@@ -68,6 +68,10 @@ public class App extends JPanel {
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(Constants.Graphics.WIDTH, Constants.Graphics.HEIGHT));
         setFont(Constants.FONT);
+    }
+
+    public void drawCircle(Graphics g, Circle c) {
+        g.fillOval(Math.round(c.p.x - c.diameter/2), Math.round(c.p.y - c.diameter/2), c.diameter, c.diameter);
     }
 
     @Override
@@ -102,7 +106,6 @@ public class App extends JPanel {
         }
 
         //draw health
-        
         g.setColor(Color.BLACK);
         g.fillRect(30, 25, 240, 40);
         g.setColor(Color.GRAY);
@@ -114,6 +117,7 @@ public class App extends JPanel {
         g.setColor(Color.WHITE);
         g.drawString("HP", 30, 50);
 
+        //draw boss spawning
         if (bossTimer > 30 && bossTimer < 70) {
             if (bossTimer > 20) {
                 g.setColor(Color.BLACK);
@@ -129,6 +133,21 @@ public class App extends JPanel {
             g.fillOval(690, 420, 60, 60);
         }
 
+        //draw attack
+        if (mouse.getX() > -1 && mouse.getY() > -1) {
+            for (int i = 0; i < player.curAttack.hitboxes.length; ++i) {
+                if (player.curAttack.hitboxes[i] instanceof Circle) {
+                    if (player.attackFrames > 0) {
+                        if (player.attackFrames > 5 && player.attackFrames <= 10) {
+                            g.setColor(HITBOXCOLOURS[2]);
+                        } else {
+                            g.setColor(Color.BLACK);
+                        }
+                    }
+                    drawCircle(g, player.curAttack.hitboxes[i]);
+                }
+            }
+        }
     }
 
     public static void dash() {
@@ -142,7 +161,7 @@ public class App extends JPanel {
     public static void gameLoop() {
 
         //boss spawning
-        spawnBoss();  
+        //spawnBoss();  
 
         //movement
         for (int i = 0; i < 4; ++i) {
@@ -164,6 +183,7 @@ public class App extends JPanel {
         } else {
             player.move(placeholderX, placeholderY);
         }
+        if (mouse.getX() > -1 && mouse.getY() > -1) player.setAttack(new Point_(mouse.getX(), mouse.getY()));
 
         //update units
         player.update();
@@ -210,12 +230,17 @@ public class App extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
                 keyIn.add(e.getKeyCode());
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    player.attack();
+                    System.out.println("pressed");
+                }
             }
         });
 
         window.addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e)  {
+                player.attack();
             }
             public void mouseExited(MouseEvent e)  {
                 mouse.x = -1000;

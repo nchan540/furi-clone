@@ -19,7 +19,7 @@ public class Charger extends Boss {
             dir[1]  = -dir[1] * Constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = Constants.Charger.STUNSPD; 
-                this.bonked = Constants.Charger.STUNTIME + (int)spd * 20;
+                this.bonked = Constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;
@@ -29,7 +29,7 @@ public class Charger extends Boss {
             dir[1]  = -dir[1] * Constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = Constants.Charger.STUNSPD; 
-                this.bonked = Constants.Charger.STUNTIME + (int)spd * 20;
+                this.bonked = Constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;
@@ -39,7 +39,7 @@ public class Charger extends Boss {
             dir[0] = -dir[0] * Constants.Charger.STUNSPD;
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = Constants.Charger.STUNSPD; 
-                this.bonked = Constants.Charger.STUNTIME + (int)spd * 20;
+                this.bonked = Constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;
@@ -49,7 +49,7 @@ public class Charger extends Boss {
             dir[0] = -dir[0] * Constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = Constants.Charger.STUNSPD; 
-                this.bonked = Constants.Charger.STUNTIME + (int)spd * 40;
+                this.bonked = Constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;

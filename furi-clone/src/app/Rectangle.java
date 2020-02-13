@@ -4,14 +4,14 @@ public class Rectangle implements Shape {
     
     public LineSegment top, left, right, bottom;
 
-    public Rectangle(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight) {
+    public Rectangle(Point_ topLeft, Point_ topRight, Point_ bottomLeft, Point_ bottomRight) {
         this.top = new LineSegment(topLeft, topRight);
         this.left = new LineSegment(topLeft, bottomLeft);
         this.right = new LineSegment(topRight, bottomRight);
         this.bottom = new LineSegment(bottomLeft, bottomRight);
     }
 
-    public boolean doesOverlap(Point target) {
+    public boolean doesOverlap(Point_ target) {
         if (bottom.equation.getY(target.x) <= target.y && target.y <= top.equation.getY(target.x)) return true;
         return false;
     }
