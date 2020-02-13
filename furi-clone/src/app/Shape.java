@@ -6,4 +6,7 @@ public interface Shape {
 
     public float[] getYatX(int x);
 
+    // TODO: implement
+    // public boolean doesOverlap(Shape target);
+
 }
