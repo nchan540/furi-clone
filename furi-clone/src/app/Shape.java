@@ -2,11 +2,16 @@ package app;
 
 public interface Shape {
 
+    public Point getLocation();
+
+    public double getArea();
+
     public float[] getXatY(int y);
 
     public float[] getYatX(int x);
 
-    // TODO: implement
-    // public boolean doesOverlap(Shape target);
+    public boolean checkOverlap(Circle target);
+    
+    public boolean checkOverlap(LineSegment target);
 
 }
