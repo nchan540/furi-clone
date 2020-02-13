@@ -9,6 +9,11 @@ public class Line {
         this.b = b;
     }
 
+    public Line(float m, Point p) {
+        this.m = m;
+        this.b = p.y - this.m * p.x;
+    }
+
     /**
      * Returns the y value at an x coordinate
      * @param x x coordinate
