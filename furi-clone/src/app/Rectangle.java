@@ -2,26 +2,34 @@ package app;
 
 public class Rectangle implements Shape {
     
-    public LineSegment top, left, right, bottom;
+    // [0] = top, [1] = left, [2] = right, [3] = bottom;
+    public LineSegment[] lines = new LineSegment[4];
 
     public Rectangle(Point topLeft, Point topRight, Point bottomLeft, Point bottomRight) {
-        this.top = new LineSegment(topLeft, topRight);
-        this.left = new LineSegment(topLeft, bottomLeft);
-        this.right = new LineSegment(topRight, bottomRight);
-        this.bottom = new LineSegment(bottomLeft, bottomRight);
+        this.lines[0] = new LineSegment(topLeft, topRight);
+        this.lines[1] = new LineSegment(topLeft, bottomLeft);
+        this.lines[2] = new LineSegment(topRight, bottomRight);
+        this.lines[3] = new LineSegment(bottomLeft, bottomRight);
     }
 
-    public boolean doesOverlap(Point target) {
-        if (bottom.equation.getY(target.x) <= target.y && target.y <= top.equation.getY(target.x)) return true;
+    public boolean checkOverlap(Circle target) {
+        for (int i = 0; i < lines.length; ++i) {
+            if (target.checkOverlap(this.lines[i])) return true;
+        }
         return false;
     }
 
-    // TODO: implement
-    public boolean doesOverlap(Shape target) {
-        // if (target.doesOverlap(this.top) || target.doesOverlap(this.left) || target.doesOverlap(this.right) || target.doesOverlap(this.bottom)) return true;
+    public boolean checkOverlap(LineSegment target) {
+        for (int i = 0; i < lines.length; ++i) {
+            if (target.checkOverlap(lines[i])) return true;
+        }
         return false;
     }
+
+    public Point getLocation() { return this.lines[0].getLocation(); }
     
+    public double getArea() { return this.lines[0].getArea() * this.lines[1].getArea(); }
+
     public float[] getXatY(int y) {
         return new float[] {0f};
     }
