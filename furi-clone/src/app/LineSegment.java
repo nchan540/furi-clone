@@ -4,7 +4,7 @@ public class LineSegment implements Shape {
     public Line equation;
     
     // Point_s for a line segment AB if p1 is A and p2 is B
-    private Point_ p1, p2;
+    public Point_ p1, p2;
 
     /**
      * Constructor for a line segment

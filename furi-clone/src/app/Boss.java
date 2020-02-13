@@ -2,9 +2,9 @@ package app;
 
 public abstract class Boss extends Unit {
 
-    protected Attack curAttack;
-    protected float dir[] = new float[]{0, 0};
-    protected Unit player;
+    public Attack curAttack;
+    public float dir[] = new float[]{0, 0};
+    public Unit player;
     
     Boss(int hp, int dmg, int x, int y, int rad, Float s, Unit p) {
         super(hp, dmg, x, y, rad, s);
