@@ -19,7 +19,7 @@ public class Line {
      * @param m slope of the line
      * @param p point the line passes through
      */
-    public Line(float m, Point p) {
+    public Line(float m, Point_ p) {
         this.m = m;
         this.b = p.y - this.m * p.x;
     }

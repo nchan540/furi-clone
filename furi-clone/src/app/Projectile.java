@@ -2,21 +2,21 @@ package app;
 
 public abstract class Projectile {
     Shape hitbox;
-    Point location;
+    Point_ location;
     float xSpeed;
     float ySpeed;
     Line direction;
 
-    public Projectile(Shape hitbox, Point location, float speed, Line direction) {
+    public Projectile(Shape hitbox, Point_ location, float speed, Line direction) {
         this.hitbox = hitbox;
-        this.location = new Point(location.x, location.y);
+        this.location = new Point_(location.x, location.y);
         
         this.setSpeed(speed, direction);
     }
 
     public Projectile(Shape hitbox, float x, float y, float speed, Line direction) {
         this.hitbox = hitbox;
-        this.location = new Point(x, y);
+        this.location = new Point_(x, y);
         
         this.setSpeed(speed, direction);
     }
@@ -40,7 +40,7 @@ public abstract class Projectile {
         this.location.y += ySpeed;
     }
 
-    public void move(Point destination) {
+    public void move(Point_ destination) {
         this.location.x = destination.x;
         this.location.y = destination.y;
     }

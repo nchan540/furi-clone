@@ -6,7 +6,7 @@ public interface Shape {
      * Gets the location of the shape
      * @return location of the shape
      */
-    public Point getLocation();
+    public Point_ getLocation();
 
     /**
      * Gets the area of the shape
