@@ -9,10 +9,20 @@ public class Line {
         this.b = b;
     }
 
+    /**
+     * Returns the y value at an x coordinate
+     * @param x x coordinate
+     * @return y value
+     */
     public float getY(float x) {
         return this.m * x + b;
     }
 
+    /**
+     * Returns the x value at a y coordinate
+     * @param y y coordinate
+     * @return x value
+     */
     public float getX(float y) {
         return (y - b)/m;
     }
