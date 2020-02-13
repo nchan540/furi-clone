@@ -6,6 +6,23 @@ public class LineSegment implements Shape {
     // Points for a line segment AB if p1 is A and p2 is B
     private Point p1, p2;
 
+    public LineSegment(Line equation, Point p1, float length) {
+        this.equation = new Line(equation.m, equation.b);
+        this.p1 = new Point(p1.x, p1.y);
+
+        float deltaY = equation.getY(1) - equation.getY(0);
+        float deltaX = 1;
+
+        // 1 (deltaX) squared is 1, and deltaX will always be 1, so the value can be put it to improve speed
+        // the ratio of speed : hypotenuse is the same as the ratio of xSpeed : deltaX and ySpeed : deltaY
+        float ratio = length / (float)(Math.abs(Math.sqrt(1 + Math.pow(deltaY, 2))));
+        // speed / xSpeed = deltaX / ratio
+        float xLength = deltaX * ratio;
+        float yLength = deltaY * ratio;
+
+        this.p2 = new Point(this.p1.x + xLength, this.p1.y + yLength);
+    }
+
     public LineSegment(float m, float b, float x1, float x2) {
         this.equation = new Line(m, b);
         this.p1 = new Point(x1, this.equation.getY(x1));
@@ -41,7 +58,11 @@ public class LineSegment implements Shape {
         return this.getIntersection(line);
     }
 
-    public boolean doesIntersect(Line line) {
+    public boolean checkOverlap(Circle target) {
+        return target.checkOverlap(this);
+    }
+
+    public boolean checkOverlap(Line line) {
         Point intersection = this.getIntersection(line);
         if (intersection == null) return false;
         if (intersection.x == -1 && intersection.y == -1) return true;
@@ -49,7 +70,7 @@ public class LineSegment implements Shape {
         return false;
     }
 
-    public boolean doesIntersect(LineSegment segment) {
+    public boolean checkOverlap(LineSegment segment) {
         Point intersection = this.getIntersection(segment);
         if (intersection == null) return false;
         if (intersection.x == -1 && intersection.y == -1) return true;
@@ -58,6 +79,10 @@ public class LineSegment implements Shape {
         }
         return false;
     }
+
+    public Point getLocation() { return this.p1; }
+
+    public double getArea() { return Constants.distanceFormula(p1, p2); }
 
     public float[] getXatY(int y) {
         if (!((p1.y > y && y > p2.y) || (p2.y > y && p1.y > y))) return new float[]{-1000};
