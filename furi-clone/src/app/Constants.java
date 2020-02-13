@@ -16,6 +16,12 @@ public class Constants {
         public static final int HEALTH = 1;
     }
 
+    public class Charger {
+        public static final int STUNTIME = 20;
+        public static final float STUNSPD = 0.4f;
+        public static final float SPEEDUP = 0.1f;
+    }
+
     public class Graphics {
         public static final int HEIGHT = 800;
         public static final int WIDTH = 1440;

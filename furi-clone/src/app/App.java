@@ -40,7 +40,7 @@ public class App extends JPanel {
     public static final Color[] HITBOXCOLOURS ={new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180)};
     
     //FPS constants
-    private static final int FPS = 60;
+    private static final int FPS = 30;
     private static final int TICKSPERFRAME = 1000/FPS;
     private static long nextGameTick;
 
