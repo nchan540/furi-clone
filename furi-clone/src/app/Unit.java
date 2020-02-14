@@ -1,4 +1,7 @@
 package app;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Color;
 
 public abstract class Unit {
     
@@ -71,4 +74,6 @@ public abstract class Unit {
         if (this.hp > this.maxHp) this.hp = this.maxHp;
         return this.hp > 0;
     }
+
+    public abstract void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS);
 }

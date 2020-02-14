@@ -1,4 +1,7 @@
 package app;
+import java.awt.Graphics;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 public class Charger extends Boss {
 
@@ -84,5 +87,9 @@ public class Charger extends Boss {
 
     public String toString() {
         return "The Charger";
+    }
+
+    public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
+
     }
 }

@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Color;
+import java.awt.geom.Line2D;
+import java.awt.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -37,17 +39,16 @@ public class App extends JPanel {
     private static final String BACKGROUND = ("Screenshot (85).png");
     
     //dash available, dash unavailable, hit
-    public static final Color[] HITBOXCOLOURS ={new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180)};
+    public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127)};
     
     //FPS constants
-    private static final int FPS = 60;
+    private static final int FPS = 12;
     private static final int TICKSPERFRAME = 1000/FPS;
     private static long nextGameTick;
 
     //player info
     public static Player player = new Player(720, 450, 50);
     public static int[] dashAnim = {0, 0, 0};
-    public static int dashTimer = 0;
 
     //boss info
     public static Boss boss = new Charger(0, 0, 0, player);
@@ -70,28 +71,20 @@ public class App extends JPanel {
         setFont(Constants.FONT);
     }
 
-    public void drawCircle(Graphics g, Circle c) {
-        g.fillOval(Math.round(c.p.x - c.diameter/2), Math.round(c.p.y - c.diameter/2), c.diameter, c.diameter);
-    }
-
     @Override
     public void paintComponent (Graphics g) {
         super.paintComponent(g);
+
+        Graphics2D g2 = (Graphics2D) g;
         g.drawImage(backgroundImg, 0, 0, null);
 
         //draw player
-        if(player.iFrames > 0) {
-            g.setColor(HITBOXCOLOURS[2]);
-        } else if (dashTimer > 0) {
-            g.setColor(HITBOXCOLOURS[1]);
-        } else {
-            g.setColor(HITBOXCOLOURS[0]);
-        }
-        g.fillOval(player.getX() - player.getRadius()/2, player.getY() - player.getRadius()/2, player.getRadius(), player.getRadius());
+        player.draw(g, g2, HITBOXCOLOURS);
         
         //draw mouse
         g.setColor(HITBOXCOLOURS[2]);
         g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), 20, 20);
+        Constants.drawCircle(g, new Circle(new Point_(mouse.x, mouse.y), 20));
 
         //draw boss
         if (boss.hp > 0) {
@@ -160,22 +153,6 @@ public class App extends JPanel {
         } else if (bossTimer <= 10 && bossTimer > 0) {
             g.fillOval(690, 420, 60, 60);
         }
-
-        //draw attack
-        if (mouse.getX() > -1 && mouse.getY() > -1) {
-            for (int i = 0; i < player.curAttack.hitboxes.length; ++i) {
-                if (player.curAttack.hitboxes[i] instanceof Circle) {
-                    if (player.attackFrames > 0) {
-                        if (player.attackFrames > 5 && player.attackFrames <= 5 + Constants.Player.ATTACK_FRAMES) {
-                            g.setColor(HITBOXCOLOURS[2]);
-                        } else {
-                            g.setColor(Color.BLACK);
-                        }
-                        drawCircle(g, player.curAttack.hitboxes[i]);
-                    }
-                }
-            }
-        }
     }
 
     public static void dash() {
@@ -183,7 +160,6 @@ public class App extends JPanel {
             dashAnim[1] = player.getX();
             dashAnim[2] = player.getY();
             player.dash(placeholderX, placeholderY);
-            dashTimer = 60;
     }
 
     public static void gameLoop() {
@@ -214,7 +190,7 @@ public class App extends JPanel {
             }
         }
         if(keyIn.contains(KeyEvent.VK_SPACE)) {
-            if (dashTimer == 0) dash();
+            if (player.dashTimer == 0) dash();
             keyIn.remove(KeyEvent.VK_SPACE);
         } else {
             player.move(placeholderX, placeholderY);
@@ -233,9 +209,6 @@ public class App extends JPanel {
         //resetting movement
         placeholderX = 0;
         placeholderY = 0;
-        if (dashTimer > 0) --dashTimer;
-
-
     }
 
     public static void spawnBoss() {
