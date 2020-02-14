@@ -107,7 +107,7 @@ public class Rectangle implements Shape {
         for (int i = 0; i < lines.length; ++i) {
             if (target.checkOverlap(this.lines[i])) return true;
         }
-        return false;
+        return this.checkOverlap(target.p);
     }
 
     /**
@@ -119,7 +119,7 @@ public class Rectangle implements Shape {
         for (int i = 0; i < lines.length; ++i) {
             if (target.checkOverlap(lines[i])) return true;
         }
-        return false;
+        return this.checkOverlap(target.p1);
     }
 
     /**
