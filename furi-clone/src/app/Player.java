@@ -5,8 +5,9 @@ public class Player extends Unit {
 
     float difX, difY, difR;
 
-    public int iFrames, attackFrames, score = 1;
+    public int iFrames, attackFrames, score = 0;
     public boolean dramaticPause, dashQueued = false;
+    public int[] queueXY = {0, 0};
     public HashSet<Unit> attacked = new HashSet<>();
 
     public Attack curAttack = new Attack();
@@ -25,6 +26,8 @@ public class Player extends Unit {
         if (location.x > Constants.Graphics.WIDTH - radius + 10) location.x = Constants.Graphics.WIDTH-radius+10;
         if (location.x < radius/2) location.x = radius/2;
 
+        System.out.println(dashQueued);
+
         setAttack();
         if (attackFrames > 0 && attackFrames-- <= 1) {
             if (!attacked.isEmpty()) {
@@ -37,6 +40,10 @@ public class Player extends Unit {
             }
             spd = Constants.Player.SPEED;
             attacked.clear();
+            if (dashQueued) {
+                dash(queueXY[0], queueXY[1]);
+                dashQueued = false;
+            }
         }
     }
 
@@ -48,13 +55,14 @@ public class Player extends Unit {
     }
 
     public void dash(int x, int y) {
-        if (attackFrames <= 5 || attackFrames > 10 || dashQueued) {
+        if (attackFrames <= 5 || attackFrames > 10) {
             float prevSpd = spd;
             spd = Constants.Player.DASH_DISTANCE;
             move(x, y);
             spd = prevSpd;
         } else {
             dashQueued = true;
+            queueXY = new int[]{x, y};
         }
     }
 
@@ -76,7 +84,6 @@ public class Player extends Unit {
 
     public boolean checkAttack(Unit enemy) {
         if (!attacked.contains(enemy) && curAttack.checkHit(new Circle(enemy.location, enemy.getRadius()))) {
-            dramaticPause = true;
             attacked.add(enemy);
             return true;
         }

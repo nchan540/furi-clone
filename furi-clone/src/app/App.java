@@ -166,7 +166,7 @@ public class App extends JPanel {
             for (int i = 0; i < player.curAttack.hitboxes.length; ++i) {
                 if (player.curAttack.hitboxes[i] instanceof Circle) {
                     if (player.attackFrames > 0) {
-                        if (player.attackFrames > 5 && player.attackFrames <= 10) {
+                        if (player.attackFrames > 5 && player.attackFrames <= 5 + Constants.Player.ATTACK_FRAMES) {
                             g.setColor(HITBOXCOLOURS[2]);
                         } else {
                             g.setColor(Color.BLACK);
