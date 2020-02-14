@@ -11,6 +11,10 @@ public class Line {
      */
     public Line(float m, float b) {
         this.m = m;
+        if (0 <= this.m && this.m < 0.00001f) this.m = 0.00001f;
+        else if (-0.00001f < this.m && this.m < 0f) this.m = 0.00001f;
+        else if (this.m > 10000) this.m = 10000;
+        else if (this.m < -10000) this.m = -10000;
         this.b = b;
     }
 
@@ -21,6 +25,10 @@ public class Line {
      */
     public Line(float m, Point_ p) {
         this.m = m;
+        if (0 <= this.m && this.m < 0.00001f) this.m = -0.00001f;
+        else if (-0.00001f < this.m && this.m < 0f) this.m = -0.00001f;
+        else if (this.m > 10000) this.m = 10000;
+        else if (this.m < -10000) this.m = -10000;
         this.b = p.y - this.m * p.x;
     }
 

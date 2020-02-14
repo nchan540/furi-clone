@@ -13,6 +13,7 @@ public class Player extends Unit {
     public boolean dramaticPause, dashQueued = false;
     public int[] queueXY = {0, 0};
     public HashSet<Unit> attacked = new HashSet<>();
+    public Rectangle test;
 
     public Attack curAttack = new Attack();
 

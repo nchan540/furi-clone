@@ -68,7 +68,7 @@ public class Circle implements Shape {
      * Gets the x coordinates at a y location
      * @return array of the 2 x coordinates
      */
-    public float[] getXatY(int y) {
+    public float[] getXatY(float y) {
         if(Math.abs(y-p.y) > diameter) return new float[]{-1000};
         float[] coords = new float[2];
         coords[0] = (float)(p.x + Math.sqrt((diameter^2) - (Math.pow((y - p.y), 2))));
@@ -80,7 +80,7 @@ public class Circle implements Shape {
      * Gets the y coordinates at an x location
      * @return array of the 2 y coordinates
      */
-    public float[] getYatX(int x) {
+    public float[] getYatX(float x) {
 
         if(Math.abs(x-p.x) > diameter) return new float[]{-1000};
 
