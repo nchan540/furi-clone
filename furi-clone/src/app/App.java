@@ -51,7 +51,7 @@ public class App extends JPanel {
     public static int[] dashAnim = {0, 0, 0};
 
     //boss info
-    public static Boss bosses[] = {new Charger(0, 0, player), new Brawler(0, 0, player)};
+    public static Boss bosses[] = {new EmptyBoss(player), new EmptyBoss(player)};
     public static int bossTimer = 120;
 
     //player input info

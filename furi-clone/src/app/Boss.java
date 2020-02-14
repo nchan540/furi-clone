@@ -21,7 +21,6 @@ public abstract class Boss extends Unit {
     public void spawn() {
         hp = maxHp;
     }
-
     //Attacks for each boss will be methods that set curAttack shapes[] based on player coords and boss coords.
     
 }
