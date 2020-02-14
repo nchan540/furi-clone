@@ -14,6 +14,9 @@ public interface Shape {
      */
     public double getArea();
 
+
+    public int getRadius();
+
     /**
      * Gets the x corrdinate(s) at a y coordinate
      * @param y y coordinate being checked

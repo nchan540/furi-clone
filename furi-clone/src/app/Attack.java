@@ -1,7 +1,7 @@
 package app;
 
 public class Attack {
-    public Circle[] hitboxes;
+    public Shape[] hitboxes;
 
     public void setShapes(Circle[] s) {
         Circle[] set = new Circle[s.length];

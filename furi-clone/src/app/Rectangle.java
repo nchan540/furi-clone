@@ -93,4 +93,8 @@ public class Rectangle implements Shape {
     public float[] getYatX(int x) {
         return new float[] {0f};
     }
+
+    public int getRadius() {
+        return 0;
+    }
 }

@@ -146,6 +146,7 @@ public class LineSegment implements Shape {
      * @return length of the segment
      */
     public double getArea() { return Constants.distanceFormula(p1, p2); }
+    public int getRadius() {return 0;}
 
     /**
      * Gets the x coordinate at a y coordinate

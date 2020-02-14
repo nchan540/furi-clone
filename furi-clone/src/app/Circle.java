@@ -2,11 +2,11 @@ package app;
 
 public class Circle implements Shape {
 
-    public Point_ p;
+    public Point_ p1;
     public int diameter;
 
     Circle(Point_ p, int r) {
-        this.p = new Point_(p.x, p.y);
+        this.p1 = new Point_(p.x, p.y);
         this.diameter = r;
     }
 
@@ -17,7 +17,7 @@ public class Circle implements Shape {
      * @param r radius of circle
      */
     Circle(float x, float y, int r) {
-        this.p = new Point_(x, y);
+        this.p1 = new Point_(x, y);
         this.diameter = r;
     }
 
@@ -28,7 +28,7 @@ public class Circle implements Shape {
      */
     public boolean checkOverlap(Circle target) {
         double targetRadius = Math.pow(target.getArea() / Math.PI, 1.0/2);
-        if (this.getDistance(target.p) <= targetRadius) return true;
+        if (this.getDistance(target.p1) <= targetRadius) return true;
         return false;
     }
 
@@ -38,7 +38,7 @@ public class Circle implements Shape {
      * @return true or false for overlap
      */
     public boolean checkOverlap(LineSegment target) {
-        LineSegment tangent = new LineSegment(new Line(-1 / target.equation.m, this.p), this.p, this.diameter/2);
+        LineSegment tangent = new LineSegment(new Line(-1 / target.equation.m, this.p1), this.p1, this.diameter/2);
 
         return (tangent.checkOverlap(target));
     }
@@ -49,14 +49,14 @@ public class Circle implements Shape {
      * @return distance between the point and the circle's closest point
      */
     public float getDistance(Point_ p) {
-        return (float)(Math.sqrt(Math.pow(this.p.x - p.x, 2) + Math.pow(this.p.y-p.y, 2))) - this.diameter;
+        return (float)(Math.sqrt(Math.pow(this.p1.x - p.x, 2) + Math.pow(this.p1.y-p.y, 2))) - this.diameter;
     }
 
     /**
      * Gets the location of the circle
      * @return location of the circle
      */
-    public Point_ getLocation() { return this.p; }
+    public Point_ getLocation() { return this.p1; }
 
     /**
      * Gets the area of the circle
@@ -64,15 +64,17 @@ public class Circle implements Shape {
      */
     public double getArea() { return Math.pow(this.diameter/2, 2) * Math.PI;}
 
+    public int getRadius() {return diameter;}
+
     /**
      * Gets the x coordinates at a y location
      * @return array of the 2 x coordinates
      */
     public float[] getXatY(int y) {
-        if(Math.abs(y-p.y) > diameter) return new float[]{-1000};
+        if(Math.abs(y-p1.y) > diameter) return new float[]{-1000};
         float[] coords = new float[2];
-        coords[0] = (float)(p.x + Math.sqrt((diameter^2) - (Math.pow((y - p.y), 2))));
-        coords[1] = (float)(p.x - Math.sqrt((diameter^2) - (Math.pow((y - p.y), 2))));
+        coords[0] = (float)(p1.x + Math.sqrt((diameter^2) - (Math.pow((y - p1.y), 2))));
+        coords[1] = (float)(p1.x - Math.sqrt((diameter^2) - (Math.pow((y - p1.y), 2))));
         return coords;
     }
 
@@ -82,11 +84,11 @@ public class Circle implements Shape {
      */
     public float[] getYatX(int x) {
 
-        if(Math.abs(x-p.x) > diameter) return new float[]{-1000};
+        if(Math.abs(x-p1.x) > diameter) return new float[]{-1000};
 
         float[] coords = new float[2];
-        coords[0] = (float)(p.y + Math.sqrt((diameter^2) - (Math.pow((x - p.x), 2))));
-        coords[1] = (float)(p.y - Math.sqrt((diameter^2) - (Math.pow((x - p.x), 2))));
+        coords[0] = (float)(p1.y + Math.sqrt((diameter^2) - (Math.pow((x - p1.x), 2))));
+        coords[1] = (float)(p1.y - Math.sqrt((diameter^2) - (Math.pow((x - p1.x), 2))));
         return coords;
     }
 }

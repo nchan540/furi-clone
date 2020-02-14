@@ -10,7 +10,7 @@ public class Player extends Unit {
     float difX, difY, difR;
 
     public int iFrames, dashTimer, attackFrames, score = 0;
-    public boolean dramaticPause, dashQueued = false;
+    public boolean dramaticPause, dashQueued, killedBoss = false;
     public int[] queueXY = {0, 0};
     public HashSet<Unit> attacked = new HashSet<>();
 
@@ -20,7 +20,7 @@ public class Player extends Unit {
     public Point_ tip;
 
     Player(int x, int y, int r) {
-        super (Constants.Player.HEALTH, Constants.Player.DAMAGE, x, y, r, Constants.Player.SPEED);
+        super (Constants.Player.HEALTH, Constants.Player.HEALTH, Constants.Player.DAMAGE, x, y, r, Constants.Player.SPEED);
         curAttack.hitboxes = new Circle[5];
     }
 
@@ -32,32 +32,19 @@ public class Player extends Unit {
 
         LineSegment[] attackGraphic = new LineSegment[2];
         
-        end = curAttack.hitboxes[4].p;
+        end = curAttack.hitboxes[4].getLocation();
         path = new LineSegment(location, end);
         tangent = new Line((-1/path.equation.m), location.y);
         float rad = radius/2;
-        /*tangentAtCentre = new LineSegment(tangent.m, location.y, 
-            -(int)(Math.sqrt(Math.pow(rad, 2)/(Math.pow(tangent.m, 2)+1))), 
-            (int)(Math.sqrt(Math.pow(rad, 2)/(Math.pow(tangent.m, 2)+1))));
-        p1 = tangentAtCentre.p1;
-        p2 = tangentAtCentre.p2;*/
-
-        /*if (Math.abs(end.x - location.x) > Math.abs(end.y-location.y)) {
-            attackGraphic[0] = new LineSegment (new Point_(this.location.x, p1.y), tip);
-            attackGraphic[1] = new LineSegment (new Point_(this.location.x, p2.y), tip);
-        } else {
-            attackGraphic[0] = new LineSegment (new Point_(location.x + p1.x, this.location.y), tip);
-            attackGraphic[1] = new LineSegment (new Point_(location.x + p2.x, this.location.y), tip);
-        }*/
 
         if (Math.abs(end.x - location.x) > Math.abs(end.y-location.y)) {
             tangentAtCentre = new LineSegment(tangent.m, location.y, 
-            -(int)(Math.sqrt(Math.pow(rad, 2)/(Math.pow(tangent.m, 2)+1))), 
-            +(int)(Math.sqrt(Math.pow(rad, 2)/(Math.pow(tangent.m, 2)+1))));
+            -(int)(Math.sqrt(Math.pow(rad-10, 2)/(Math.pow(tangent.m, 2)+1))), 
+            +(int)(Math.sqrt(Math.pow(rad-10, 2)/(Math.pow(tangent.m, 2)+1))));
         } else {
             tangentAtCentre = new LineSegment(tangent.m, location.y, 
-            tangent.getX((float)(tangent.b-(Math.sqrt((Math.pow(rad, 2)*Math.pow(tangent.m, 2))/(Math.pow(tangent.m, 2) + 1))))), 
-            tangent.getX((float)(tangent.b+(Math.sqrt((Math.pow(rad, 2)*Math.pow(tangent.m, 2))/(Math.pow(tangent.m, 2) + 1))))));
+            tangent.getX((float)(tangent.b-(Math.sqrt((Math.pow(rad-10, 2)*Math.pow(tangent.m, 2))/(Math.pow(tangent.m, 2) + 1))))), 
+            tangent.getX((float)(tangent.b+(Math.sqrt((Math.pow(rad-10, 2)*Math.pow(tangent.m, 2))/(Math.pow(tangent.m, 2) + 1))))));
         }
 
         p1 = tangentAtCentre.p1;
@@ -81,9 +68,10 @@ public class Player extends Unit {
         if (attackFrames > 0 && attackFrames-- <= 1) {
             if (!attacked.isEmpty()) {
                 for (Unit u : attacked) {
-                    if (!u.takeDamage(this.dmg) && u instanceof Boss && hp < 3) {
-                        ++hp;
+                    if (!u.takeDamage(this.dmg) && u instanceof Boss) {
+                        if(hp<3)++hp;
                         ++score;
+                        killedBoss = true;
                     }
                 }
             }

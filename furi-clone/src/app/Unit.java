@@ -12,18 +12,18 @@ public abstract class Unit {
     protected float radius;
     protected float spd;
 
-    public Unit(int maxHp, int dmg, int x, int y, int radius, float spd) {
+    public Unit(int maxHp, int hp, int dmg, int x, int y, int radius, float spd) {
         this.maxHp = maxHp;
-        this.hp = this.maxHp;
+        this.hp = hp;
         this.dmg = dmg;
         this.location = new Point_(x, y);
         this.radius = radius;
         this.spd = spd;
     }
 
-    public Unit(int maxHp, int dmg, Point_ spawn, int radius, float spd) {
+    public Unit(int maxHp, int hp, int dmg, Point_ spawn, int radius, float spd) {
         this.maxHp = maxHp;
-        this.hp = this.maxHp;
+        this.hp = hp;
         this.dmg = dmg;
         this.location = new Point_(spawn.x, spawn.y);
         this.radius = radius;

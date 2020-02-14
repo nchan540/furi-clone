@@ -42,7 +42,7 @@ public class App extends JPanel {
     public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127)};
     
     //FPS constants
-    private static final int FPS = 12;
+    private static final int FPS = 60;
     private static final int TICKSPERFRAME = 1000/FPS;
     private static long nextGameTick;
 
@@ -51,7 +51,7 @@ public class App extends JPanel {
     public static int[] dashAnim = {0, 0, 0};
 
     //boss info
-    public static Boss boss = new Charger(0, 0, 0, player);
+    public static Boss bosses[] = {new Charger(0, 0, player), new Brawler(0, 0, player)};
     public static int bossTimer = 120;
 
     //player input info
@@ -87,8 +87,8 @@ public class App extends JPanel {
         Constants.drawCircle(g, new Circle(new Point_(mouse.x, mouse.y), 20));
 
         //draw boss
-        if (boss.hp > 0) {
-            g.fillOval(Math.round(boss.location.x-(boss.radius/2)), Math.round(boss.location.y-(boss.radius/2)), boss.getRadius(), boss.getRadius());
+        for (Boss b : bosses) {
+                b.draw(g, g2, HITBOXCOLOURS);
         }
 
         //draw blink
@@ -121,22 +121,37 @@ public class App extends JPanel {
         }
 
         //draw boss health
-
-        g.setColor(Color.BLACK);
-        g.fillRect(30, 710, 545, 40);
-        g.setColor(Color.GRAY);
-        g.fillRect(20, 705, 545, 40);
-        g.setColor(Color.BLACK);
-        g.fillRect(25, 710, 200, 30);
-        g.fillRect(235, 705, 10, 40);
-        g.setColor(Color.WHITE);
-        g.drawString(boss.toString(), 30, 735);
-        if (boss.maxHp > 0) {
             g.setColor(Color.BLACK);
-            g.fillRect(255, 710, 300, 30);
-            g.setColor(Color.RED);
-            g.fillRect(255, 710, (int)(300 * ((float)boss.hp / boss.maxHp)), 30);
-        }
+            g.fillRect(30, 710, 545, 40);
+            g.setColor(Color.GRAY);
+            g.fillRect(20, 705, 545, 40);
+            g.setColor(Color.BLACK);
+            g.fillRect(25, 710, 200, 30);
+            g.fillRect(235, 705, 10, 40);
+            if (bosses[0].maxHp > 0) {
+                g.setColor(Color.WHITE);
+                g.drawString(bosses[0].toString(), 30, 735);
+                g.setColor(Color.BLACK);
+                g.fillRect(255, 710, 300, 30);
+                g.setColor(Color.RED);
+                g.fillRect(255, 710, (int)(300 * ((float)bosses[0].hp / bosses[0].maxHp)), 30);
+            }
+
+            g.setColor(Color.BLACK);
+            g.fillRect(860, 710, 545, 40);
+            g.setColor(Color.GRAY);
+            g.fillRect(850, 705, 545, 40);
+            g.setColor(Color.BLACK);
+            g.fillRect(855, 710, 200, 30);
+            g.fillRect(1065, 705, 10, 40);
+            if (bosses[1].maxHp > 0) {
+                g.setColor(Color.WHITE);
+                g.drawString(bosses[1].toString(), 860, 735);
+                g.setColor(Color.BLACK);
+                g.fillRect(1085, 710, 300, 30);
+                g.setColor(Color.RED);
+                g.fillRect(1085, 710, (int)(300 * ((float)bosses[1].hp / bosses[1].maxHp)), 30);
+            }
 
         //draw boss spawning
         if (bossTimer > 30 && bossTimer < 70) {
@@ -166,14 +181,21 @@ public class App extends JPanel {
 
         //update units
         player.update();
-        if (boss.hp > 0) boss.update();
-        else {
-            boss.location.x = -100; 
-            boss.location.y = -100; 
+        if (player.killedBoss) {
+            if (bossTimer == 0) bossTimer = 900;
+            player.killedBoss = false;
+        } 
+        for (Boss b : bosses) {
+            if (b.hp > 0) b.update();
+            else {
+                b.location.x = -100; 
+                b.location.y = -100; 
+            }
         }
 
         //boss spawning
-        spawnBoss();  
+        if (bossTimer == 0) spawnBoss();  
+        else --bossTimer;
 
         //movement
         for (int i = 0; i < 4; ++i) {
@@ -196,15 +218,17 @@ public class App extends JPanel {
             player.move(placeholderX, placeholderY);
         }
         if (player.attackFrames > 5 && player.attackFrames <= 10) {
-            player.checkAttack(boss);
+            for (Boss b : bosses) {
+                player.checkAttack(b);
+            }
         }
 
         //check player hit by boss (collision)
-        if (Constants.distanceFormula(boss.location, player.location) < (boss.radius + player.radius)/2) {
-            player.hit();
+        for (Boss b: bosses) {
+            if (Constants.distanceFormula(b.location, player.location) < (b.radius + player.radius)/2) {
+                player.hit();
+            }
         }
-
-        
 
         //resetting movement
         placeholderX = 0;
@@ -212,15 +236,35 @@ public class App extends JPanel {
     }
 
     public static void spawnBoss() {
-        if (boss.hp <= 0) {
-            if (bossTimer == 0) {
-                boss = new Charger(300, 720, 450, player);
-                bossTimer = 120;
+        boolean spawn = false;
+        int[] avail = new int[bosses.length];
+        for (int i = 0; i < avail.length; i++) {
+            if (bosses[i].hp <= 0) { 
+                avail[i] = 1;
+                spawn = true;
             } else {
-                --bossTimer;
+                avail[i] = 0;
+            }
+        }
+        while (spawn) {
+            int s = (int)Math.floor(Math.random() * bosses.length);
+            if (avail[s] == 1) {
+                if (s == 0) {
+                    bosses[s] = new Charger(720, 400, player);
+                    bosses[s].spawn();
+                } else {
+                    bosses[s] = new Brawler(720, 400, player);
+                    bosses[s].spawn();
+                }
+                avail[s] = 0;
+                for (int c: avail) {
+                    if (c == 1) bossTimer = 900;
+                }
+                return;
             }
         }
     }
+
     public static void main(String[] args) throws Exception {
 
         JFrame window = new JFrame("Game");
@@ -253,7 +297,7 @@ public class App extends JPanel {
         window.addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e)  {
-                if (mouse.getX() > -1 && mouse.getY() > -1) player.setAttack(new Point_(mouse.getX(), mouse.getY()));
+                if (mouse.getX() > -1 && mouse.getY() > -1 && player.attackFrames == 0) player.setAttack(new Point_(mouse.getX(), mouse.getY()));
                 player.attack();
             }
             public void mouseExited(MouseEvent e)  {

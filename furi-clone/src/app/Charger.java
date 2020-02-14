@@ -10,8 +10,8 @@ public class Charger extends Boss {
     public int bonked = 0;
     public int bonkTimer = 0;
 
-    Charger(int h, int x, int y, Unit p) {
-        super(h, 1, x, y, 100, 1f, p);
+    Charger(int x, int y, Player p) {
+        super(Constants.Charger.HEALTH, 0, 1, x, y, 100, 1f, p);
     }
 
     public void update() {
@@ -90,6 +90,7 @@ public class Charger extends Boss {
     }
 
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
-
+        g.setColor(HITBOXCOLOURS[2]);
+        Constants.drawCircle(g, new Circle(location, getRadius()));
     }
 }

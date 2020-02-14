@@ -23,9 +23,14 @@ public class Constants {
     }
 
     public class Charger {
+        public static final int HEALTH = 300;
         public static final int STUNTIME = 30;
         public static final float STUNSPD = 0.4f;
         public static final float SPEEDUP = 0.1f;
+    }
+
+    public class Brawler {
+        public static final int HEALTH = 500;
     }
 
     public class Graphics {
@@ -38,7 +43,7 @@ public class Constants {
     }
 
     public static void drawCircle(java.awt.Graphics g, Circle c) {
-        g.fillOval(Math.round(c.p.x - c.diameter/2), Math.round(c.p.y - c.diameter/2), c.diameter, c.diameter);
+        g.fillOval(Math.round(c.p1.x - c.diameter/2), Math.round(c.p1.y - c.diameter/2), c.diameter, c.diameter);
     }
     public static float distanceFormula(Point_ p1, Point_ p2) {
         return (float)(Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y-p2.y, 2)));
