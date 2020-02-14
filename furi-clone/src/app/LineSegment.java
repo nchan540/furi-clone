@@ -24,9 +24,14 @@ public class LineSegment implements Shape {
         float ratio = length / (float)(Math.abs(Math.sqrt(1 + Math.pow(deltaY, 2))));
         // speed / xSpeed = deltaX / ratio
         float xLength = deltaX * ratio;
-        float yLength = deltaY * ratio;
-
-        this.p2 = new Point_(this.p1.x + xLength, this.p1.y + yLength);
+        float y = equation.getY(this.p1.x + xLength);
+        if (y / length >= 0) {
+            this.p2 = new Point_(this.p1.x + xLength, y);
+        } else {
+            xLength = -1 * xLength;
+            y = equation.getY(this.p1.x + xLength);
+            this.p2 = new Point_(this.p1.x + xLength, y);
+        }
     }
 
     /**
@@ -50,6 +55,7 @@ public class LineSegment implements Shape {
     public LineSegment(Point_ p1, Point_ p2) {
         this.p1 = new Point_(p1.x, p1.y);
         this.p2 = new Point_(p2.x, p2.y);
+        if (this.p1.x == this.p2.x) this.p2.x += 0.00001f;
         float m = (this.p2.y - this.p1.y) / (this.p2.x - this.p1.x);
         float b = this.p1.y - m*this.p1.x;
         this.equation = new Line(m, b);
@@ -153,7 +159,7 @@ public class LineSegment implements Shape {
      * @param y y coordinate being checked
      * @return x coordinate at the y coordinate
      */
-    public float[] getXatY(int y) {
+    public float[] getXatY(float y) {
         if (!((p1.y > y && y > p2.y) || (p2.y > y && p1.y > y))) return new float[]{-1000};
 
         return new float[]{equation.getX(y)};
@@ -164,7 +170,7 @@ public class LineSegment implements Shape {
      * @param x x coordinate being checked
      * @return y coordinate at the x coordinate
      */
-    public float[] getYatX(int x) {
+    public float[] getYatX(float x) {
         if (!((p1.x > x && x > p2.x) || (p2.x > x && p1.x > x))) return new float[]{-1000};
 
         return new float[]{equation.getY(x)};

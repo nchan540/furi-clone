@@ -22,14 +22,14 @@ public interface Shape {
      * @param y y coordinate being checked
      * @return x coordinate(s) at the y coordinate
      */
-    public float[] getXatY(int y);
+    public float[] getXatY(float y);
 
     /**
      * Gets the y coordinate(s) at an x coordinate
      * @param x x coordinate being checked
      * @return y coordinate(s) at the x coordinate
      */
-    public float[] getYatX(int x);
+    public float[] getYatX(float x);
 
     /**
      * Checks if overlap occurs with a circle
