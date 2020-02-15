@@ -109,6 +109,7 @@ public class App extends JPanel {
         }
         g.setColor(Color.WHITE);
         g.drawString("HP", 30, 50);
+        g.drawString(Long.toString(System.currentTimeMillis() - nextGameTick), 30, 150);
 
         //draw score
         if (player.score > 0) {
