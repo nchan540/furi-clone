@@ -1,4 +1,9 @@
-package app;
+package game;
+import graph.*;
+import projectiles.*;
+import shapes.*;
+import units.*;
+
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -12,7 +17,7 @@ public class Brawler extends Boss {
     public boolean wandering, chasing, attacking, hitPlayer, blink = false;
 
     Brawler(int x, int y, Player p) {
-        super(Constants.Brawler.HEALTH, 0, 1, x, y, 125, 0.5f, p);
+        super(constants.Brawler.HEALTH, 0, 1, x, y, 125, 0.5f, p);
     }
 
     public void update() {
@@ -37,14 +42,14 @@ public class Brawler extends Boss {
             if (attackTime == 0) blink = false;
         }
 
-        if (location.y > Constants.Graphics.HEIGHT - radius + 10) {
-            location.y = Constants.Graphics.HEIGHT - radius + 10; 
+        if (location.y > constants.Display.HEIGHT - radius + 10) {
+            location.y = constants.Display.HEIGHT - radius + 10; 
         }
         if (location.y < radius/2) {
             location.y = radius/2; 
         }
-        if (location.x > Constants.Graphics.WIDTH - radius + 35) {
-            location.x = Constants.Graphics.WIDTH-radius + 35; 
+        if (location.x > constants.Display.WIDTH - radius + 35) {
+            location.x = constants.Display.WIDTH-radius + 35; 
         }
         if (location.x < radius/2) {
             location.x = radius/2; 
@@ -56,17 +61,17 @@ public class Brawler extends Boss {
             if (attackTime > 10) g.setColor(HITBOXCOLOURS[3]);
             else g.setColor(HITBOXCOLOURS[2]);
             
-            if (!(attack == 3)) Constants.drawCircle(g, new Circle(curAttack.hitboxes[0].getLocation(), curAttack.hitboxes[0].getRadius()*2));
+            if (!(attack == 3)) constants.Display.drawCircle(g, new Circle(curAttack.hitboxes[0].getLocation(), curAttack.hitboxes[0].getRadius()*2));
             else {
                 for (LineSegment l : curAttack.hitboxes[0].getLines()) {
                     g2.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-                    Constants.drawLine(g2, l);
+                    constants.Display.drawLine(g2, l);
                 }
-                Constants.drawCircle(g2, new Circle(curAttack.hitboxes[1].getLocation(), curAttack.hitboxes[1].getRadius()*2));
-                Constants.drawCircle(g2, new Circle(curAttack.hitboxes[2].getLocation(), curAttack.hitboxes[2].getRadius()*2));
+                constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[1].getLocation(), curAttack.hitboxes[1].getRadius()*2));
+                constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[2].getLocation(), curAttack.hitboxes[2].getRadius()*2));
             }
         }
-        Constants.drawCircle(g, new Circle(location, getRadius()));
+        constants.Display.drawCircle(g, new Circle(location, getRadius()));
     }
 
     public void wander() {
@@ -79,9 +84,9 @@ public class Brawler extends Boss {
                 dir[0] = (float)(Math.random()-0.5)*5;
                 dir[1] = (float)(Math.random()-0.5)*5;
 
-                if (location.x > Constants.Graphics.WIDTH - radius*3) dir[0] = -1.5f;
+                if (location.x > constants.Display.WIDTH - radius*3) dir[0] = -1.5f;
                 if (location.x < radius*3) dir[0] = 1.5f;
-                if (location.y > Constants.Graphics.HEIGHT - radius*3/2) dir[1] = -1.0f;
+                if (location.y > constants.Display.HEIGHT - radius*3/2) dir[1] = -1.0f;
                 if (location.y < radius*3/2) dir[1] = 1.0f;
 
                 wanderTimer = 150;
@@ -92,7 +97,7 @@ public class Brawler extends Boss {
     }
 
     public void chase() {
-        if (Constants.distanceFormula(location, player.location) < (radius * 3)) {
+        if (Point_.distanceFormula(location, player.location) < (radius * 3)) {
             chasing = true;
             wanderTimer = 0;
         }
@@ -124,16 +129,16 @@ public class Brawler extends Boss {
         wandering = false;
         dir[0] = 0;
         dir[1] = 0;
-        /*if (Math.floor(Math.random() * 3) == 0)  {
+        if (Math.floor(Math.random() * 3) == 0)  {
             blinkAttack();
             attack = 1;
         } else if (Math.floor(Math.random() * 2) == 0) {
             tantrum();
             attack = 2;
-        } else {*/
+        } else {
             lineAttack();
             attack = 3;
-        //}
+        }
     }
 
     public void blinkAttack() {
@@ -147,14 +152,14 @@ public class Brawler extends Boss {
         float newX = location.x + (player.location.x - location.x) * prediction;
         float newY = location.y + (player.location.y - location.y) * prediction;
 
-        if (newY > Constants.Graphics.HEIGHT - radius + 10) {
-            newY = Constants.Graphics.HEIGHT - radius + 10; 
+        if (newY > constants.Display.HEIGHT - radius + 10) {
+            newY = constants.Display.HEIGHT - radius + 10; 
         }
         if (newY < radius/2) {
             newY = radius/2; 
         }
-        if (newX > Constants.Graphics.WIDTH - radius + 35) {
-            newX = Constants.Graphics.WIDTH-radius + 35; 
+        if (newX > constants.Display.WIDTH - radius + 35) {
+            newX = constants.Display.WIDTH-radius + 35; 
         }
         if (newX < radius/2) {
             newX = radius/2; 

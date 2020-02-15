@@ -1,4 +1,6 @@
-package app;
+package game;
+import graph.*;
+import shapes.*;
 
 public class Rectangle implements Shape {
     

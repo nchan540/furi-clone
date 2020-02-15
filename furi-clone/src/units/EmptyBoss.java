@@ -1,9 +1,10 @@
 package units;
+
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-public class EmptyBoss extends Boss{
+public class EmptyBoss extends Boss {
 
     public EmptyBoss(Player p) {
         super(0, 0, 0, -1000, -1000, 0, 0f, p);
