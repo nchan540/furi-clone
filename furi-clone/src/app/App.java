@@ -250,7 +250,7 @@ public class App extends JPanel {
             int s = (int)Math.floor(Math.random() * bosses.length);
             if (avail[s] == 1) {
                 if (s == 0) {
-                    bosses[s] = new Charger(720, 400, player);
+                    bosses[s] = new Brawler(720, 400, player);
                     bosses[s].spawn();
                 } else {
                     bosses[s] = new Brawler(720, 400, player);
@@ -258,7 +258,7 @@ public class App extends JPanel {
                 }
                 avail[s] = 0;
                 for (int c: avail) {
-                    if (c == 1) bossTimer = 900;
+                    if (c == 1) bossTimer = 90000;
                 }
                 return;
             }

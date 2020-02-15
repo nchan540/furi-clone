@@ -42,6 +42,10 @@ public class Constants {
         g.draw(new Line2D.Float(l.p1.x, l.p1.y, l.p2.x, l.p2.y));
     }
 
+    public static void drawLine(java.awt.Graphics g, LineSegment l) {
+        g.drawLine((int)(l.p1.x), (int)(l.p1.y), (int)(l.p2.x), (int)(l.p2.y));
+    }
+
     public static void drawCircle(java.awt.Graphics g, Circle c) {
         g.fillOval(Math.round(c.p1.x - c.diameter/2), Math.round(c.p1.y - c.diameter/2), c.diameter, c.diameter);
     }

@@ -21,7 +21,7 @@ public class Player extends Unit {
     public Point_ tip;
 
     Player(int x, int y, int r) {
-        super (Constants.Player.HEALTH, Constants.Player.HEALTH, Constants.Player.DAMAGE, x, y, r, Constants.Player.SPEED);
+        super (Constants.Player.HEALTH +100, Constants.Player.HEALTH+100, Constants.Player.DAMAGE, x, y, r, Constants.Player.SPEED);
         curAttack.hitboxes = new Circle[5];
     }
 

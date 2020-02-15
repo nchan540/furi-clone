@@ -91,4 +91,8 @@ public class Circle implements Shape {
         coords[1] = (float)(p1.y - Math.sqrt((diameter^2) - (Math.pow((x - p1.x), 2))));
         return coords;
     }
+
+    public LineSegment[] getLines() {
+        return null;
+    }
 }

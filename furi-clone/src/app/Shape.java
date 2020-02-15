@@ -45,4 +45,5 @@ public interface Shape {
      */
     public boolean checkOverlap(LineSegment target);
 
+    public LineSegment[] getLines();
 }
