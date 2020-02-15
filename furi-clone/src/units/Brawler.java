@@ -10,12 +10,15 @@ import java.awt.BasicStroke;
 public class Brawler extends Boss {
 
     public Attack curAttack = new Attack();
+    public int NUM = 1;
     public int wanderTimer = 150;
     public int chaseTime, stunTime, attackTime, attack = 0;
     public boolean wandering, chasing, attacking, hitPlayer, blink = false;
 
     public Brawler(int x, int y, Player p) {
         super(constants.Brawler.HEALTH, 0, 1, x, y, 125, 0.5f, p);
+        alive = true;
+        ID = 1;
     }
 
     public void update() {
@@ -70,6 +73,7 @@ public class Brawler extends Boss {
             }
         }
         g.setColor(HITBOXCOLOURS[2]);
+        if (stunTime > 0 && attackTime == 0) g.setColor(HITBOXCOLOURS[5]);
         constants.Display.drawCircle(g, new Circle(location, getRadius()));
     }
 
@@ -194,5 +198,9 @@ public class Brawler extends Boss {
 
     public String toString() {
         return "The Brawler";
+    }
+
+    public void kill() {
+        alive = false;
     }
 }

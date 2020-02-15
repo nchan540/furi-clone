@@ -8,6 +8,8 @@ public class EmptyBoss extends Boss {
 
     public EmptyBoss(Player p) {
         super(0, 0, 0, -1000, -1000, 0, 0f, p);
+        alive = false;
+        ID = -1;
     }
 
     public void update() {
@@ -20,6 +22,10 @@ public class EmptyBoss extends Boss {
 
     public String toString() {
         return "";
+    }
+
+    public void kill() {
+
     }
 
 }

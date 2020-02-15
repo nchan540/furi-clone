@@ -10,4 +10,6 @@ public abstract class Add extends Unit {
     public void attack() {
 
     }
+
+    public void kill() {}
 }

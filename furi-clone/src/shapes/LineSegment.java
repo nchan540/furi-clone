@@ -25,9 +25,7 @@ public class LineSegment implements Shape {
         float ratio = length / (float)(Math.abs(Math.sqrt(1 + Math.pow(deltaY, 2))));
         // speed / xSpeed = deltaX / ratio
         float xLength = deltaX * ratio;
-        System.out.println(equation.getY(this.p1.x + xLength));
         float y = equation.getY(this.p1.x + xLength);
-        System.out.println(y);
         this.p2 = new Point_(this.p1.x + xLength, y);
     }
 

@@ -39,10 +39,26 @@ public class Circle implements Shape {
      * @return true or false for overlap
      */
     public boolean checkOverlap(LineSegment target) {
-        LineSegment tangent1 = new LineSegment(new Line(-1 / target.equation.m, this.p1), this.p1, this.diameter/2f);
+        /*LineSegment tangent1 = new LineSegment(new Line(-1 / target.equation.m, this.p1), this.p1, this.diameter/2f);
         LineSegment tangent2 = new LineSegment(new Line(-1 / target.equation.m, this.p1), this.p1, -1 * this.diameter/2f);
 
-        return (tangent1.checkOverlap(target)) || (tangent2.checkOverlap(target));
+        return (tangent1.checkOverlap(target)) || (tangent2.checkOverlap(target));*/
+
+        // parameters: ax ay bx by cx cy r
+        float p1x = target.p1.x - p1.x;
+        float p1y = target.p1.y - p1.y;
+        float p2x = target.p2.x - p1.x;
+        float p2y = target.p2.y - p1.y;
+        double a = Math.pow((p2x - p1x), 2) + Math.pow((p2y - p1y),2);
+        float b = 2*(p1x*(p2x - p1x) + p1y*(p2y - p1y));
+        double c = Math.pow(p1x, 2) + Math.pow(p1y, 2) - Math.pow((diameter/2),2);
+        double disc = Math.pow(b, 2) - 4*a*c;
+        if(disc <= 0) return false;
+        double sqrtdisc = Math.sqrt(disc);
+        double t1 = (-b + sqrtdisc)/(2*a);
+        double t2 = (-b - sqrtdisc)/(2*a);
+        if((0 < t1 && t1 < 1) || (0 < t2 && t2 < 1)) return true;
+        return false;
     }
 
     /**

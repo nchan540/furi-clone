@@ -43,7 +43,7 @@ public class App extends JPanel {
     private static final String BACKGROUND = ("Screenshot (85).png");
     
     //dash available, dash unavailable, hit
-    public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127)};
+    public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127), new Color (236, 240, 38, 255), new Color(186, 50, 50, 100)};
     
     //FPS constants
     private static final int FPS = 60;
@@ -57,6 +57,10 @@ public class App extends JPanel {
     //boss info
     public static Boss bosses[] = {new EmptyBoss(player), new EmptyBoss(player)};
     public static int bossTimer = 120;
+    public static int bossSpawn[] = {0, 0};
+    public static int nextBoss = Math.round(Math.round(Math.random() * 2));
+    public static boolean[] bossesAlive = {false, false, false}; //0 = dead, 1 = alive, charger, brawler, laserman
+    
 
     //player input info
     private static HashSet<Integer> keyIn = new HashSet<>();
@@ -68,6 +72,8 @@ public class App extends JPanel {
     public static int placeholderY = 0;
 
     public static final int[][] placeholder = {{KeyEvent.VK_D, 1}, {KeyEvent.VK_W, -1}, {KeyEvent.VK_A, -1}, {KeyEvent.VK_S, 1}};
+    public static boolean game = true;
+    public static boolean restart = true;
 
     public App() {
         setBackground(Color.WHITE);
@@ -165,13 +171,13 @@ public class App extends JPanel {
             } else {
                 g.setColor(HITBOXCOLOURS[2]);
             }
-            g.fillOval(720 - ((int)(Math.pow(bossTimer-30,2) / 2)), 450 - ((int)(Math.pow(bossTimer-30,2) / 2)), (int)(Math.pow(bossTimer-30, 2)), (int)(Math.pow(bossTimer-30,2)));
+            g.fillOval(bossSpawn[0] - ((int)(Math.pow(bossTimer-30,2) / 2)), bossSpawn[1] - ((int)(Math.pow(bossTimer-30,2) / 2)), (int)(Math.pow(bossTimer-30, 2)), (int)(Math.pow(bossTimer-30,2)));
         } else if (bossTimer > 10 && bossTimer <= 30) {
             g.setColor(Color.WHITE);
             int rad = 31 - bossTimer;
-            g.fillOval((int)(720 - rad * 1.5), (int)(450 - rad * 1.5), rad * 3, rad * 3);
+            g.fillOval((int)(bossSpawn[0] - rad * 1.5), (int)(bossSpawn[1] - rad * 1.5), rad * 3, rad * 3);
         } else if (bossTimer <= 10 && bossTimer > 0) {
-            g.fillOval(690, 420, 60, 60);
+            g.fillOval(bossSpawn[0]-30, bossSpawn[1]-30, 60, 60);
         }
     }
 
@@ -183,24 +189,33 @@ public class App extends JPanel {
     }
 
     public static void gameLoop() {
+        //boss spawning
+        if (bossTimer == 0) spawnBoss();  
+        else --bossTimer;
 
         //update units
         player.update();
         if (player.killedBoss) {
-            if (bossTimer == 0) bossTimer = 900;
+            if (player.bossesAlive > 0 && bossTimer == 0) {
+                bossTimer = 900;
+            } else {
+                bossTimer = 120;
+            }
+            for (Unit u : player.killed) {
+                bossesAlive[u.ID] = false;
+            }
             player.killedBoss = false;
         } 
         for (Boss b : bosses) {
-            if (b.hp > 0) b.update();
-            else {
+            if (b.hp > 0) { 
+                b.update();
+            } else { 
                 b.location.x = -100; 
                 b.location.y = -100; 
             }
         }
 
-        //boss spawning
-        if (bossTimer == 0) spawnBoss();  
-        else --bossTimer;
+        
 
         //movement
         for (int i = 0; i < 4; ++i) {
@@ -240,31 +255,38 @@ public class App extends JPanel {
         placeholderY = 0;
     }
 
-    public static void spawnBoss() {
-        boolean spawn = false;
-        int[] avail = new int[bosses.length];
-        for (int i = 0; i < avail.length; i++) {
-            if (bosses[i].hp <= 0) { 
-                avail[i] = 1;
-                spawn = true;
-            } else {
-                avail[i] = 0;
-            }
+    public static void setBossSpawn() {
+        if (nextBoss != 2) {
+            bossSpawn[0] = 720;
+            bossSpawn[1] = 400;
+        } else {
+            bossSpawn[0] = 200;
+            bossSpawn[1] = 200;
         }
-        while (spawn) {
-            int s = (int)Math.floor(Math.random() * bosses.length);
-            if (avail[s] == 1) {
-                if (s == 0) {
-                    bosses[s] = new Laserman(720, 400, player);
-                    bosses[s].spawn();
-                } else {
-                    bosses[s] = new Laserman(720, 400, player);
-                    bosses[s].spawn();
+    }
+
+    public static void spawnBoss() {
+        while (bossesAlive[nextBoss]) {
+            nextBoss = Math.round(Math.round(Math.random() * 2));
+        }
+        for (int i = 0; i < 2; i++) {
+            if (bosses[i].hp <= 0) {
+                if (nextBoss == 0) {
+                    bosses[i] = new Charger(bossSpawn[0], bossSpawn[1], player);
+                    bosses[i].spawn();
+                    bossesAlive[nextBoss] = true;
+                } else if (nextBoss == 1) {
+                    bosses[i] = new Brawler(bossSpawn[0], bossSpawn[1], player);
+                    bosses[i].spawn();
+                    bossesAlive[nextBoss] = true;
+                } else if (nextBoss == 2) {
+                    bosses[i] = new Laserman(bossSpawn[0], bossSpawn[1], player);
+                    bosses[i].spawn();
+                    bossesAlive[nextBoss] = true;
                 }
-                avail[s] = 0;
-                for (int c: avail) {
-                    if (c == 1) bossTimer = 9000;
-                }
+                player.bossesAlive++;
+                setBossSpawn();
+                if (player.bossesAlive != 2) bossTimer = 900;
                 return;
             }
         }
@@ -282,6 +304,9 @@ public class App extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 keyIn.add(e.getKeyCode());
+                if (keyIn.contains(KeyEvent.VK_R)) {
+                    restart = true;
+                }
             }
             
             @Override
@@ -292,10 +317,6 @@ public class App extends JPanel {
             @Override
             public void keyTyped(KeyEvent e) {
                 keyIn.add(e.getKeyCode());
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    player.attack();
-                    System.out.println("pressed");
-                }
             }
         });
 
@@ -338,22 +359,40 @@ public class App extends JPanel {
 
         }
 
-        while (player.hp > 0) {
+        while (game) {
+            try{
+                Thread.sleep(10);
+            }catch(InterruptedException e) {
+
+            }
+            if (restart) {
+                restart();
+            }
+            while (player.hp > 0) {
+
+                setBossSpawn();
+
+                while (player.hp > 0) {
 
 
-            nextGameTick = System.currentTimeMillis();          
+                nextGameTick = System.currentTimeMillis();          
 
-            gameLoop();
-            
-            //graphics, rewriting old surface
-            App panel = new App();
-            window.add(panel, 0);
-            window.setVisible(true);
+                gameLoop();
+                
+                //graphics, rewriting old surface
+                App panel = new App();
+                window.add(panel, 0);
+                window.setVisible(true);
 
-            if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
+                if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
 
-            if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
-        } 
+                if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
+                } 
+            }
+            if (keyIn.contains(KeyEvent.VK_ESCAPE)) {
+                game = false;
+            }
+        }
     }
 
     public static void loadPlayerImage (String read) {
@@ -362,6 +401,18 @@ public class App extends JPanel {
         catch (IOException e) {
             // change image to error image
         }
+    }
+
+    public static void restart() {
+        mouse = new Point(-100, -100);
+        player = new Player(720, 450, 50);
+        bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
+        bossTimer = 120;
+        bossSpawn = new int[]{0, 0};
+        nextBoss = Math.round(Math.round(Math.random() * 2));
+        bossesAlive = new boolean[]{false, false, false};
+        restart = false;
+        keyIn.remove(KeyEvent.VK_R);
     }
 
 }
