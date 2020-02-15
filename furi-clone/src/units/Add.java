@@ -59,25 +59,34 @@ public class Add extends Unit {
     }
 
     public void update() {
-        this.move();
-        this.attack();
+        if (this.alive) {
+            this.move();
+            this.attack();
+        }
 
         for (Bullet b : this.bullets) {
             if (b != null) b.move();
         }
 
-        if (this.hp <= 0) this.kill();
+        if (this.alive && this.hp <= 0) this.kill();
     }
 
-    public void kill() { this.alive = false; }
+    public void kill() {
+        this.alive = false;
+        for (int i = 0; i < bullets.length; ++i) {
+            bullets[i] = null;
+        }
+    }
 
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
-        g.setColor(Color.WHITE);
-        constants.Display.drawCircle(g, new Circle(this.location, this.getRadius()));
-        g.setColor(Color.PINK);
-        for (Bullet b : this.bullets) {
-            if (b != null) {
-                constants.Display.drawCircle(g, b.hitbox);
+        if (this.alive) {
+            g.setColor(Color.WHITE);
+            constants.Display.drawCircle(g, new Circle(this.location, this.getRadius()));
+            g.setColor(Color.PINK);
+            for (Bullet b : this.bullets) {
+                if (b != null) {
+                    constants.Display.drawCircle(g, b.hitbox);
+                }
             }
         }
     }
