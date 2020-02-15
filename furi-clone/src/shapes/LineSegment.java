@@ -151,7 +151,7 @@ public class LineSegment implements Shape {
     public double getArea() { return Point_.distanceFormula(p1, p2); }
     public int getRadius() {return 0;}
     public LineSegment[] getLines() {
-        return null;
+        return new LineSegment[] {this};
     }
 
     /**

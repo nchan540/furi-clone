@@ -62,6 +62,8 @@ public class Brawler extends Boss {
                     g2.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
                     Constants.drawLine(g2, l);
                 }
+                Constants.drawCircle(g2, new Circle(curAttack.hitboxes[1].getLocation(), curAttack.hitboxes[1].getRadius()*2));
+                Constants.drawCircle(g2, new Circle(curAttack.hitboxes[2].getLocation(), curAttack.hitboxes[2].getRadius()*2));
             }
         }
         Constants.drawCircle(g, new Circle(location, getRadius()));
@@ -169,15 +171,15 @@ public class Brawler extends Boss {
 
         Line path = new Line(difY/difX, location);
 
-        Point_ end = new Point_(location.x, location.y);
-        if (difX < 0) {
-            end.x += difX*radius*2f/r;
-            end.y = path.getY(end.x);
-        }
+        Point_ end = new Point_(
+            location.x + difX * radius * 2 / r, 
+            location.y + difY * radius * 2 / r
+        );
 
-        curAttack.hitboxes = new Shape[]{new Rectangle(end, path, (int)radius*3/4*(int)(Math.abs(difX)/difX), (int)radius*2)};
-        System.out.println(Math.abs(difX)/difX);
-
+        curAttack.hitboxes = new Shape[3];
+        curAttack.hitboxes[0] = new Rectangle(location, path, (int)radius/2, (int)radius*2*(int)(Math.abs(difX)/difX));
+        curAttack.hitboxes[1] = new Circle(new Point_(location.x + (end.x - location.x)/4, location.y + (end.y - location.y)/4), (int)(radius/2));
+        curAttack.hitboxes[2] = new Circle(new Point_(location.x + (end.x - location.x)*3/4, location.y + (end.y - location.y)*3/4), (int)(radius/2));
         //Rectangle(Point_ p, Line centre, int width, int length)
     }
 
