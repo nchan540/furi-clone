@@ -38,9 +38,10 @@ public class Circle implements Shape {
      * @return true or false for overlap
      */
     public boolean checkOverlap(LineSegment target) {
-        LineSegment tangent = new LineSegment(new Line(-1 / target.equation.m, this.p1), this.p1, this.diameter/2);
+        LineSegment tangent1 = new LineSegment(new Line(-1 / target.equation.m, this.p1), this.p1, this.diameter/2f);
+        LineSegment tangent2 = new LineSegment(new Line(-1 / target.equation.m, this.p1), this.p1, -1 * this.diameter/2f);
 
-        return (tangent.checkOverlap(target));
+        return (tangent1.checkOverlap(target)) || (tangent2.checkOverlap(target));
     }
 
     /**
