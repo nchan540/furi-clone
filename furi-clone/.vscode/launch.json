@@ -14,7 +14,7 @@
             "type": "java",
             "name": "Debug (Launch)-App<furi-clone>",
             "request": "launch",
-            "mainClass": "app.App",
+            "mainClass": "game.App",
             "projectName": "furi-clone"
         }
     ]

@@ -3,13 +3,15 @@ import graph.*;
 import shapes.*;
 
 public abstract class Projectile {
-    Shape hitbox;
-    float xSpeed;
-    float ySpeed;
-    Line direction;
+    public Shape hitbox;
+    public Shape[] targets;
+    public float xSpeed;
+    public float ySpeed;
+    public Line direction;
 
-    public Projectile(Shape hitbox, float speed, Line direction) {
+    public Projectile(Shape hitbox, Shape[] targets, float speed, Line direction) {
         this.hitbox = hitbox;
+        this.targets = targets;
         
         this.setSpeed(speed, direction);
     }
@@ -38,5 +40,9 @@ public abstract class Projectile {
         this.hitbox.getLocation().y = destination.y;
     }
 
-    public abstract boolean hitDetect(Shape target);
+    public void changeTargets(Shape[] newTargets) {
+        this.targets = newTargets;
+    }
+
+    public abstract boolean[] hitDetect();
 }
