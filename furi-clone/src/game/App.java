@@ -54,6 +54,8 @@ public class App extends JPanel {
     public static Player player = new Player(720, 450, 50);
     public static int[] dashAnim = {0, 0, 0};
 
+    public static Add add = new Add(player, 1, 10, 10, 20, 5);
+
     //boss info
     public static Boss bosses[] = {new EmptyBoss(player), new EmptyBoss(player)};
     public static int bossTimer = 120;
@@ -90,6 +92,7 @@ public class App extends JPanel {
 
         //draw player
         player.draw(g, g2, HITBOXCOLOURS);
+        add.draw(g, g2, HITBOXCOLOURS);
         
         //draw mouse
         g.setColor(HITBOXCOLOURS[2]);
@@ -195,6 +198,7 @@ public class App extends JPanel {
 
         //update units
         player.update();
+        add.update();
         if (player.killedBoss) {
             if (player.bossesAlive > 0 && bossTimer == 0) {
                 bossTimer = 900;
@@ -247,6 +251,13 @@ public class App extends JPanel {
         for (Boss b: bosses) {
             if (Point_.distanceFormula(b.location, player.location) < (b.radius + player.radius)/2) {
                 player.hit();
+            }
+        }
+
+        for (Bullet b : add.bullets) {
+            if (b != null) {
+                b.changeTargets(new Shape[] {new Circle(player.location, (int)(player.radius / 2))});
+                if (b.hitDetect()[0]) player.hit();
             }
         }
 
@@ -406,6 +417,7 @@ public class App extends JPanel {
     public static void restart() {
         mouse = new Point(-100, -100);
         player = new Player(720, 450, 50);
+        add = new Add(player, 1, 10, 10, 20, 5);
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
         bossTimer = 120;
         bossSpawn = new int[]{0, 0};
