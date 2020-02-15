@@ -7,12 +7,12 @@ import java.awt.Color;
 
 public abstract class Unit {
     
-    protected int maxHp;
+    public int maxHp;
     public int hp;
-    protected int dmg;
+    public int dmg;
     public Point_ location;
-    protected float radius;
-    protected float spd;
+    public float radius;
+    public float spd;
 
     public Unit(int maxHp, int hp, int dmg, int x, int y, int radius, float spd) {
         this.maxHp = maxHp;
