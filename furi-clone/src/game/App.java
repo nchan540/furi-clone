@@ -18,7 +18,7 @@ import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.geom.Line2D;
-import java.awt.*;
+import java.awt.Graphics2D;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
