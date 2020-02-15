@@ -69,8 +69,8 @@ public class Rectangle implements Shape {
         System.out.println("2: (" + temp.p2.x + ", " + temp.p2.y + ")");
 
         this.lines[3] = new LineSegment(bL, bR);
-        this.lines[2] = new LineSegment(new Line(centre.m, bR), bR, -1 * length);
-        this.lines[1] = new LineSegment(new Line(centre.m, bL), bL, -1 * length);
+        this.lines[2] = new LineSegment(new Line(centre.m, bR), bR, length);
+        this.lines[1] = new LineSegment(new Line(centre.m, bL), bL, length);
         this.lines[0] = new LineSegment(lines[1].p2, lines[2].p2);
 
         this.points[0] = lines[1].p2;
