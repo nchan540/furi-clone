@@ -27,7 +27,7 @@ public class Player extends Unit {
     public Player(int x, int y, int r) {
         super (constants.Player.HEALTH, constants.Player.HEALTH, constants.Player.DAMAGE, x, y, r, constants.Player.SPEED);
         curAttack.hitboxes = new Circle[5];
-        ID = 999;
+        ID = constants.Player.ID;
     }
 
     public LineSegment[] getAttackGraphic() {

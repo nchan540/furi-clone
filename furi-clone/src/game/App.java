@@ -18,7 +18,7 @@ import javax.swing.WindowConstants;
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.geom.Line2D;
-import java.awt.*;
+import java.awt.Graphics2D;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -53,6 +53,9 @@ public class App extends JPanel {
     //player info
     public static Player player = new Player(720, 450, 50);
     public static int[] dashAnim = {0, 0, 0};
+
+    //add info
+    public static Add[] ads = new Add[constants.Add.NUMADS];
 
     //boss info
     public static Boss bosses[] = {new EmptyBoss(player), new EmptyBoss(player)};
@@ -91,6 +94,7 @@ public class App extends JPanel {
         //draw player
         player.draw(g, g2, HITBOXCOLOURS);
         
+        
         //draw mouse
         g.setColor(HITBOXCOLOURS[2]);
         g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), 20, 20);
@@ -99,6 +103,10 @@ public class App extends JPanel {
         //draw boss
         for (Boss b : bosses) {
                 b.draw(g, g2, HITBOXCOLOURS);
+        }
+
+        for (Add add : ads) {
+            if (add != null) add.draw(g, g2, HITBOXCOLOURS);
         }
 
         //draw blink
@@ -205,7 +213,20 @@ public class App extends JPanel {
                 bossesAlive[u.ID] = false;
             }
             player.killedBoss = false;
-        } 
+        }
+
+        for (Add a : ads) {
+            if (a != null) {
+                a.update();
+                for (Bullet b : a.bullets) {
+                    if (b != null) {
+                        b.changeTargets(new Shape[] {new Circle(player.location, (int)(player.radius / 2))});
+                        if (b.hitDetect()[0]) player.hit();
+                    }
+                }
+            }
+        }
+
         for (Boss b : bosses) {
             if (b.hp > 0) { 
                 b.update();
@@ -240,6 +261,12 @@ public class App extends JPanel {
         if (player.attackFrames > 5 && player.attackFrames <= 10) {
             for (Boss b : bosses) {
                 player.checkAttack(b);
+            }
+            
+            for (Add a : ads) {
+                if (a != null) {
+                    player.checkAttack(a);
+                }
             }
         }
 
@@ -406,6 +433,7 @@ public class App extends JPanel {
     public static void restart() {
         mouse = new Point(-100, -100);
         player = new Player(720, 450, 50);
+        ads[0] = new Add(player, 1, 10, 10, 20, 5);
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
         bossTimer = 120;
         bossSpawn = new int[]{0, 0};
