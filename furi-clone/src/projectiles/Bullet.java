@@ -7,7 +7,7 @@ public class Bullet extends Projectile {
         super(new Circle(x, y, 10), 10, direction);
     }
 
-    public boolean hitDetect(Shape s) {
+    public boolean hitDetect(Shape target) {
         return false;
     }
 }
