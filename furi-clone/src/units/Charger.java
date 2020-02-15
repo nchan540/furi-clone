@@ -14,6 +14,8 @@ public class Charger extends Boss {
 
     public Charger(int x, int y, Player p) {
         super(constants.Charger.HEALTH, 0, 1, x, y, 100, 1f, p);
+        alive = true;
+        ID = 0;
     }
 
     public void update() {
@@ -94,5 +96,9 @@ public class Charger extends Boss {
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
         g.setColor(HITBOXCOLOURS[2]);
         constants.Display.drawCircle(g, new Circle(location, getRadius()));
+    }
+
+    public void kill() {
+        alive = false;
     }
 }

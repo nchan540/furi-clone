@@ -12,10 +12,12 @@ public class Player extends Unit {
 
     float difX, difY, difR;
 
-    public int iFrames, dashTimer, attackFrames, score = 0;
+    public int iFrames, dashTimer, attackFrames, score, bossesAlive = 0;
+    public int upgradeTimer = 0;
     public boolean dramaticPause, dashQueued, killedBoss = false;
     public int[] queueXY = {0, 0};
     public HashSet<Unit> attacked = new HashSet<>();
+    public HashSet<Unit> killed = new HashSet<>();
 
     public Attack curAttack = new Attack();
 
@@ -25,6 +27,7 @@ public class Player extends Unit {
     public Player(int x, int y, int r) {
         super (constants.Player.HEALTH, constants.Player.HEALTH, constants.Player.DAMAGE, x, y, r, constants.Player.SPEED);
         curAttack.hitboxes = new Circle[5];
+        ID = 999;
     }
 
     public LineSegment[] getAttackGraphic() {
@@ -61,7 +64,8 @@ public class Player extends Unit {
 
     public void update() {
         if (iFrames > 0) --iFrames;
-        if (dashTimer > 0) -- dashTimer;
+        if (dashTimer > 0) --  dashTimer;
+        if (upgradeTimer > 0) --upgradeTimer;
         if (location.y > constants.Display.HEIGHT - radius - 15) location.y = constants.Display.HEIGHT - radius - 15;
         if (location.y < radius/2) location.y = radius/2;
         if (location.x > constants.Display.WIDTH - radius + 10) location.x = constants.Display.WIDTH-radius+10;
@@ -72,9 +76,12 @@ public class Player extends Unit {
             if (!attacked.isEmpty()) {
                 for (Unit u : attacked) {
                     if (!u.takeDamage(this.dmg) && u instanceof Boss) {
+                        u.kill();
                         if(hp<3)++hp;
                         ++score;
                         killedBoss = true;
+                        if (u instanceof Boss) killed.add(u);
+                        --bossesAlive;
                     }
                 }
             }
@@ -85,6 +92,7 @@ public class Player extends Unit {
                 dashQueued = false;
             }
             dmg = constants.Player.DAMAGE;
+            upgradeTimer = 0;
         }
     }
 
@@ -92,6 +100,7 @@ public class Player extends Unit {
         if (attackFrames <= 0) {
             spd = 0;
             attackFrames = 30;
+            if (upgradeTimer > 0) dmg *= 3;
         }
     }
 
@@ -103,10 +112,16 @@ public class Player extends Unit {
                 spd = constants.Player.DASH_DISTANCE;
                 move(x, y);
                 spd = prevSpd;
-                if (!(x == 0 && y == 0) && attackFrames > 10)dmg *= 3;
-            } else {
-                dashQueued = true;
-                queueXY = new int[]{x, y};
+                if (!(x == 0 && y == 0)) { 
+                    if (attackFrames > 10) {
+                        dmg *= 3;
+                    } else {
+                        upgradeTimer = 3;
+                    }
+                } else {
+                    dashQueued = true;
+                    queueXY = new int[]{x, y};
+                }
             }
         }
     }
@@ -155,11 +170,17 @@ public class Player extends Unit {
         
         if(iFrames > 0) {
             g.setColor(HITBOXCOLOURS[2]);
+        } else if (upgradeTimer > 0 || dmg > constants.Player.DAMAGE) {
+            g.setColor(HITBOXCOLOURS[4]);
         } else if (dashTimer > 0) {
             g.setColor(HITBOXCOLOURS[1]);
         } else {
             g.setColor(HITBOXCOLOURS[0]);
         }
         constants.Display.drawCircle(g, new Circle(new Point_(getX(), getY()), getRadius()));
+    }
+
+    public void kill() {
+
     }
 }

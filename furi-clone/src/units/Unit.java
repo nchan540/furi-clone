@@ -13,6 +13,7 @@ public abstract class Unit {
     public Point_ location;
     public float radius;
     public float spd;
+    public int ID;
 
     public Unit(int maxHp, int hp, int dmg, int x, int y, int radius, float spd) {
         this.maxHp = maxHp;
@@ -78,4 +79,5 @@ public abstract class Unit {
     }
 
     public abstract void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS);
+    public abstract void kill();
 }
