@@ -7,4 +7,5 @@ public class Player {
     public static final int DASH_DISTANCE = 250;
     public static final int ATTACK_WIDTH = 250;
     public static final int ATTACK_FRAMES = 3;
+    public static final int ID = 999;
 }
