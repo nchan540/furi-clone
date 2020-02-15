@@ -151,4 +151,8 @@ public class Rectangle implements Shape {
     public int getRadius() {
         return 0;
     }
+
+    public LineSegment[] getLines() {
+        return lines;
+    }
 }

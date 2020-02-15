@@ -2,12 +2,13 @@ package app;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.BasicStroke;
 
 public class Brawler extends Boss {
 
     public Attack curAttack = new Attack();
     public int wanderTimer = 150;
-    public int chaseTime, stunTime, attackTime = 0;
+    public int chaseTime, stunTime, attackTime, attack = 0;
     public boolean wandering, chasing, attacking, hitPlayer, blink = false;
 
     Brawler(int x, int y, Player p) {
@@ -24,7 +25,7 @@ public class Brawler extends Boss {
         } else {
             --stunTime;
             if (--attackTime == 10) {
-                this.location = curAttack.hitboxes[0].getLocation();
+                if (attack == 1) this.location = curAttack.hitboxes[0].getLocation();
             }
             if (attackTime > 0 && attackTime <= 10) {
                 if(curAttack.checkHit(new Circle(player.location, player.getRadius()/2)) && !hitPlayer) {
@@ -33,6 +34,7 @@ public class Brawler extends Boss {
                     hitPlayer = true;
                 }
             }
+            if (attackTime == 0) blink = false;
         }
 
         if (location.y > Constants.Graphics.HEIGHT - radius + 10) {
@@ -54,7 +56,13 @@ public class Brawler extends Boss {
             if (attackTime > 10) g.setColor(HITBOXCOLOURS[3]);
             else g.setColor(HITBOXCOLOURS[2]);
             
-            Constants.drawCircle(g, new Circle(curAttack.hitboxes[0].getLocation(), curAttack.hitboxes[0].getRadius()*2));
+            if (!(attack == 3)) Constants.drawCircle(g, new Circle(curAttack.hitboxes[0].getLocation(), curAttack.hitboxes[0].getRadius()*2));
+            else {
+                for (LineSegment l : curAttack.hitboxes[0].getLines()) {
+                    g2.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+                    Constants.drawLine(g2, l);
+                }
+            }
         }
         Constants.drawCircle(g, new Circle(location, getRadius()));
     }
@@ -114,11 +122,16 @@ public class Brawler extends Boss {
         wandering = false;
         dir[0] = 0;
         dir[1] = 0;
-        if (Math.floor(Math.random() * 2) == 0)  {
+        /*if (Math.floor(Math.random() * 3) == 0)  {
             blinkAttack();
-        } else {
+            attack = 1;
+        } else if (Math.floor(Math.random() * 2) == 0) {
             tantrum();
-        }
+            attack = 2;
+        } else {*/
+            lineAttack();
+            attack = 3;
+        //}
     }
 
     public void blinkAttack() {
@@ -150,7 +163,22 @@ public class Brawler extends Boss {
     }
 
     public void lineAttack() {
-        
+        float difX = (player.location.x-this.location.x);
+        float difY = (player.location.y-this.location.y);
+        float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
+
+        Line path = new Line(difY/difX, location);
+
+        Point_ end = new Point_(location.x, location.y);
+        if (difX < 0) {
+            end.x += difX*radius*2f/r;
+            end.y = path.getY(end.x);
+        }
+
+        curAttack.hitboxes = new Shape[]{new Rectangle(end, path, (int)radius*3/4*(int)(Math.abs(difX)/difX), (int)radius*2)};
+        System.out.println(Math.abs(difX)/difX);
+
+        //Rectangle(Point_ p, Line centre, int width, int length)
     }
 
     public void tantrum() {
