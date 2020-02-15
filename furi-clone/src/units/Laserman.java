@@ -13,6 +13,7 @@ public class Laserman extends Boss {
     public Attack[] curAttack;
     public int attackType = 0;
     public int attackDelay = 120;
+    public int rage = 0;
 
     public int wanderTimer = 150;
     public boolean wandering;
@@ -29,7 +30,7 @@ public class Laserman extends Boss {
 
     public void draw(Graphics g, Graphics2D g2, Color[] HITBOXCOLOURS) {
         if (attackTimer > 0) {
-            g2.setStroke(new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+            g2.setStroke(new BasicStroke(40, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
             if (attackType == 1) {
                 if (attackTimer > 25) {
                     g.setColor(HITBOXCOLOURS[3]);
@@ -70,7 +71,7 @@ public class Laserman extends Boss {
                     //set red
                 }
                 for (Attack a : curAttack) {
-                    g2.setStroke(new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+                    g2.setStroke(new BasicStroke(40, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
                     constants.Display.drawLine(g2, a.hitboxes[0].forDrawLaser());
                 }
                 //draw
@@ -94,6 +95,7 @@ public class Laserman extends Boss {
 
     public void update() {
         if (iFrames > 0) --iFrames;
+        if (rage > 0) --rage;
         if (--attackDelay == 0) {
             attack();
         }
@@ -166,7 +168,7 @@ public class Laserman extends Boss {
         } else {
             eightBeam();
         }
-        if (iFrames > 0) attackDelay = 60;
+        if (rage > 0) attackDelay = 50;
         else attackDelay = 120;
     }
 
@@ -187,7 +189,7 @@ public class Laserman extends Boss {
             location.x + difX * radius * 5, 
             location.y + difY * radius * 5
         );
-        return new Rectangle(location, path, 10, 1000*(int)(Math.abs(difX)/difX));
+        return new Rectangle(location, path, 20, 1000*(int)(Math.abs(difX)/difX));
     }
 
     public void eightBeam() {
@@ -218,7 +220,8 @@ public class Laserman extends Boss {
     public boolean takeDamage(int damage) {
         if (iFrames == 0) {
             this.hp -= damage;
-            iFrames = 240;
+            iFrames = 170;
+            rage = 300;
             if (this.hp > this.maxHp) this.hp = this.maxHp;
             hitResponse();
             wanderTimer = 60;

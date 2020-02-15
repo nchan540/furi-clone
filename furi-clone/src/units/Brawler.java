@@ -100,7 +100,7 @@ public class Brawler extends Boss {
     }
 
     public void chase() {
-        if (Point_.distanceFormula(location, player.location) < (radius * 3)) {
+        if (Point_.distanceFormula(location, player.location) < (radius * 5)) {
             chasing = true;
             wanderTimer = 0;
         }
