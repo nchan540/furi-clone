@@ -175,4 +175,9 @@ public class LineSegment implements Shape {
 
         return new float[]{equation.getY(x)};
     }
+
+    public LineSegment forDrawLaser() {
+        return null;
+    }
+    public void setRadius(int add) {}
 }

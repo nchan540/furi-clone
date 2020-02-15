@@ -1,8 +1,6 @@
-package game;
+package units;
 import graph.*;
-import projectiles.*;
 import shapes.*;
-import units.*;
 
 import java.awt.Graphics;
 import java.awt.Color;
@@ -16,7 +14,7 @@ public class Brawler extends Boss {
     public int chaseTime, stunTime, attackTime, attack = 0;
     public boolean wandering, chasing, attacking, hitPlayer, blink = false;
 
-    Brawler(int x, int y, Player p) {
+    public Brawler(int x, int y, Player p) {
         super(constants.Brawler.HEALTH, 0, 1, x, y, 125, 0.5f, p);
     }
 
@@ -71,6 +69,7 @@ public class Brawler extends Boss {
                 constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[2].getLocation(), curAttack.hitboxes[2].getRadius()*2));
             }
         }
+        g.setColor(HITBOXCOLOURS[2]);
         constants.Display.drawCircle(g, new Circle(location, getRadius()));
     }
 

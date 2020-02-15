@@ -255,15 +255,15 @@ public class App extends JPanel {
             int s = (int)Math.floor(Math.random() * bosses.length);
             if (avail[s] == 1) {
                 if (s == 0) {
-                    bosses[s] = new Charger(720, 400, player);
+                    bosses[s] = new Laserman(720, 400, player);
                     bosses[s].spawn();
                 } else {
-                    bosses[s] = new Brawler(720, 400, player);
+                    bosses[s] = new Laserman(720, 400, player);
                     bosses[s].spawn();
                 }
                 avail[s] = 0;
                 for (int c: avail) {
-                    if (c == 1) bossTimer = 900;
+                    if (c == 1) bossTimer = 9000;
                 }
                 return;
             }

@@ -97,4 +97,10 @@ public class Circle implements Shape {
     public LineSegment[] getLines() {
         return null;
     }
+    public void setRadius(int add) {
+        diameter += add;
+    }
+    public LineSegment forDrawLaser() {
+        return null;
+    }
 }

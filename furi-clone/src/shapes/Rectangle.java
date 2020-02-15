@@ -1,6 +1,5 @@
-package game;
+package shapes;
 import graph.*;
-import shapes.*;
 
 public class Rectangle implements Shape {
     
@@ -8,6 +7,8 @@ public class Rectangle implements Shape {
     public LineSegment[] lines = new LineSegment[4];
     // [0] = top left, [1] = top right, [2] = bottom right, [3] = bottom left
     public Point_[] points = new Point_[4];
+
+    public LineSegment forDrawLaser;
 
     /**
      * Constructor for a rectangle
@@ -60,15 +61,12 @@ public class Rectangle implements Shape {
 
     public Rectangle(Point_ p, Line centre, int width, int length) {
         LineSegment mid = new LineSegment(centre, p, length);
+        forDrawLaser = mid;
         // Line for half the rectangle to get bottom right corner
         LineSegment temp = new LineSegment(new Line((-1f / centre.m), p), p, width);
         Point_ bR = temp.p2;
         float x = p.x + (p.x - temp.p2.x);
         Point_ bL = new Point_(x, temp.equation.getY(x)); 
-
-        System.out.println("1: (" + mid.p1.x + ", " + mid.p1.y + ")");
-        System.out.println("2: (" + temp.p2.x + ", " + temp.p2.y + ")");
-
         this.lines[3] = new LineSegment(bL, bR);
         this.lines[2] = new LineSegment(new Line(centre.m, bR), bR, length);
         this.lines[1] = new LineSegment(new Line(centre.m, bL), bL, length);
@@ -78,11 +76,6 @@ public class Rectangle implements Shape {
         this.points[1] = lines[2].p2;
         this.points[2] = bR;
         this.points[3] = bL;
-
-        System.out.println("Top Left: (" + points[0].x + ", " + points[0].y + ")");
-        System.out.println("Top Right: (" + points[1].x + ", " + points[1].y + ")");
-        System.out.println("Bottom Right: (" + points[2].x + ", " + points[2].y + ")");
-        System.out.println("Bottom Left: (" + points[3].x + ", " + points[3].y + ")");
     }
 
     /**
@@ -155,5 +148,11 @@ public class Rectangle implements Shape {
 
     public LineSegment[] getLines() {
         return lines;
+    }
+    public void setRadius(int add) {
+        
+    }
+    public LineSegment forDrawLaser() {
+        return forDrawLaser;
     }
 }

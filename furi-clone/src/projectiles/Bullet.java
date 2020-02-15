@@ -1,7 +1,6 @@
 package projectiles;
 import graph.*;
 import shapes.*;
-import units.*;
 
 public class Bullet extends Projectile {
     public Bullet(float x, float y, Line direction) {
