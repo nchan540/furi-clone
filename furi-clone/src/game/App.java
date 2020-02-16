@@ -334,7 +334,7 @@ public class App extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 keyIn.add(e.getKeyCode());
-                if (keyIn.contains(KeyEvent.VK_R)) {
+                if (keyIn.contains(KeyEvent.VK_R) && player.hp <= 0) {
                     restart = true;
                 }
             }
@@ -399,7 +399,7 @@ public class App extends JPanel {
                 restart();
             }
             while (player.hp > 0) {
-
+                keyIn.remove(KeyEvent.VK_R);
                 setBossSpawn();
 
                 while (player.hp > 0) {
