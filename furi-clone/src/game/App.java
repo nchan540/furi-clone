@@ -43,7 +43,7 @@ public class App extends JPanel {
     public static String currentPlayerSprite;
     public static BufferedImage playerImg;
     public static BufferedImage backgroundImg;
-    private static final String BACKGROUND = ("Screenshot (85).png");
+    private static final String BACKGROUND = ("/Screenshot (85).png");
     
     //dash available, dash unavailable, hit
     public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127), new Color (236, 240, 38, 255), new Color(186, 50, 50, 100)};
@@ -385,9 +385,8 @@ public class App extends JPanel {
         
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
-        File f = new File(BACKGROUND);
         window.setResizable(false);
-        try{backgroundImg = ImageIO.read(f);} 
+        try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
         catch (Exception e){
 
         }
