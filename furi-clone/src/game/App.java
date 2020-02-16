@@ -302,23 +302,23 @@ public class App extends JPanel {
         while (bossesAlive[nextBoss]) {
             nextBoss = Math.round(Math.round(Math.random() * 2));
         }
+        setBossSpawn();
         for (int i = 0; i < 2; i++) {
             if (bosses[i].hp <= 0) {
                 if (nextBoss == 0) {
-                    bosses[i] = new Charger(bossSpawn[0], bossSpawn[1], player);
+                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
                     bosses[i].spawn();
                     bossesAlive[nextBoss] = true;
                 } else if (nextBoss == 1) {
-                    bosses[i] = new Brawler(bossSpawn[0], bossSpawn[1], player);
+                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
                     bosses[i].spawn();
                     bossesAlive[nextBoss] = true;
                 } else if (nextBoss == 2) {
-                    bosses[i] = new Laserman(bossSpawn[0], bossSpawn[1], player);
+                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
                     bosses[i].spawn();
                     bossesAlive[nextBoss] = true;
                 }
                 player.bossesAlive++;
-                setBossSpawn();
                 if (player.bossesAlive != 2) bossTimer = 900;
                 return;
             }
