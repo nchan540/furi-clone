@@ -32,9 +32,11 @@ public class Add extends Unit {
     public void attack() {
         if (this.attackDelay == 0) {
             this.attackDelay = constants.Add.ATTACKDELAY;
-            bullets[bulletAvailable] = new Bullet(new Shape[] {new Circle(target.location, (int)(target.radius / 2))}, new Circle(this.location, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED, new Line(this.location, target.location));
-            if (target.location.x < this.location.x) bullets[bulletAvailable].setSpeed(-constants.Add.BULLETSPEED);
-            if (++bulletAvailable >= 10) bulletAvailable = 0;
+            bullets[bulletAvailable] = new Bullet(new Shape[] {new Circle(target.location, (int)(target.radius / 2))}, 
+                                        new Circle(this.location, Math.round(constants.Display.HEIGHT/constants.Add.BULLETSIZERATIO)),
+                                        constants.Display.HEIGHT / constants.Add.BULLETSPEEDRATIO, new Line(this.location, target.location));
+            if (target.location.x < this.location.x) bullets[bulletAvailable].setSpeed(-constants.Display.HEIGHT / constants.Add.BULLETSPEEDRATIO);
+            if (++bulletAvailable >= constants.Add.MAXBULLETS) bulletAvailable = 0;
         }
         --attackDelay;
     }
@@ -47,7 +49,6 @@ public class Add extends Unit {
         }
     }
 
-    // TODO: Fix jittery movement
     public void move() {
         this.location.x += dir[0]*spd;
         this.location.y += dir[1]*spd;

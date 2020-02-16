@@ -25,7 +25,7 @@ public class Player extends Unit {
     public Point_ tip;
 
     public Player(int x, int y, int r) {
-        super (constants.Player.HEALTH, constants.Player.HEALTH, constants.Player.DAMAGE, x, y, r, constants.Player.SPEED);
+        super (constants.Player.HEALTH, constants.Player.HEALTH, constants.Player.DAMAGE, x, y, r, constants.Display.HEIGHT / constants.Player.SPEEDRATIO);
         curAttack.hitboxes = new Circle[5];
         ID = constants.Player.ID;
     }
@@ -69,7 +69,7 @@ public class Player extends Unit {
                     }
                 }
             }
-            spd = constants.Player.SPEED;
+            spd = constants.Display.HEIGHT / constants.Player.SPEEDRATIO;
             attacked.clear();
             if (dashQueued) {
                 dash(queueXY[0], queueXY[1]);
@@ -93,7 +93,7 @@ public class Player extends Unit {
             if (attackFrames <= 5 || attackFrames >= 10) {
                 dashTimer = 60;
                 float prevSpd = spd;
-                spd = constants.Player.DASH_DISTANCE;
+                spd = constants.Display.HEIGHT / constants.Player.DASH_DISTANCERATIO;
                 move(x, y);
                 spd = prevSpd;
                 if (!(x == 0 && y == 0)) { 

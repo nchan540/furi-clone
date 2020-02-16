@@ -7,8 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
 public class Display {
-    public static final int HEIGHT = 800;
-    public static final int WIDTH = 1440;
+
+    public static float DISPLAYRATIO = 5.0f/9.0f;
+    public static int HEIGHT;
+    public static int WIDTH;
 
     public static final Font FONT = new Font("Arial", Font.ITALIC, 30);
 

@@ -25,7 +25,7 @@ public class Beast extends Boss {
     public int volleying = 0;
 
     public Beast(int x, int y, Player p) {
-        super(constants.Beast.HEALTH, 0, 1, x, y, 80, 1f, p);
+        super(constants.Beast.HEALTH, 0, 1, x, y, Math.round(constants.Display.HEIGHT/constants.Beast.SIZERATIO), constants.Display.HEIGHT / constants.Beast.SPEEDRATIO, p);
     }
 
     public void update() {

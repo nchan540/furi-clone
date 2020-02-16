@@ -13,7 +13,7 @@ public class Charger extends Boss {
     public int bonkTimer = 0;
 
     public Charger(int x, int y, Player p) {
-        super(constants.Charger.HEALTH, 0, 1, x, y, 100, 1f, p);
+        super(constants.Charger.HEALTH, 0, 1, x, y, Math.round(constants.Display.HEIGHT/constants.Charger.SIZERATIO), constants.Display.HEIGHT / constants.Charger.SPEEDRATIO, p);
         alive = true;
         ID = 0;
     }
@@ -24,41 +24,41 @@ public class Charger extends Boss {
 
         if (location.y > constants.Display.HEIGHT - radius + 10) {
             location.y = constants.Display.HEIGHT - radius + 10; 
-            dir[1]  = -dir[1] * constants.Charger.STUNSPD; 
+            dir[1]  = -dir[1] * (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO); 
             if (this.bonked == 0 && bonkTimer == 0) {
-                this.spd = constants.Charger.STUNSPD; 
+                this.spd = (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO); 
                 this.bonkTimer = 60;
             }
             speedUp = 150;
         }
         if (location.y < radius/2) {
             location.y = radius/2; 
-            dir[1]  = -dir[1] * constants.Charger.STUNSPD; 
+            dir[1]  = -dir[1] * (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO); 
             if (this.bonked == 0 && bonkTimer == 0) {
-                this.spd = constants.Charger.STUNSPD; 
+                this.spd = (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO); 
                 this.bonkTimer = 60;
             }
             speedUp = 150;
         }
         if (location.x > constants.Display.WIDTH - radius + 35) {
             location.x = constants.Display.WIDTH-radius + 35; 
-            dir[0] = -dir[0] * constants.Charger.STUNSPD;
+            dir[0] = -dir[0] * (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO);
             if (this.bonked == 0 && bonkTimer == 0) {
-                this.spd = constants.Charger.STUNSPD; 
+                this.spd = (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO); 
                 this.bonkTimer = 60;
             }
             speedUp = 150;
         }
         if (location.x < radius/2) {
             location.x = radius/2; 
-            dir[0] = -dir[0] * constants.Charger.STUNSPD; 
+            dir[0] = -dir[0] * (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO); 
             if (this.bonked == 0 && bonkTimer == 0) {
-                this.spd = constants.Charger.STUNSPD; 
+                this.spd = (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO); 
                 this.bonkTimer = 60;
             }
             speedUp = 150;
         }
-        if (--speedUp <= 0 && this.spd <= 1.8f) {this.spd += constants.Charger.SPEEDUP; speedUp = 150;}
+        if (--speedUp <= 0 && this.spd <= 1.8f) {this.spd += (constants.Display.HEIGHT / constants.Charger.SPEEDUPRATIO); speedUp = 150;}
 
         if (bonkTimer == 60) {
             this.bonked = constants.Charger.STUNTIME + (int)(Math.sqrt(Math.pow(dir[0], 2) + Math.pow(dir[1], 2)) * 20 * spd);
@@ -67,8 +67,8 @@ public class Charger extends Boss {
 
         if (this.bonked > 0) {
             --bonked;
-        } else if (spd == constants.Charger.STUNSPD && this.bonked == 0){
-            spd = 1f;
+        } else if (spd == (constants.Display.HEIGHT / constants.Charger.STUNSPDRATIO) && this.bonked == 0){
+            spd = constants.Display.HEIGHT / constants.Charger.SPEEDRATIO;
         }
         if (bonkTimer > 0) {
             --bonkTimer;

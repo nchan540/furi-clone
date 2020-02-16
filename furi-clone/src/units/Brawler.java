@@ -17,7 +17,7 @@ public class Brawler extends Boss {
     public Point_ blinkedFrom;
 
     public Brawler(int x, int y, Player p) {
-        super(constants.Brawler.HEALTH, 0, 1, x, y, 125, 0.5f, p);
+        super(constants.Brawler.HEALTH, 0, 1, x, y, Math.round(constants.Display.HEIGHT/constants.Brawler.SIZERATIO), constants.Display.HEIGHT / constants.Brawler.SPEEDRATIO, p);
         alive = true;
         ID = 1;
     }

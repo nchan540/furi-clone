@@ -19,7 +19,7 @@ public class Laserman extends Boss {
     public boolean wandering;
 
     public Laserman(int x, int y, Player p) {
-        super(constants.Laserman.HEALTH, 0, 1, x, y, 150, 0.5f, p);
+        super(constants.Laserman.HEALTH, 0, 1, x, y, Math.round(constants.Display.HEIGHT/constants.Laserman.SIZERATIO), constants.Display.HEIGHT / constants.Laserman.SPEEDRATIO, p);
         alive = true;
         ID = 2;
     }

@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import constants.Display;
+import java.awt.Toolkit;
 
 import java.awt.Dimension;
 import java.awt.Color;
@@ -326,6 +327,14 @@ public class App extends JPanel {
     }
 
     public static void main(String[] args) throws Exception {
+        // Get screen height and width for window size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Display.HEIGHT = screenSize.height;
+        Display.WIDTH = screenSize.width;
+
+        if (Display.HEIGHT / Display.DISPLAYRATIO > Display.WIDTH) Display.HEIGHT = Math.round(Display.WIDTH * Display.DISPLAYRATIO);
+        else Display.WIDTH = Math.round(Display.HEIGHT / Display.DISPLAYRATIO);
+
 
         JFrame window = new JFrame("Game");
         window.setCursor(window.getToolkit().createCustomCursor(
@@ -436,13 +445,13 @@ public class App extends JPanel {
     }
 
     public static void spawnAdd() {
-        ads.add(new Add(player, 1, (int)Math.round(Math.random() * 1040) + 200, (int)Math.round(Math.random() * 400) + 200, 40, 0.5f));
+        ads.add(new Add(player, 1, (int)Math.round(Math.random() * 1040) + 200, (int)Math.round(Math.random() * 400) + 200, Math.round(Display.HEIGHT/20), 0.5f));
         addTimer = 400 + (50 * ads.size()) + (int)(Math.random() * 100);
     }
 
     public static void restart() {
         mouse = new Point(-100, -100);
-        player = new Player(720, 450, 50);
+        player = new Player(720, 450, Math.round(Display.HEIGHT/16));
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
         ads.clear();
         bossTimer = 120;
