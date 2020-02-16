@@ -99,7 +99,7 @@ public class App extends JPanel {
         player.draw(g, g2, HITBOXCOLOURS);
         
         
-        //draw mouse
+        //draw mouse5
         g.setColor(HITBOXCOLOURS[2]);
         g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), 20, 20);
         constants.Display.drawCircle(g, new Circle(new Point_(mouse.x, mouse.y), 20));
@@ -319,7 +319,7 @@ public class App extends JPanel {
                     bossesAlive[nextBoss] = true;
                 }
                 player.bossesAlive++;
-                if (player.bossesAlive != 2) bossTimer = 900;
+                if (player.bossesAlive != 2) bossTimer = 90000;
                 return;
             }
         }
