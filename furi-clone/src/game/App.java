@@ -438,7 +438,7 @@ public class App extends JPanel {
 
     public static void spawnAdd() {
         ads.add(new Add(player, 1, (int)Math.round(Math.random() * 1040) + 200, (int)Math.round(Math.random() * 400) + 200, 40, 0.5f));
-        addTimer = 400 + (int)(Math.random() * 100);
+        addTimer = 400 + (50 * ads.size()) + (int)(Math.random() * 100);
     }
 
     public static void restart() {

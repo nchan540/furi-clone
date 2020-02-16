@@ -87,9 +87,13 @@ public class Laserman extends Boss {
                 //draw
             }
         }
-
-        if (iFrames > 0) g.setColor(HITBOXCOLOURS[3]);
-        else g.setColor(HITBOXCOLOURS[2]);
+        if (iFrames > 0) {
+            g.setColor(HITBOXCOLOURS[3]);
+        } else if (rage > 0) {
+            g.setColor(HITBOXCOLOURS[4]);
+        }  else {
+            g.setColor(HITBOXCOLOURS[2]);
+        }
         constants.Display.drawCircle(g, new Circle(location, getRadius()));
     }
 
@@ -219,7 +223,8 @@ public class Laserman extends Boss {
     @Override
     public boolean takeDamage(int damage) {
         if (iFrames == 0) {
-            this.hp -= damage;
+            if (rage > 0) this.hp -= damage * 3 / 2;
+            else this.hp -= damage;
             iFrames = 170;
             rage = 300;
             if (this.hp > this.maxHp) this.hp = this.maxHp;
@@ -240,4 +245,5 @@ public class Laserman extends Boss {
         attackTimer = 0;
         alive = false;
     }
+
 }

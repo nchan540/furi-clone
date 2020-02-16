@@ -106,7 +106,7 @@ public class Player extends Unit {
 
     public void dash(int x, int y) {
         if (dashTimer == 0) {
-            if (attackFrames <= 5 || attackFrames > 10) {
+            if (attackFrames <= 5 || attackFrames >= 10) {
                 dashTimer = 60;
                 float prevSpd = spd;
                 spd = constants.Player.DASH_DISTANCE;
@@ -118,10 +118,10 @@ public class Player extends Unit {
                     } else {
                         upgradeTimer = 3;
                     }
-                } else {
-                    dashQueued = true;
-                    queueXY = new int[]{x, y};
-                }
+                } 
+            } else {
+                dashQueued = true;
+                queueXY = new int[]{x, y};
             }
         }
     }

@@ -21,12 +21,12 @@ public class Charger extends Boss {
     public void update() {
         changeDir();
         move();
+
         if (location.y > constants.Display.HEIGHT - radius + 10) {
             location.y = constants.Display.HEIGHT - radius + 10; 
             dir[1]  = -dir[1] * constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
-                this.bonked = constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;
@@ -36,7 +36,6 @@ public class Charger extends Boss {
             dir[1]  = -dir[1] * constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
-                this.bonked = constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;
@@ -46,7 +45,6 @@ public class Charger extends Boss {
             dir[0] = -dir[0] * constants.Charger.STUNSPD;
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
-                this.bonked = constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;
@@ -56,18 +54,23 @@ public class Charger extends Boss {
             dir[0] = -dir[0] * constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
-                this.bonked = constants.Charger.STUNTIME + (int)spd * 50;
                 this.bonkTimer = 60;
             }
             speedUp = 150;
         }
         if (--speedUp <= 0 && this.spd <= 1.8f) {this.spd += constants.Charger.SPEEDUP; speedUp = 150;}
 
+        if (bonkTimer == 60) {
+            this.bonked = constants.Charger.STUNTIME + (int)(Math.sqrt(Math.pow(dir[0], 2) + Math.pow(dir[1], 2)) * 20 * spd);
+            System.out.println(bonked);
+        }
+
         if (this.bonked > 0) {
             --bonked;
         } else if (spd == constants.Charger.STUNSPD && this.bonked == 0){
             spd = 1f;
-        } else if (bonkTimer > 0) {
+        }
+        if (bonkTimer > 0) {
             --bonkTimer;
         }
     }
@@ -95,10 +98,18 @@ public class Charger extends Boss {
 
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
         g.setColor(HITBOXCOLOURS[2]);
+        if (bonked > 0) g.setColor(HITBOXCOLOURS[4]);
         constants.Display.drawCircle(g, new Circle(location, getRadius()));
     }
 
     public void kill() {
         alive = false;
+    }
+
+    @Override 
+    public boolean takeDamage(int damage) {
+        this.hp -= damage + (bonked / 3);
+        if (this.hp > this.maxHp) this.hp = this.maxHp;
+        return this.hp > 0;
     }
 }

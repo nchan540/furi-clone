@@ -12,8 +12,9 @@ public class Brawler extends Boss {
     public Attack curAttack = new Attack();
     public int NUM = 1;
     public int wanderTimer = 150;
-    public int chaseTime, stunTime, attackTime, attack = 0;
+    public int chaseTime, stunTime, attackTime, attack, blinkAnim = 0;
     public boolean wandering, chasing, attacking, hitPlayer, blink = false;
+    public Point_ blinkedFrom;
 
     public Brawler(int x, int y, Player p) {
         super(constants.Brawler.HEALTH, 0, 1, x, y, 125, 0.5f, p);
@@ -30,17 +31,20 @@ public class Brawler extends Boss {
             if (attacking) attack();
         } else {
             --stunTime;
+            --blinkAnim;
             if (--attackTime == 10) {
                 if (attack == 1) this.location = curAttack.hitboxes[0].getLocation();
             }
             if (attackTime > 0 && attackTime <= 10) {
                 if(curAttack.checkHit(new Circle(player.location, player.getRadius()/2)) && !hitPlayer) {
                     player.hit();
-                    if (blink) {player.takeDamage(1); blink = false;}
+                    if (!hitPlayer && blink) {player.takeDamage(1);}
                     hitPlayer = true;
                 }
             }
-            if (attackTime == 0) blink = false;
+            if (attackTime == 0) {
+                blink = false;
+            }
         }
 
         if (location.y > constants.Display.HEIGHT - radius + 10) {
@@ -71,6 +75,10 @@ public class Brawler extends Boss {
                 constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[1].getLocation(), curAttack.hitboxes[1].getRadius()*2));
                 constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[2].getLocation(), curAttack.hitboxes[2].getRadius()*2));
             }
+        }
+        if (blinkAnim > 0 && blinkAnim <= 6 ) {
+            g.setColor(Color.WHITE);
+            constants.Display.drawCircle(g, new Circle(blinkedFrom, getRadius() * 2 / (7 - blinkAnim)));
         }
         g.setColor(HITBOXCOLOURS[2]);
         if (stunTime > 0 && attackTime == 0) g.setColor(HITBOXCOLOURS[5]);
@@ -168,7 +176,9 @@ public class Brawler extends Boss {
             newX = radius/2; 
         }
 
+        blinkedFrom = new Point_ (location.x, location.y);
         blink = true;
+        blinkAnim = 40;
         curAttack.hitboxes = new Circle[]{new Circle (new Point_(newX, newY),(int)radius/2)};
     }
 

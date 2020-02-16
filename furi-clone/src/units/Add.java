@@ -90,6 +90,7 @@ public class Add extends Unit {
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
         if (this.alive) {
             g.setColor(Color.WHITE);
+            if (attackDelay < 40) g.setColor(Color.RED);
             constants.Display.drawCircle(g, new Circle(this.location, this.getRadius()));
             g.setColor(Color.PINK);
             for (Bullet b : this.bullets) {
