@@ -47,7 +47,6 @@ public class Add extends Unit {
         }
     }
 
-    // TODO: Fix jittery movement
     public void move() {
         this.location.x += dir[0]*spd;
         this.location.y += dir[1]*spd;
