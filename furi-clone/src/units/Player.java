@@ -31,33 +31,17 @@ public class Player extends Unit {
     }
 
     public LineSegment[] getAttackGraphic() {
-        LineSegment tangentAtCentre;
-        Line tangent;
-        LineSegment path;
-        Point_ end, p1, p2;
 
         LineSegment[] attackGraphic = new LineSegment[2];
+        LineSegment path = new LineSegment(location, curAttack.hitboxes[4].getLocation());
         
-        end = curAttack.hitboxes[4].getLocation();
-        path = new LineSegment(location, end);
-        tangent = new Line((-1/path.equation.m), location.y);
-        float rad = radius/2;
+        LineSegment temp = new LineSegment(new Line((-1f / path.equation.m), this.location), this.location, this.radius/2);
+        Point_ bR = temp.p2;
+        float x = this.location.x + (this.location.x - temp.p2.x);
+        Point_ bL = new Point_(x, temp.equation.getY(x)); 
 
-        if (Math.abs(end.x - location.x) > Math.abs(end.y-location.y)) {
-            tangentAtCentre = new LineSegment(tangent.m, location.y, 
-            -(int)(Math.sqrt(Math.pow(rad-10, 2)/(Math.pow(tangent.m, 2)+1))), 
-            +(int)(Math.sqrt(Math.pow(rad-10, 2)/(Math.pow(tangent.m, 2)+1))));
-        } else {
-            tangentAtCentre = new LineSegment(tangent.m, location.y, 
-            tangent.getX((float)(tangent.b-(Math.sqrt((Math.pow(rad-10, 2)*Math.pow(tangent.m, 2))/(Math.pow(tangent.m, 2) + 1))))), 
-            tangent.getX((float)(tangent.b+(Math.sqrt((Math.pow(rad-10, 2)*Math.pow(tangent.m, 2))/(Math.pow(tangent.m, 2) + 1))))));
-        }
-
-        p1 = tangentAtCentre.p1;
-        p2 = tangentAtCentre.p2;
-
-        attackGraphic[0] = new LineSegment (new Point_(location.x + p1.x, p1.y), tip);
-        attackGraphic[1] = new LineSegment (new Point_(location.x + p2.x, p2.y), tip);
+        attackGraphic[0] = new LineSegment (bR, tip);
+        attackGraphic[1] = new LineSegment (bL, tip);
 
         return attackGraphic;
     }
