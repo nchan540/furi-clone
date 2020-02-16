@@ -17,6 +17,8 @@ public class Add extends Unit {
     public int attackDelay;
     public boolean alive;
 
+    public int wanderTimer = 1;
+
     public Add(Unit target, int dmg, int x, int y, int radius, float spd) {
         // Ads die in one hit
         super(constants.Add.HEALTH, constants.Add.HEALTH, dmg, x, y, radius, spd);
@@ -47,6 +49,11 @@ public class Add extends Unit {
 
     // TODO: Fix jittery movement
     public void move() {
+        this.location.x += dir[0]*spd;
+        this.location.y += dir[1]*spd;
+    }
+
+    public void wander() {
         dir[0] = (float)(Math.random()-0.5)*5;
         dir[1] = (float)(Math.random()-0.5)*5;
 
@@ -54,12 +61,14 @@ public class Add extends Unit {
         if (location.x < radius*3) dir[0] = 1.5f;
         if (location.y > constants.Display.HEIGHT - radius*3/2) dir[1] = -1.0f;
         if (location.y < radius*3/2) dir[1] = 1.0f;
-        this.location.x += dir[0]*spd;
-        this.location.y += dir[1]*spd;
     }
 
     public void update() {
         if (this.alive) {
+            if (--wanderTimer == 0) {
+                wanderTimer = 120;
+                wander();
+            }
             this.move();
             this.attack();
         }

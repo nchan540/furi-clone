@@ -116,17 +116,17 @@ public class Rectangle implements Shape {
         return this.checkOverlap(target.p1);
     }
 
-    /**
+    /*/**
      * Checks if overlap occurs with a line segment
      * @param target line segment being checked against
      * @return true or false for overlap
      */
-    public boolean checkOverlap(Shape target) {
+    /*public boolean checkOverlap(Shape target) {
         for (int i = 0; i < lines.length; ++i) {
             if (target.checkOverlap(lines[i])) return true;
         }
         return this.checkOverlap(target.getLocation());
-    }
+    }*/
 
     /**
      * Gets the location of the top left corner

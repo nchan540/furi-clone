@@ -55,7 +55,8 @@ public class App extends JPanel {
     public static int[] dashAnim = {0, 0, 0};
 
     //add info
-    public static Add[] ads = new Add[constants.Add.NUMADS];
+    public static HashSet<Add> ads = new HashSet<Add>();
+    public static int addTimer = 200;
 
     //boss info
     public static Boss bosses[] = {new EmptyBoss(player), new EmptyBoss(player)};
@@ -214,6 +215,8 @@ public class App extends JPanel {
             }
             player.killedBoss = false;
         }
+
+        if (--addTimer == 0) spawnAdd();
 
         for (Add a : ads) {
             if (a != null) {
@@ -430,11 +433,16 @@ public class App extends JPanel {
         }
     }
 
+    public static void spawnAdd() {
+        ads.add(new Add(player, 1, (int)Math.round(Math.random() * 1040) + 200, (int)Math.round(Math.random() * 400) + 200, 40, 0.5f));
+        addTimer = 400 + (int)(Math.random() * 100);
+    }
+
     public static void restart() {
         mouse = new Point(-100, -100);
         player = new Player(720, 450, 50);
-        ads[0] = new Add(player, 1, 10, 10, 20, 5);
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
+        ads.clear();
         bossTimer = 120;
         bossSpawn = new int[]{0, 0};
         nextBoss = Math.round(Math.round(Math.random() * 2));
