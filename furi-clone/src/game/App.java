@@ -15,6 +15,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+
+import constants.Display;
+
 import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.geom.Line2D;
@@ -433,7 +436,10 @@ public class App extends JPanel {
     public static void restart() {
         mouse = new Point(-100, -100);
         player = new Player(720, 450, 50);
-        ads[0] = new Add(player, 1, 10, 10, 20, 5);
+
+        ads = new Add[] {new Add(player, 1, 100, 150, constants.Add.SIZE, 0), new Add(player, 1, 100, Display.HEIGHT - 150, constants.Add.SIZE, 0),
+                            new Add(player, 1, Display.WIDTH - 100, Display.HEIGHT - 150, constants.Add.SIZE, 0), new Add(player, 1, Display.WIDTH - 100, 150, constants.Add.SIZE, 0)};
+
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
         bossTimer = 120;
         bossSpawn = new int[]{0, 0};
