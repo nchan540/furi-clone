@@ -16,11 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import constants.Display;
-
 import java.awt.Dimension;
 import java.awt.Color;
-import java.awt.geom.Line2D;
 import java.awt.Graphics2D;
 
 import java.awt.event.KeyEvent;
@@ -35,9 +32,9 @@ public class App extends JPanel {
 
     //unused right now; graphics system
     private static final long serialVersionUID = 1L;
-    private static final String fileSeparator = System.getProperty("file.separator");
-    private static final String PLAYERIMGPATH = ("playerSprites" + fileSeparator);
-    private static final String png = ".png";
+    // private static final String fileSeparator = System.getProperty("file.separator");
+    // private static final String PLAYERIMGPATH = ("playerSprites" + fileSeparator);
+    // private static final String png = ".png";
 
     //unused right now; graphics system
     public static String currentPlayerSprite;
@@ -72,7 +69,7 @@ public class App extends JPanel {
     //player input info
     private static HashSet<Integer> keyIn = new HashSet<>();
     private static Point mouse = new Point(-100, -100);
-    private static boolean mouseClicked = false;
+    // private static boolean mouseClicked = false;
 
     //player movement info
     public static int placeholderX = 0;
