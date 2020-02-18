@@ -83,8 +83,8 @@ public class Charger extends Boss {
 
             float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
             float[] changeSpeed = new float[]{(difX*spd/r), difY*spd/r};
-            dir[0] += changeSpeed[0]*(0.35 - (spd/15)) ;
-            dir[1] += changeSpeed[1]*(0.35 - (spd/15));
+            dir[0] += changeSpeed[0]*(constants.Display.HEIGHT/2285.7f - (spd/15)) ;
+            dir[1] += changeSpeed[1]*(constants.Display.HEIGHT/2285.7f - (spd/15));
 
             dir[0] *= 0.97;
             dir[1] *= 0.97;

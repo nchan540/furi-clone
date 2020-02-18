@@ -71,7 +71,7 @@ public class Beast extends Boss {
         if (attackTimer > 0) {
             if (dashSequence > 0) {
                 if (dashSequence != 1) {
-                    g2.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+                    g2.setStroke(new BasicStroke(Math.round(constants.Display.HEIGHT/80), BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
                     constants.Display.drawLine(g2, curAttack.hitboxes[0].forDrawLaser());
                 } else {
                     constants.Display.drawCircle(g, new Circle(curAttack.hitboxes[0].getLocation(), curAttack.hitboxes[0].getRadius()*2));
@@ -130,8 +130,8 @@ public class Beast extends Boss {
         float difX = (player.location.x - location.x);
         float difY = (player.location.y - location.y);
         double difR = Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2));
-        difX += (200*difX / difR);
-        difY += (200*difY / difR);
+        difX += (Math.round(constants.Display.HEIGHT/4)*difX / difR);
+        difY += (Math.round(constants.Display.HEIGHT/4)*difY / difR);
         difR = Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2));
         newY += difY;
         newX += difX;

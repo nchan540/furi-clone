@@ -5,6 +5,9 @@ import graph.*;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
+
+import constants.Display;
+
 import java.awt.BasicStroke;
 
 public class Laserman extends Boss {
@@ -193,7 +196,7 @@ public class Laserman extends Boss {
             location.x + difX * radius * 5, 
             location.y + difY * radius * 5
         );
-        return new Rectangle(location, path, 20, 1000*(int)(Math.abs(difX)/difX));
+        return new Rectangle(location, path, 20, Math.round(constants.Display.HEIGHT/constants.Laserman.BEAMRATIO*(Math.abs(difX)/difX)));
     }
 
     public void eightBeam() {
@@ -217,7 +220,7 @@ public class Laserman extends Boss {
         attackType = 3;
         attackTimer = 50;
         curAttack = new Attack[] {new Attack()};
-        curAttack[0].hitboxes = new Shape[]{new Circle(location, 200)};
+        curAttack[0].hitboxes = new Shape[]{new Circle(location, Math.round(constants.Display.HEIGHT/constants.Laserman.EXPLOSIONRATIO))};
     }
 
     @Override

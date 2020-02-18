@@ -21,7 +21,8 @@ public class Player extends Unit {
 
     public Attack curAttack = new Attack();
 
-    public final int[] ATTACK_LENGTHS = {40, 65, 87, 106, 123};
+    public final int[] ATTACK_LENGTHS = {Math.round(constants.Display.HEIGHT/20), Math.round(constants.Display.HEIGHT/12.3f),
+        Math.round(constants.Display.HEIGHT/9.2f), Math.round(constants.Display.HEIGHT/7.55f), Math.round(constants.Display.HEIGHT/6.5f)};
     public Point_ tip;
 
     public Player(int x, int y, int r) {

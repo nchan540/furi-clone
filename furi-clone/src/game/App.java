@@ -55,7 +55,7 @@ public class App extends JPanel {
     private static long nextGameTick;
 
     //player info
-    public static Player player = new Player(720, 450, 50);
+    public static Player player = new Player(Math.round(constants.Display.WIDTH/2), Math.round(constants.Display.HEIGHT/2), Math.round(constants.Display.HEIGHT/16));
     public static int[] dashAnim = {0, 0, 0};
 
     //add info
@@ -102,8 +102,8 @@ public class App extends JPanel {
         
         //draw mouse
         g.setColor(HITBOXCOLOURS[2]);
-        g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), 20, 20);
-        constants.Display.drawCircle(g, new Circle(new Point_(mouse.x, mouse.y), 20));
+        g.fillOval(Math.round(mouse.x-10), Math.round(mouse.y-10), Math.round(constants.Display.HEIGHT/40), Math.round(constants.Display.HEIGHT/40));
+        constants.Display.drawCircle(g, new Circle(new Point_(mouse.x, mouse.y), Math.round(constants.Display.HEIGHT/40)));
 
         //draw boss
         for (Boss b : bosses) {
@@ -123,58 +123,66 @@ public class App extends JPanel {
 
         //draw health
         g.setColor(Color.BLACK);
-        g.fillRect(30, 25, 240, 40);
+        g.fillRect(Math.round(constants.Display.HEIGHT/26.67f), Math.round(constants.Display.HEIGHT/32),
+                Math.round(constants.Display.HEIGHT/3.33f), Math.round(constants.Display.HEIGHT/20));
         g.setColor(Color.GRAY);
-        g.fillRect(20, 20, 240, 40);
+        g.fillRect(Math.round(constants.Display.HEIGHT/40), Math.round(constants.Display.HEIGHT/40),
+                Math.round(constants.Display.HEIGHT/3.33f), Math.round(constants.Display.HEIGHT/20));
         for (int i = player.hp; i > 0; i--) {
             g.setColor(HITBOXCOLOURS[2]);
-            g.fillRect(55*i + 35, 30, 45, 20);
+            g.fillRect(Math.round(constants.Display.HEIGHT/14.55f)*i + Math.round(constants.Display.HEIGHT/22.86f),
+                    Math.round(constants.Display.HEIGHT/26.67f), Math.round(constants.Display.HEIGHT/17.78f),
+                    Math.round(constants.Display.HEIGHT/40));
         }
         g.setColor(Color.WHITE);
-        g.drawString("HP", 30, 50);
+        g.drawString("HP", Math.round(constants.Display.HEIGHT/26.67f), Math.round(constants.Display.HEIGHT/16));
         // g.drawString(Long.toString(System.currentTimeMillis() - nextGameTick), 30, 150);
 
         //draw score
         if (player.score > 0) {
             g.setColor(Color.BLACK);
-            g.fillRect(30, 75, (130 + Integer.toString(player.score).length() * 18), 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/26.67f), Math.round(constants.Display.HEIGHT/10.67f),
+                    (Math.round(constants.Display.HEIGHT/6.15f) + Integer.toString(player.score).length() * Math.round(constants.Display.HEIGHT/44.44f)),
+                    Math.round(constants.Display.HEIGHT/20));
             g.setColor(Color.GRAY);
-            g.fillRect(20, 70, (130 + Integer.toString(player.score).length() * 18), 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/20), Math.round(constants.Display.HEIGHT/11.43f),
+                    (Math.round(constants.Display.HEIGHT/6.15f) + Integer.toString(player.score).length() * Math.round(constants.Display.HEIGHT/44.44f)),
+                    Math.round(constants.Display.HEIGHT/20));
             g.setColor(Color.WHITE);
-            g.drawString("SCORE " + player.score, 28, 101);
+            g.drawString("SCORE " + player.score, Math.round(constants.Display.HEIGHT/28.57f), Math.round(constants.Display.HEIGHT/7.92f));
         }
 
         //draw boss health
             g.setColor(Color.BLACK);
-            g.fillRect(30, 710, 545, 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/26.67f), Math.round(constants.Display.HEIGHT/1.13f), Math.round(constants.Display.HEIGHT/1.47f), Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40));
             g.setColor(Color.GRAY);
-            g.fillRect(20, 705, 545, 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/40), Math.round(constants.Display.HEIGHT/1.13f) + Math.round(constants.Display.HEIGHT/160), Math.round(constants.Display.HEIGHT/1.47f), Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40));
             g.setColor(Color.BLACK);
-            g.fillRect(25, 710, 200, 30);
-            g.fillRect(235, 705, 10, 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/40) + Math.round(constants.Display.HEIGHT/160), Math.round(constants.Display.HEIGHT/1.13f), 200, Math.round(constants.Display.HEIGHT/26.67f));
+            g.fillRect(Math.round(constants.Display.HEIGHT/5.93f), Math.round(constants.Display.HEIGHT/1.13f) + Math.round(constants.Display.HEIGHT/160), Math.round(constants.Display.HEIGHT/80), Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40));
             if (bosses[0].maxHp > 0) {
                 g.setColor(Color.WHITE);
-                g.drawString(bosses[0].toString(), 30, 735);
+                g.drawString(bosses[0].toString(), Math.round(constants.Display.HEIGHT/26.67f), Math.round(constants.Display.HEIGHT/1.088f));
                 g.setColor(Color.BLACK);
-                g.fillRect(255, 710, 300, 30);
+                g.fillRect(Math.round(constants.Display.HEIGHT/3.14f), Math.round(constants.Display.HEIGHT/1.13f), Math.round(constants.Display.HEIGHT/2.67f), Math.round(constants.Display.HEIGHT/26.67f));
                 g.setColor(Color.RED);
-                g.fillRect(255, 710, (int)(300 * ((float)bosses[0].hp / bosses[0].maxHp)), 30);
+                g.fillRect(Math.round(constants.Display.HEIGHT/3.14f), Math.round(constants.Display.HEIGHT/1.13f), (int)(Math.round(constants.Display.HEIGHT/2.67f) * ((float)bosses[0].hp / bosses[0].maxHp)), Math.round(constants.Display.HEIGHT/26.67f));
             }
 
             g.setColor(Color.BLACK);
-            g.fillRect(860, 710, 545, 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/0.94f) + Math.round(constants.Display.HEIGHT/80), Math.round(constants.Display.HEIGHT/1.13f), Math.round(constants.Display.HEIGHT/1.47f), Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40));
             g.setColor(Color.GRAY);
-            g.fillRect(850, 705, 545, 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/0.94f), Math.round(constants.Display.HEIGHT/1.13f) - Math.round(constants.Display.HEIGHT/160), Math.round(constants.Display.HEIGHT/1.47f), Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40));
             g.setColor(Color.BLACK);
-            g.fillRect(855, 710, 200, 30);
-            g.fillRect(1065, 705, 10, 40);
+            g.fillRect(Math.round(constants.Display.HEIGHT/0.94f) + Math.round(constants.Display.HEIGHT/160), Math.round(constants.Display.HEIGHT/1.13f), Math.round(constants.Display.HEIGHT/4), Math.round(constants.Display.HEIGHT/26.67f));
+            g.fillRect(Math.round(constants.Display.HEIGHT/0.75f), Math.round(constants.Display.HEIGHT/1.13f) - Math.round(constants.Display.HEIGHT/160), Math.round(constants.Display.HEIGHT/80), Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40));
             if (bosses[1].maxHp > 0) {
                 g.setColor(Color.WHITE);
-                g.drawString(bosses[1].toString(), 860, 735);
+                g.drawString(bosses[1].toString(), Math.round(constants.Display.HEIGHT/0.94f) + Math.round(constants.Display.HEIGHT/80), Math.round(constants.Display.HEIGHT/1.088f));
                 g.setColor(Color.BLACK);
-                g.fillRect(1085, 710, 300, 30);
+                g.fillRect(Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40), Math.round(constants.Display.HEIGHT/1.13f), Math.round(constants.Display.HEIGHT/2.67f), Math.round(constants.Display.HEIGHT/26.67f));
                 g.setColor(Color.RED);
-                g.fillRect(1085, 710, (int)(300 * ((float)bosses[1].hp / bosses[1].maxHp)), 30);
+                g.fillRect(Math.round(constants.Display.HEIGHT/0.75f) + Math.round(constants.Display.HEIGHT/40), Math.round(constants.Display.HEIGHT/1.13f), (int)(Math.round(constants.Display.HEIGHT/2.67f) * ((float)bosses[1].hp / bosses[1].maxHp)), Math.round(constants.Display.HEIGHT/26.67f));
             }
 
         //draw boss spawning
@@ -190,7 +198,7 @@ public class App extends JPanel {
             int rad = 31 - bossTimer;
             g.fillOval((int)(bossSpawn[0] - rad * 1.5), (int)(bossSpawn[1] - rad * 1.5), rad * 3, rad * 3);
         } else if (bossTimer <= 10 && bossTimer > 0) {
-            g.fillOval(bossSpawn[0]-30, bossSpawn[1]-30, 60, 60);
+            g.fillOval(bossSpawn[0]-Math.round(constants.Display.HEIGHT/26.67f), bossSpawn[1]-Math.round(constants.Display.HEIGHT/26.67f), Math.round(constants.Display.HEIGHT/13.33f), Math.round(constants.Display.HEIGHT/13.33f));
         }
     }
 
@@ -445,13 +453,13 @@ public class App extends JPanel {
     }
 
     public static void spawnAdd() {
-        ads.add(new Add(player, 1, (int)Math.round(Math.random() * 1040) + 200, (int)Math.round(Math.random() * 400) + 200, Math.round(Display.HEIGHT/20), 0.5f));
+        ads.add(new Add(player, 1, (int)Math.round(Math.random() * Math.round(constants.Display.HEIGHT/0.77f)) + Math.round(constants.Display.HEIGHT/4), (int)Math.round(Math.random() * Math.round(constants.Display.HEIGHT/2)) + Math.round(constants.Display.HEIGHT/4), Math.round(Display.HEIGHT/20), Math.round(constants.Display.HEIGHT/1600)));
         addTimer = 400 + (50 * ads.size()) + (int)(Math.random() * 100);
     }
 
     public static void restart() {
         mouse = new Point(-100, -100);
-        player = new Player(720, 450, Math.round(Display.HEIGHT/16));
+        player = new Player(Math.round(constants.Display.WIDTH/2), Math.round(constants.Display.HEIGHT/2), Math.round(constants.Display.HEIGHT/16));
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
         ads.clear();
         bossTimer = 120;
