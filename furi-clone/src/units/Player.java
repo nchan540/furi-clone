@@ -3,6 +3,9 @@ import graph.*;
 import shapes.*;
 
 import java.util.HashSet;
+
+import constants.Display;
+
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -152,12 +155,16 @@ public class Player extends Unit {
             constants.Display.drawLine(g2D, draw[1]);
         }
         
+
+        if (dashTimer > 0) {
+            g.setColor(HITBOXCOLOURS[1]);
+            g2D.setStroke(new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+            g2D.drawRect(0, 0, Display.WIDTH - 8, Display.HEIGHT - 30);
+        }
         if(iFrames > 0) {
             g.setColor(HITBOXCOLOURS[2]);
         } else if (upgradeTimer > 0 || dmg > constants.Player.DAMAGE) {
             g.setColor(HITBOXCOLOURS[4]);
-        } else if (dashTimer > 0) {
-            g.setColor(HITBOXCOLOURS[1]);
         } else {
             g.setColor(HITBOXCOLOURS[0]);
         }

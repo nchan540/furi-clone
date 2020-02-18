@@ -43,7 +43,7 @@ public class App extends JPanel {
     private static final String BACKGROUND = ("/Screenshot (85).png");
     
     //dash available, dash unavailable, hit
-    public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(34, 79, 120, 197), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127), new Color (236, 240, 38, 255), new Color(186, 50, 50, 100)};
+    public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(64, 159, 255, 80), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127), new Color (236, 240, 38, 255), new Color(186, 50, 50, 100)};
     
     //FPS constants
     private static final int FPS = 60;
