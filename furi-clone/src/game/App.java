@@ -62,8 +62,8 @@ public class App extends JPanel {
     public static Boss bosses[] = {new EmptyBoss(player), new EmptyBoss(player)};
     public static int bossTimer = 120;
     public static int bossSpawn[] = {0, 0};
-    public static int nextBoss = Math.round(Math.round(Math.random() * 2));
-    public static boolean[] bossesAlive = {false, false, false}; //0 = dead, 1 = alive, charger, brawler, laserman
+    public static int nextBoss = Math.round(Math.round(Math.random() * 3));
+    public static boolean[] bossesAlive = {false, false, false, false}; //0 = dead, 1 = alive, charger, brawler, laserman
     
 
     //player input info
@@ -213,6 +213,7 @@ public class App extends JPanel {
             for (Unit u : player.killed) {
                 bossesAlive[u.ID] = false;
             }
+            nextBoss = Math.round(Math.round(Math.random() * 3));
             player.killedBoss = false;
         }
 
@@ -296,10 +297,6 @@ public class App extends JPanel {
     }
 
     public static void spawnBoss() {
-        while (bossesAlive[nextBoss]) {
-            nextBoss = Math.round(Math.round(Math.random() * 2));
-        }
-        setBossSpawn();
         for (int i = 0; i < 2; i++) {
             if (bosses[i].hp <= 0) {
                 if (nextBoss == 0) {
@@ -314,9 +311,17 @@ public class App extends JPanel {
                     bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
                     bosses[i].spawn();
                     bossesAlive[nextBoss] = true;
+                } else if (nextBoss == 3) {
+                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
+                    bosses[i].spawn();
+                    bossesAlive[nextBoss] = true;
                 }
+                while (bossesAlive[nextBoss]) {
+                    nextBoss = Math.round(Math.round(Math.random() * 3));
+                }
+                setBossSpawn();
                 player.bossesAlive++;
-                if (player.bossesAlive != 2) bossTimer = 90000;
+                if (player.bossesAlive != 2) bossTimer = 120000;
                 return;
             }
         }
@@ -444,8 +449,8 @@ public class App extends JPanel {
         ads.clear();
         bossTimer = 120;
         bossSpawn = new int[]{0, 0};
-        nextBoss = Math.round(Math.round(Math.random() * 2));
-        bossesAlive = new boolean[]{false, false, false};
+        nextBoss = Math.round(Math.round(Math.random() * 3));
+        bossesAlive = new boolean[]{false, false, false, false};
         restart = false;
         keyIn.remove(KeyEvent.VK_R);
     }
