@@ -43,7 +43,7 @@ public class App extends JPanel {
     private static final String BACKGROUND = ("/Screenshot (85).png");
     
     //dash available, dash unavailable, hit
-    public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(64, 159, 255, 80), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127), new Color (236, 240, 38, 255), new Color(186, 50, 50, 100)};
+    public static final Color[] HITBOXCOLOURS = {new Color(64, 159, 255, 127), new Color(236, 240, 38, 80), new Color(186, 0, 0, 180), new Color(0, 0, 0, 127), new Color (236, 240, 38, 255), new Color(186, 50, 50, 100)};
     
     //FPS constants
     private static final int FPS = 60;
@@ -56,19 +56,19 @@ public class App extends JPanel {
 
     //add info
     public static HashSet<Add> ads = new HashSet<Add>();
-    public static int addTimer = 200;
+    public static int addTimer;
 
     //boss info
-    public static Boss bosses[] = {new EmptyBoss(player), new EmptyBoss(player)};
-    public static int bossTimer = 120;
-    public static int bossSpawn[] = {0, 0};
-    public static int nextBoss = Math.round(Math.round(Math.random() * 3));
-    public static boolean[] bossesAlive = {false, false, false, false}; //0 = dead, 1 = alive, charger, brawler, laserman
+    public static Boss bosses[];
+    public static int bossTimer;
+    public static int bossSpawn[];
+    public static int nextBoss;
+    public static boolean[] bossesAlive; //0 = dead, 1 = alive, charger, brawler, laserman
     
 
     //player input info
     private static HashSet<Integer> keyIn = new HashSet<>();
-    private static Point mouse = new Point(-100, -100);
+    private static Point mouse;
     // private static boolean mouseClicked = false;
 
     //player movement info
@@ -119,9 +119,9 @@ public class App extends JPanel {
 
         //draw health
         g.setColor(Color.BLACK);
-        g.fillRect(30, 25, 240, 40);
+        g.fillRect(30, 25, 350, 40);
         g.setColor(Color.GRAY);
-        g.fillRect(20, 20, 240, 40);
+        g.fillRect(20, 20, 350, 40);
         for (int i = player.hp; i > 0; i--) {
             g.setColor(HITBOXCOLOURS[2]);
             g.fillRect(55*i + 35, 30, 45, 20);
@@ -213,7 +213,7 @@ public class App extends JPanel {
             for (Unit u : player.killed) {
                 bossesAlive[u.ID] = false;
             }
-            nextBoss = Math.round(Math.round(Math.random() * 3));
+            nextBoss = Math.round(Math.round(Math.random() * 2));
             player.killedBoss = false;
         }
 
@@ -299,29 +299,35 @@ public class App extends JPanel {
     public static void spawnBoss() {
         for (int i = 0; i < 2; i++) {
             if (bosses[i].hp <= 0) {
-                if (nextBoss == 0) {
-                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
-                    bosses[i].spawn();
-                    bossesAlive[nextBoss] = true;
-                } else if (nextBoss == 1) {
-                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
-                    bosses[i].spawn();
-                    bossesAlive[nextBoss] = true;
-                } else if (nextBoss == 2) {
-                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
-                    bosses[i].spawn();
-                    bossesAlive[nextBoss] = true;
-                } else if (nextBoss == 3) {
-                    bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
-                    bosses[i].spawn();
-                    bossesAlive[nextBoss] = true;
+                switch(nextBoss) {
+                    case 0:
+                        bosses[i] = new Charger(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    case 1:
+                        bosses[i] = new Brawler(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    case 2:
+                        bosses[i] = new Laserman(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    case 3:
+                        bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    default: break;
                 }
                 while (bossesAlive[nextBoss]) {
-                    nextBoss = Math.round(Math.round(Math.random() * 3));
+                    nextBoss = Math.round(Math.round(Math.random() * 2));
                 }
                 setBossSpawn();
-                player.bossesAlive++;
-                if (player.bossesAlive != 2) bossTimer = 120000;
+                ++player.bossesAlive;
+                if (player.bossesAlive != 2) bossTimer = 1200;
                 return;
             }
         }
@@ -447,9 +453,10 @@ public class App extends JPanel {
         player = new Player(720, 450, 50);
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
         ads.clear();
+        addTimer = 200;
         bossTimer = 120;
         bossSpawn = new int[]{0, 0};
-        nextBoss = Math.round(Math.round(Math.random() * 3));
+        nextBoss = Math.round(Math.round(Math.random() * 2));
         bossesAlive = new boolean[]{false, false, false, false};
         restart = false;
         keyIn.remove(KeyEvent.VK_R);
