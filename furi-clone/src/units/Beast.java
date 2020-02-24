@@ -29,6 +29,8 @@ public class Beast extends Boss {
     public boolean volleyed = false;
     public Bullet[][] bullets = new Bullet[3][constants.Beast.MAXBULLETS];
 
+    public int ID = 3;
+
     public Beast(int x, int y, Player p) {
         super(constants.Beast.HEALTH, 0, 1, x, y, 80, 1f, p);
         for (Bullet[] bulls : bullets) {
@@ -69,6 +71,7 @@ public class Beast extends Boss {
                         this.location = new Point_(dashLocation.x, dashLocation.y);
                     }
                     if (attackTimer == 0) {
+                        attackDelay = 30;
                         hitPlayer = false;
                         curAttack = null;
                     }
@@ -156,7 +159,6 @@ public class Beast extends Boss {
 
     public void tripleDash() {
         if (attackTimer == 0 && --dashSequence == 0) {
-            attackDelay = 60;
             stunTimer = 30;
         } else if (attackTimer == 0) {
             if (dashSequence > 1) {
@@ -165,7 +167,7 @@ public class Beast extends Boss {
                 setDash();
             } else {
                 //blink attack
-                attackTimer = 50;
+                attackTimer = 20;
                 blinkAttack();
             }
         }
@@ -173,15 +175,14 @@ public class Beast extends Boss {
 
     public void volley() {
         if (attackTimer == 0 && --volleying == 0) {
-            attackDelay = 60;
             volleyed = false;
             stunTimer = 30;
         } else if (attackTimer == 0) {
             attackTimer = 10;
             for (int i = 0; i < constants.Beast.MAXBULLETS; i++) {
                 Point_ target = new Point_ (player.location.x + (Math.random() * 100 - 50), player.location.y + (Math.random() * 100 - 50));
-                bullets[volleying - 1][i] = new Bullet(new Shape[] {new Circle(player.location, (int)(player.radius / 2))}, new Circle(this.location, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*3, new Line(this.location, target));
-                if (target.x < this.location.x) bullets[volleying - 1][i].setSpeed(-constants.Add.BULLETSPEED * 3);
+                bullets[volleying - 1][i] = new Bullet(new Shape[] {new Circle(player.location, (int)(player.radius / 2))}, new Circle(this.location, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*Math.round(Math.random()*2+1), new Line(this.location, target));
+                if (target.x < this.location.x) bullets[volleying - 1][i].setSpeed(constants.Add.BULLETSPEED*Math.round(Math.random()*(-2) - 1));
             }
         }
     }
@@ -196,12 +197,11 @@ public class Beast extends Boss {
     }
 
     public void storm() {
-        if (attackTimer == 0 && n() && --stormSequence == 0) {
-            attackDelay = 60;
+        if (attackTimer == 0 && --stormSequence == 0) {
             stunTimer = 30;
         } else if (attackTimer == 0) {
             if (stormSequence == 4) attackTimer = 50;
-            else attackTimer = 25;
+            else attackTimer = 36;
             curAttack = new Attack();
             int set = 0;
             if (stormSequence == 2) {
@@ -212,7 +212,6 @@ public class Beast extends Boss {
                         if (i == -25 || i == 25) curAttack.hitboxes[set] = setBeam(new Point_ (location.x + i + 1, location.y + j*2 + 1));
                         else curAttack.hitboxes[set] = setBeam(new Point_ (location.x + i + 1, location.y + j + 1));
                         set++;
-                        System.out.println(set);
                     }
                 }
             } else {
