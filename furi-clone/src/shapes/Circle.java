@@ -28,8 +28,7 @@ public class Circle implements Shape {
      * @return true or false for overlap
      */
     public boolean checkOverlap(Circle target) {
-        double targetRadius = Math.pow(target.getArea() / Math.PI, 1.0/2);
-        if (this.getDistance(target.p1) <= targetRadius) return true;
+        if (this.getDistance(target.p1) <= target.diameter/2) return true;
         return false;
     }
 
@@ -67,7 +66,7 @@ public class Circle implements Shape {
      * @return distance between the point and the circle's closest point
      */
     public float getDistance(Point_ p) {
-        return (float)(Math.sqrt(Math.pow(this.p1.x - p.x, 2) + Math.pow(this.p1.y-p.y, 2))) - this.diameter;
+        return (float)(Math.sqrt(Math.pow(this.p1.x - p.x, 2) + Math.pow(this.p1.y-p.y, 2))) - this.diameter/2;
     }
 
     /**

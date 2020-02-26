@@ -18,8 +18,8 @@ public abstract class Boss extends Unit {
     public abstract void kill();
 
     public void move() {
-        this.location.x += dir[0]*spd;
-        this.location.y += dir[1]*spd;
+        this.hitbox.p1.x += dir[0]*spd;
+        this.hitbox.p1.y += dir[1]*spd;
     }
 
     public void spawn() {

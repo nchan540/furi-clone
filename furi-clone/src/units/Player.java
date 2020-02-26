@@ -36,11 +36,11 @@ public class Player extends Unit {
     public LineSegment[] getAttackGraphic() {
 
         LineSegment[] attackGraphic = new LineSegment[2];
-        LineSegment path = new LineSegment(location, curAttack.hitboxes[4].getLocation());
+        LineSegment path = new LineSegment(hitbox.p1, curAttack.hitboxes[4].getLocation());
         
-        LineSegment temp = new LineSegment(new Line((-1f / path.equation.m), this.location), this.location, this.radius/2);
+        LineSegment temp = new LineSegment(new Line((-1f / path.equation.m), this.hitbox.p1), this.hitbox.p1, this.hitbox.diameter/2);
         Point_ bR = temp.p2;
-        float x = this.location.x + (this.location.x - temp.p2.x);
+        float x = this.hitbox.p1.x + (this.hitbox.p1.x - temp.p2.x);
         Point_ bL = new Point_(x, temp.equation.getY(x)); 
 
         attackGraphic[0] = new LineSegment (bR, tip);
@@ -53,10 +53,6 @@ public class Player extends Unit {
         if (iFrames > 0) --iFrames;
         if (dashTimer > 0) --  dashTimer;
         if (upgradeTimer > 0) --upgradeTimer;
-        if (location.y > constants.Display.HEIGHT - radius - 15) location.y = constants.Display.HEIGHT - radius - 15;
-        if (location.y < radius/2) location.y = radius/2;
-        if (location.x > constants.Display.WIDTH - radius + 10) location.x = constants.Display.WIDTH-radius+10;
-        if (location.x < radius/2) location.x = radius/2;
 
         setAttack();
         if (attackFrames > 0 && attackFrames-- <= 1) {
@@ -116,8 +112,8 @@ public class Player extends Unit {
     public void setAttack(Point_ p) {
         if (!(Math.abs(p.x - this.getX()) < 1 && Math.abs(p.y-this.getY()) < 1)) {
 
-            difX = (p.x-this.location.x);
-            difY = (p.y-this.location.y);
+            difX = (p.x-this.hitbox.p1.x);
+            difY = (p.y-this.hitbox.p1.y);
             difR = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
 
             
@@ -125,13 +121,13 @@ public class Player extends Unit {
     }
     public void setAttack() {
         for (int i = 0; i < 5; ++i) {
-            curAttack.hitboxes[i] = new Circle(new Point_(location.x + difX * ATTACK_LENGTHS[i] / difR, location.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
-            tip = new Point_(location.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, location.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
+            curAttack.hitboxes[i] = new Circle(new Point_(hitbox.p1.x + difX * ATTACK_LENGTHS[i] / difR, hitbox.p1.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
+            tip = new Point_(hitbox.p1.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, hitbox.p1.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
         }
     }
 
     public boolean checkAttack(Unit enemy) {
-        if (!attacked.contains(enemy) && curAttack.checkHit(new Circle(enemy.location, enemy.getRadius()))) {
+        if (!attacked.contains(enemy) && curAttack.checkHit(new Circle(enemy.hitbox.p1, enemy.getRadius()))) {
             attacked.add(enemy);
             return true;
         }
@@ -143,6 +139,10 @@ public class Player extends Unit {
     }
 
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
+        if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter/2) hitbox.p1.y = constants.Display.HEIGHT - hitbox.diameter/2;
+        if (hitbox.p1.y < hitbox.diameter/2) hitbox.p1.y = hitbox.diameter/2;
+        if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter/2) hitbox.p1.x = constants.Display.WIDTH-hitbox.diameter/2;
+        if (hitbox.p1.x < hitbox.diameter/2) hitbox.p1.x = hitbox.diameter/2;
         if (attackFrames > 0) {
             if (attackFrames > 5 && attackFrames <= 5 + constants.Player.ATTACK_FRAMES) {
                 g.setColor(HITBOXCOLOURS[2]);
@@ -156,11 +156,11 @@ public class Player extends Unit {
         }
         
 
-        if (dashTimer > 0) {
-            g.setColor(HITBOXCOLOURS[1]);
-            g2D.setStroke(new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-            g2D.drawRect(0, 0, Display.WIDTH - 8, Display.HEIGHT - 30);
-        }
+        // if (dashTimer > 0) {
+        //     g.setColor(HITBOXCOLOURS[1]);
+        //     g2D.setStroke(new BasicStroke(20, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+        //     g2D.drawRect(0, 0, Display.WIDTH - 8, Display.HEIGHT - 30);
+        // }
         if(iFrames > 0) {
             g.setColor(HITBOXCOLOURS[2]);
         } else if (upgradeTimer > 0 || dmg > constants.Player.DAMAGE) {
@@ -168,7 +168,7 @@ public class Player extends Unit {
         } else {
             g.setColor(HITBOXCOLOURS[0]);
         }
-        constants.Display.drawCircle(g, new Circle(new Point_(getX(), getY()), getRadius()));
+        constants.Display.drawCircle(g, this.hitbox);
     }
 
     public void kill() {

@@ -32,8 +32,8 @@ public class Add extends Unit {
     public void attack() {
         if (this.attackDelay == 0) {
             this.attackDelay = constants.Add.ATTACKDELAY;
-            bullets[bulletAvailable] = new Bullet(new Shape[] {new Circle(target.location, (int)(target.radius / 2))}, new Circle(this.location, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED, new Line(this.location, target.location));
-            if (target.location.x < this.location.x) bullets[bulletAvailable].setSpeed(-constants.Add.BULLETSPEED);
+            bullets[bulletAvailable] = new Bullet(new Circle[] {target.hitbox}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED, new Line(this.hitbox.p1, target.hitbox.p1));
+            if (target.hitbox.p1.x < this.hitbox.p1.x) bullets[bulletAvailable].setSpeed(-constants.Add.BULLETSPEED);
             if (++bulletAvailable >= 10) bulletAvailable = 0;
         }
         --attackDelay;
@@ -48,18 +48,18 @@ public class Add extends Unit {
     }
 
     public void move() {
-        this.location.x += dir[0]*spd;
-        this.location.y += dir[1]*spd;
+        this.hitbox.p1.x += dir[0]*spd;
+        this.hitbox.p1.y += dir[1]*spd;
     }
 
     public void wander() {
         dir[0] = (float)(Math.random()-0.5)*5;
         dir[1] = (float)(Math.random()-0.5)*5;
 
-        if (location.x > constants.Display.WIDTH - radius*3) dir[0] = -1.5f;
-        if (location.x < radius*3) dir[0] = 1.5f;
-        if (location.y > constants.Display.HEIGHT - radius*3/2) dir[1] = -1.0f;
-        if (location.y < radius*3/2) dir[1] = 1.0f;
+        if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter*3) dir[0] = -1.5f;
+        if (hitbox.p1.x < hitbox.diameter*3) dir[0] = 1.5f;
+        if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter*3/2) dir[1] = -1.0f;
+        if (hitbox.p1.y < hitbox.diameter*3/2) dir[1] = 1.0f;
     }
 
     public void update() {
@@ -90,7 +90,7 @@ public class Add extends Unit {
         if (this.alive) {
             g.setColor(Color.WHITE);
             if (attackDelay < 40) g.setColor(Color.RED);
-            constants.Display.drawCircle(g, new Circle(this.location, this.getRadius()));
+            constants.Display.drawCircle(g, this.hitbox);
             g.setColor(Color.PINK);
             for (Bullet b : this.bullets) {
                 if (b != null) {

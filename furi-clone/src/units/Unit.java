@@ -1,5 +1,6 @@
 package units;
 import graph.*;
+import shapes.*;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,8 +11,7 @@ public abstract class Unit {
     public int maxHp;
     public int hp;
     public int dmg;
-    public Point_ location;
-    public float radius;
+    public Circle hitbox;
     public float spd;
     public int ID;
 
@@ -19,8 +19,7 @@ public abstract class Unit {
         this.maxHp = maxHp;
         this.hp = hp;
         this.dmg = dmg;
-        this.location = new Point_(x, y);
-        this.radius = radius;
+        this.hitbox = new Circle(x, y, radius);
         this.spd = spd;
     }
 
@@ -28,16 +27,16 @@ public abstract class Unit {
         this.maxHp = maxHp;
         this.hp = hp;
         this.dmg = dmg;
-        this.location = new Point_(spawn.x, spawn.y);
-        this.radius = radius;
+        this.hitbox.p1 = new Point_(spawn.x, spawn.y);
+        this.hitbox.diameter = radius;
         this.spd = spd;
     }
 
-    public int getX() { return Math.round(this.location.x); }
+    public int getX() { return Math.round(this.hitbox.p1.x); }
 
-    public int getY() { return Math.round(this.location.y); }
+    public int getY() { return Math.round(this.hitbox.p1.y); }
 
-    public int getRadius() { return Math.round(this.radius); }
+    public int getRadius() { return Math.round(this.hitbox.getRadius()); }
 
     public int getMaxHP() { return this.maxHp; }
     
@@ -63,8 +62,8 @@ public abstract class Unit {
             moveSpd = (float)Math.pow(Math.pow(this.spd, 2) / 2, 0.5);
         }
 
-        this.location.x += moveSpd * moveX;
-        this.location.y += moveSpd * moveY;
+        this.hitbox.p1.x += moveSpd * moveX;
+        this.hitbox.p1.y += moveSpd * moveY;
         return true;
     }
 
