@@ -11,11 +11,14 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
 
+import java.awt.Point;
+
 public class Player extends Unit {
 
     float difX, difY, difR;
+    public int attackType;
 
-    public int iFrames, dashTimer, attackFrames, score, bossesAlive = 0;
+    public int iFrames, dashTimer, attackFrames, score, bossesAlive, energy = 0;
     public int upgradeTimer = 0;
     public boolean dramaticPause, dashQueued, killedBoss = false;
     public int[] queueXY = {0, 0};
@@ -29,7 +32,6 @@ public class Player extends Unit {
 
     public Player(int x, int y, int r) {
         super (constants.Player.HEALTH, 0, constants.Player.DAMAGE, x, y, r, constants.Player.SPEED);
-        curAttack.hitboxes = new Circle[5];
         ID = constants.Player.ID;
     }
 
@@ -58,9 +60,9 @@ public class Player extends Unit {
         if (location.x > constants.Display.WIDTH - radius + 10) location.x = constants.Display.WIDTH-radius+10;
         if (location.x < radius/2) location.x = radius/2;
 
-        setAttack();
         if (attackFrames > 0 && attackFrames-- <= 1) {
             if (!attacked.isEmpty()) {
+                if(attackType == 2) dmg = 5;
                 for (Unit u : attacked) {
                     if (!u.takeDamage(this.dmg) && u instanceof Boss) {
                         u.kill();
@@ -70,6 +72,7 @@ public class Player extends Unit {
                         if (u instanceof Boss) killed.add(u);
                         --bossesAlive;
                     }
+                    if (energy < 20 && attackType != 2) ++energy;
                 }
             }
             spd = constants.Player.SPEED;
@@ -85,6 +88,12 @@ public class Player extends Unit {
 
     public void attack() {
         if (attackFrames <= 0) {
+            if (attackType == 1) {
+                curAttack.hitboxes = new Circle[5];
+            } else {
+                curAttack.hitboxes = new Rectangle[1];
+            }
+            setAttack();
             spd = 0;
             attackFrames = 30;
             if (upgradeTimer > 0) dmg *= 3;
@@ -98,6 +107,7 @@ public class Player extends Unit {
                 float prevSpd = spd;
                 spd = constants.Player.DASH_DISTANCE;
                 move(x, y);
+                setAttack();
                 spd = prevSpd;
                 if (!(x == 0 && y == 0)) { 
                     if (attackFrames > 10) {
@@ -113,7 +123,10 @@ public class Player extends Unit {
         }
     }
 
-    public void setAttack(Point_ p) {
+    //initial declaration of the attack coordinates RELATIVE to player position
+    public void setAttack(Point p, boolean rightClick) {
+        if (rightClick) attackType = 1;
+        else attackType = 2;
         if (!(Math.abs(p.x - this.getX()) < 1 && Math.abs(p.y-this.getY()) < 1)) {
 
             difX = (p.x-this.location.x);
@@ -123,10 +136,19 @@ public class Player extends Unit {
             
         }
     }
+
+
+    //adjusting attack coordinates based on changes in player position
     public void setAttack() {
-        for (int i = 0; i < 5; ++i) {
-            curAttack.hitboxes[i] = new Circle(new Point_(location.x + difX * ATTACK_LENGTHS[i] / difR, location.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
-            tip = new Point_(location.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, location.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
+        if (attackType == 1) {
+            for (int i = 0; i < 5; ++i) {
+                curAttack.hitboxes[i] = new Circle(new Point_(location.x + difX * ATTACK_LENGTHS[i] / difR, location.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
+                tip = new Point_(location.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, location.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
+            }
+        } else {
+            Point_ end = new Point_(location.x + difX, location.y+difY);
+            curAttack.hitboxes[0] = new Rectangle(end, new Line(location, end), 5, -1*Math.round(difR*(Math.abs(difX)/difX)));
+            energy -= 5;
         }
     }
 
@@ -149,10 +171,14 @@ public class Player extends Unit {
             } else {
                 g.setColor(HITBOXCOLOURS[3]);
             }
-            LineSegment[] draw = getAttackGraphic();
             g2D.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
-            constants.Display.drawLine(g2D, draw[0]);
-            constants.Display.drawLine(g2D, draw[1]);
+            if (attackType == 1) {
+                LineSegment[] draw = getAttackGraphic();
+                constants.Display.drawLine(g2D, draw[0]);
+                constants.Display.drawLine(g2D, draw[1]);
+            } else {
+                constants.Display.drawLine(g2D, curAttack.hitboxes[0].forDrawLaser());
+            }
         }
         
 

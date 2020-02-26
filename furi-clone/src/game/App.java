@@ -25,6 +25,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
 
 
 
@@ -128,6 +129,15 @@ public class App extends JPanel {
         }
         g.setColor(Color.WHITE);
         g.drawString("HP", 30, 50);
+
+        //draw laser energy
+        g.setColor(Color.BLACK);
+        g.fillRect(30, 75, 350, 20);
+        g.setColor(Color.GRAY);
+        g.fillRect(20, 70, 350, 20);
+        g.setColor(Color.CYAN);
+        g.fillRect(20, 70, (int)(player.energy * 17.5), 20);
+
         // g.drawString(Long.toString(System.currentTimeMillis() - nextGameTick), 30, 150);
 
         //draw score
@@ -364,8 +374,13 @@ public class App extends JPanel {
         window.addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e)  {
-                if (mouse.getX() > -1 && mouse.getY() > -1 && player.attackFrames == 0) player.setAttack(new Point_(mouse.getX(), mouse.getY()));
-                player.attack();
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    if (mouse.getX() > -1 && mouse.getY() > -1 && player.attackFrames == 0) player.setAttack(mouse, true);
+                    player.attack();
+                } else if (player.energy >= 5) {
+                    player.setAttack(mouse, false);
+                    player.attack();
+                }
             }
             public void mouseExited(MouseEvent e)  {
                 mouse.x = -1000;
