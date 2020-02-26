@@ -77,7 +77,7 @@ public class App extends JPanel {
 
     public static final int[][] placeholder = {{KeyEvent.VK_D, 1}, {KeyEvent.VK_W, -1}, {KeyEvent.VK_A, -1}, {KeyEvent.VK_S, 1}};
     public static boolean game = true;
-    public static boolean restart = true;
+    public static boolean restart = false;
 
     public App() {
         setBackground(Color.WHITE);
@@ -399,6 +399,13 @@ public class App extends JPanel {
 
         }
 
+        App panel = new App();
+        JPanel something = new JPanel();
+        
+        window.add(panel, 0);
+        window.setVisible(true);
+        panel.setVisible(false);
+
         while (game) {
             try{
                 Thread.sleep(10);
@@ -406,7 +413,7 @@ public class App extends JPanel {
 
             }
             if (restart) {
-                restart();
+                restart(panel);
             }
             while (player.hp > 0) {
                 keyIn.remove(KeyEvent.VK_R);
@@ -418,11 +425,7 @@ public class App extends JPanel {
                 nextGameTick = System.currentTimeMillis();          
 
                 gameLoop();
-                
-                //graphics, rewriting old surface
-                App panel = new App();
-                window.add(panel, 0);
-                window.setVisible(true);
+                window.repaint();
 
                 if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
 
@@ -448,9 +451,11 @@ public class App extends JPanel {
         addTimer = 400 + (50 * ads.size()) + (int)(Math.random() * 100);
     }
 
-    public static void restart() {
+    public static void restart(JPanel game) {
+        game.setVisible(true);
         mouse = new Point(-100, -100);
         player = new Player(720, 450, 50);
+        player.hp = constants.Player.HEALTH;
         bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
         ads.clear();
         addTimer = 200;
