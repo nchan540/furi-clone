@@ -22,8 +22,8 @@ public class Charger extends Boss {
         changeDir();
         move();
 
-        if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter + 10) {
-            hitbox.p1.y = constants.Display.HEIGHT - hitbox.diameter + 10; 
+        if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter/2) {
+            hitbox.p1.y = constants.Display.HEIGHT - hitbox.diameter/2; 
             dir[1]  = -dir[1] * constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
@@ -40,8 +40,8 @@ public class Charger extends Boss {
             }
             speedUp = 150;
         }
-        if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter + 35) {
-            hitbox.p1.x = constants.Display.WIDTH-hitbox.diameter + 35; 
+        if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter/2) {
+            hitbox.p1.x = constants.Display.WIDTH-hitbox.diameter/2; 
             dir[0] = -dir[0] * constants.Charger.STUNSPD;
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 

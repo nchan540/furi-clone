@@ -264,14 +264,14 @@ public class Beast extends Boss {
         float newX = hitbox.p1.x + (player.hitbox.p1.x - hitbox.p1.x);
         float newY = hitbox.p1.y + (player.hitbox.p1.y - hitbox.p1.y);
 
-        if (newY > constants.Display.HEIGHT - hitbox.diameter + 10) {
-            newY = constants.Display.HEIGHT - hitbox.diameter + 10; 
+        if (newY > constants.Display.HEIGHT - hitbox.diameter/2) {
+            newY = constants.Display.HEIGHT - hitbox.diameter/2; 
         }
         if (newY < hitbox.diameter/2) {
             newY = hitbox.diameter/2; 
         }
-        if (newX > constants.Display.WIDTH - hitbox.diameter + 35) {
-            newX = constants.Display.WIDTH-hitbox.diameter + 35; 
+        if (newX > constants.Display.WIDTH - hitbox.diameter/2) {
+            newX = constants.Display.WIDTH-hitbox.diameter/2; 
         }
         if (newX < hitbox.diameter/2) {
             newX = hitbox.diameter/2; 

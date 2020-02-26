@@ -77,7 +77,7 @@ public class App extends JPanel {
 
     public static final int[][] placeholder = {{KeyEvent.VK_D, 1}, {KeyEvent.VK_W, -1}, {KeyEvent.VK_A, -1}, {KeyEvent.VK_S, 1}};
     public static boolean game = true;
-    public static boolean restart = false;
+    public static boolean restart = true;
 
     public App() {
         setBackground(Color.WHITE);
