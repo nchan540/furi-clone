@@ -26,7 +26,7 @@ public class Display {
     }
 
     public static void drawCircle(Graphics g, Point_ l, int r) {
-        g.fillOval(Math.round(l.x - r/2), Math.round(l.y - r/2), Math.round(l.x + r/2), Math.round(l.y + r/2));
+        g.fillOval(Math.round(l.x - r/2), Math.round(l.y - r/2), r, r);
     }
 
     public static void drawShape(Graphics g, Graphics2D g2, Shape s) {
