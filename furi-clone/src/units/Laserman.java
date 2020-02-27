@@ -34,7 +34,7 @@ public class Laserman extends Boss {
             if (attackType == 1) {
                 if (attackTimer > 25) {
                     g.setColor(HITBOXCOLOURS[3]);
-                    constants.Display.drawLine(g2, setBeam(player.location).forDrawLaser());
+                    constants.Display.drawLine(g2, setBeam(player.hitbox.p1).forDrawLaser());
                 } else if (attackTimer > 20 && attackTimer < 25) {
                     g.setColor(HITBOXCOLOURS[3]);
                     constants.Display.drawLine(g2, curAttack[0].hitboxes[0].forDrawLaser());
@@ -94,7 +94,7 @@ public class Laserman extends Boss {
         }  else {
             g.setColor(HITBOXCOLOURS[2]);
         }
-        constants.Display.drawCircle(g, new Circle(location, getRadius()));
+        constants.Display.drawCircle(g, this.hitbox);
     }
 
     public void update() {
@@ -108,28 +108,28 @@ public class Laserman extends Boss {
         if (attackTimer != 0) {
             if ((attackType == 1)) {
                 if (attackTimer <= 15 && attackTimer > 10) {
-                    if(curAttack[0].checkHit(new Circle(player.location, player.getRadius()))) {
+                    if(curAttack[0].checkHit(new Circle(player.hitbox.p1, player.getRadius()))) {
                         player.hit();
                     }
                 } else if (attackTimer <= 10 && attackTimer > 5) {
-                    if(curAttack[1].checkHit(new Circle(player.location, player.getRadius()/2))) {
+                    if(curAttack[1].checkHit(new Circle(player.hitbox.p1, player.getRadius()/2))) {
                         player.hit();
                     }
                 } else if (attackTimer <= 5) {
-                    if(curAttack[2].checkHit(new Circle(player.location, player.getRadius()/2)) ) {
+                    if(curAttack[2].checkHit(new Circle(player.hitbox.p1, player.getRadius()/2)) ) {
                         player.hit();
                     }
                 }
             } else if (attackTimer <= 5) {
                 for (Attack a : curAttack) {
-                    if(a.checkHit(new Circle(player.location, player.getRadius()/2))) {
+                    if(a.checkHit(new Circle(player.hitbox.p1, player.getRadius()/2))) {
                         player.hit();
                     }
                 }
             }
             if (attackType == 1) {
                 if (attackTimer == 30 || attackTimer == 25 || attackTimer == 20) {
-                    curAttack[(30-attackTimer)/5].hitboxes = new Shape[]{setBeam(player.location)};
+                    curAttack[(30-attackTimer)/5].hitboxes = new Shape[]{setBeam(player.hitbox.p1)};
                 } 
             } else if (attackType == 3) {
                 if (attackTimer > 5) {
@@ -154,10 +154,10 @@ public class Laserman extends Boss {
                 dir[0] = (float)(Math.random()-0.5)*3;
                 dir[1] = (float)(Math.random()-0.5)*3;
 
-                if (location.x > constants.Display.WIDTH - radius*3) dir[0] = -0.5f;
-                if (location.x < radius*3) dir[0] = 0.3f;
-                if (location.y > constants.Display.HEIGHT - radius*3/2) dir[1] = -0.3f;
-                if (location.y < radius*3/2) dir[1] = 0.3f;
+                if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter*3) dir[0] = -0.5f;
+                if (hitbox.p1.x < hitbox.diameter*3) dir[0] = 0.3f;
+                if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter*3/2) dir[1] = -0.3f;
+                if (hitbox.p1.y < hitbox.diameter*3/2) dir[1] = 0.3f;
 
                 wanderTimer = 150;
             }
@@ -183,17 +183,17 @@ public class Laserman extends Boss {
     }
 
     public Rectangle setBeam(Point_ p) {
-        float difX = (p.x-this.location.x);
-        float difY = (p.y-this.location.y);
-        float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
+        float difX = (p.x-this.hitbox.p1.x);
+        float difY = (p.y-this.hitbox.p1.y);
+        // float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
 
-        Line path = new Line(difY/difX, location);
+        Line path = new Line(difY/difX, hitbox.p1);
 
-        Point_ end = new Point_(
-            location.x + difX * radius * 5, 
-            location.y + difY * radius * 5
-        );
-        return new Rectangle(location, path, 20, 1000*(int)(Math.abs(difX)/difX));
+        // Point_ end = new Point_(
+        //     hitbox.p1.x + difX * hitbox.diameter * 5, 
+        //     hitbox.p1.y + difY * hitbox.diameter * 5
+        // );
+        return new Rectangle(hitbox.p1, path, 20, 1000*(int)(Math.abs(difX)/difX));
     }
 
     public void eightBeam() {
@@ -205,7 +205,7 @@ public class Laserman extends Boss {
             for (int j = -50; j <= 50; j += 50) {
                 if (!(i == 0 && j == 0)) {
                     curAttack[set] = new Attack();
-                    curAttack[set].hitboxes = new Shape[]{setBeam(new Point_ (location.x + i + 1, location.y + j + 1))};
+                    curAttack[set].hitboxes = new Shape[]{setBeam(new Point_ (hitbox.p1.x + i + 1, hitbox.p1.y + j + 1))};
                     set++;
                 }
             }
@@ -217,7 +217,7 @@ public class Laserman extends Boss {
         attackType = 3;
         attackTimer = 50;
         curAttack = new Attack[] {new Attack()};
-        curAttack[0].hitboxes = new Shape[]{new Circle(location, 200)};
+        curAttack[0].hitboxes = new Shape[]{new Circle(hitbox.p1, 200)};
     }
 
     @Override

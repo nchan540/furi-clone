@@ -22,8 +22,8 @@ public class Charger extends Boss {
         changeDir();
         move();
 
-        if (location.y > constants.Display.HEIGHT - radius + 10) {
-            location.y = constants.Display.HEIGHT - radius + 10; 
+        if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter/2) {
+            hitbox.p1.y = constants.Display.HEIGHT - hitbox.diameter/2; 
             dir[1]  = -dir[1] * constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
@@ -31,8 +31,8 @@ public class Charger extends Boss {
             }
             speedUp = 150;
         }
-        if (location.y < radius/2) {
-            location.y = radius/2; 
+        if (hitbox.p1.y < hitbox.diameter/2) {
+            hitbox.p1.y = hitbox.diameter/2; 
             dir[1]  = -dir[1] * constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
@@ -40,8 +40,8 @@ public class Charger extends Boss {
             }
             speedUp = 150;
         }
-        if (location.x > constants.Display.WIDTH - radius + 35) {
-            location.x = constants.Display.WIDTH-radius + 35; 
+        if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter/2) {
+            hitbox.p1.x = constants.Display.WIDTH-hitbox.diameter/2; 
             dir[0] = -dir[0] * constants.Charger.STUNSPD;
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
@@ -49,8 +49,8 @@ public class Charger extends Boss {
             }
             speedUp = 150;
         }
-        if (location.x < radius/2) {
-            location.x = radius/2; 
+        if (hitbox.p1.x < hitbox.diameter/2) {
+            hitbox.p1.x = hitbox.diameter/2; 
             dir[0] = -dir[0] * constants.Charger.STUNSPD; 
             if (this.bonked == 0 && bonkTimer == 0) {
                 this.spd = constants.Charger.STUNSPD; 
@@ -78,8 +78,8 @@ public class Charger extends Boss {
     public void changeDir() {
         if (bonked == 0){
             if (!(Math.abs(player.getX() - this.getX()) < 3 && Math.abs(player.getY()-this.getY()) < 3)) {
-            float difX = (player.location.x-this.location.x);
-            float difY = (player.location.y-this.location.y);
+            float difX = (player.hitbox.p1.x-this.hitbox.p1.x);
+            float difY = (player.hitbox.p1.y-this.hitbox.p1.y);
 
             float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
             float[] changeSpeed = new float[]{(difX*spd/r), difY*spd/r};
@@ -99,7 +99,7 @@ public class Charger extends Boss {
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
         g.setColor(HITBOXCOLOURS[2]);
         if (bonked > 0) g.setColor(HITBOXCOLOURS[4]);
-        constants.Display.drawCircle(g, new Circle(location, getRadius()));
+        constants.Display.drawCircle(g, this.hitbox);
     }
 
     public void kill() {

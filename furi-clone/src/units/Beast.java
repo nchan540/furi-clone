@@ -35,7 +35,7 @@ public class Beast extends Boss {
         super(constants.Beast.HEALTH, 0, 1, x, y, 80, 1f, p);
         for (Bullet[] bulls : bullets) {
             for (Bullet b : bulls) {
-                b = new Bullet(new Shape[] {new Circle(player.location, (int)(player.radius / 2))}, new Circle(this.location, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*2, new Line(this.location, player.location));
+                b = new Bullet(new Shape[] {new Circle(player.hitbox.p1, (int)(player.hitbox.diameter / 2))}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*2, new Line(this.hitbox.p1, player.hitbox.p1));
                 b = null;
             }
         }
@@ -45,7 +45,7 @@ public class Beast extends Boss {
         if (stunTimer <= 0) {
             if (attackTimer == 0) {
                 if (attackDelay > 0) {
-                    location.x += Math.round(((Math.random()*2)-1) * 5);
+                    hitbox.p1.x += Math.round(((Math.random()*2)-1) * 5);
                     chase();
                     move();
                     --attackDelay;
@@ -63,12 +63,12 @@ public class Beast extends Boss {
                 }
 
                 if (((dashSequence > 0 && attackTimer == 0) || attackTimer <= 5) && !volleyed) {
-                    if(curAttack != null && curAttack.checkHit(new Circle(player.location, player.getRadius()/2)) && !hitPlayer) {
+                    if(curAttack != null && curAttack.checkHit(new Circle(player.hitbox.p1, player.getRadius()/2)) && !hitPlayer) {
                         player.hit();
                         hitPlayer = true;
                     }
                     if (dashSequence > 0) {
-                        this.location = new Point_(dashLocation.x, dashLocation.y);
+                        this.hitbox.p1 = new Point_(dashLocation.x, dashLocation.y);
                     }
                     if (attackTimer == 0) {
                         attackDelay = 30;
@@ -87,7 +87,7 @@ public class Beast extends Boss {
             for (Bullet b : bulls) {
                 if (b != null) {
                     b.move();
-                    b.changeTargets(new Shape[] {new Circle(player.location, (int)(player.radius / 2))});
+                    b.changeTargets(new Shape[] {new Circle(player.hitbox.p1, (int)(player.hitbox.diameter / 2))});
                     if(b.hitDetect()[0]) player.hit();
                 }
             }
@@ -126,13 +126,13 @@ public class Beast extends Boss {
 
         g.setColor(HITBOXCOLOURS[2]);
         if (attackTimer > 0 && volleying == 4) g.setColor(Color.GREEN);
-        constants.Display.drawCircle(g, new Circle(this.location, this.getRadius()));
+        constants.Display.drawCircle(g, this.hitbox);
     }
 
 
     public void chase() {
-        float difX = (player.location.x-this.location.x);
-        float difY = (player.location.y-this.location.y);
+        float difX = (player.hitbox.p1.x-this.hitbox.p1.x);
+        float difY = (player.hitbox.p1.y-this.hitbox.p1.y);
 
         float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
         float[] changeSpeed = new float[]{(difX*spd/r), difY*spd/r};
@@ -143,7 +143,7 @@ public class Beast extends Boss {
     public void attack() {
         int a = (int)(Math.random() * 5);
         
-        if (a == 0 || a == 1 || Point_.distanceFormula(player.location, location) > 400) {
+        if (a == 0 || a == 1 || Point_.distanceFormula(player.hitbox.p1, hitbox.p1) > 400) {
             dashSequence = 5;
             tripleDash();
         } else if (a == 2) {
@@ -180,9 +180,9 @@ public class Beast extends Boss {
         } else if (attackTimer == 0) {
             attackTimer = 10;
             for (int i = 0; i < constants.Beast.MAXBULLETS; i++) {
-                Point_ target = new Point_ (player.location.x + (Math.random() * 100 - 50), player.location.y + (Math.random() * 100 - 50));
-                bullets[volleying - 1][i] = new Bullet(new Shape[] {new Circle(player.location, (int)(player.radius / 2))}, new Circle(this.location, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*Math.round(Math.random()*2+1), new Line(this.location, target));
-                if (target.x < this.location.x) bullets[volleying - 1][i].setSpeed(constants.Add.BULLETSPEED*Math.round(Math.random()*(-2) - 1));
+                Point_ target = new Point_ (player.hitbox.p1.x + (Math.random() * 100 - 50), player.hitbox.p1.y + (Math.random() * 100 - 50));
+                bullets[volleying - 1][i] = new Bullet(new Shape[] {new Circle(player.hitbox.p1, (int)(player.hitbox.diameter / 2))}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*Math.round(Math.random()*2+1), new Line(this.hitbox.p1, target));
+                if (target.x < this.hitbox.p1.x) bullets[volleying - 1][i].setSpeed(constants.Add.BULLETSPEED*Math.round(Math.random()*(-2) - 1));
             }
         }
     }
@@ -209,8 +209,8 @@ public class Beast extends Boss {
                 for (int i = -50; i <= 50; i += 25) {
                     if (i == 0) continue;
                     for (int j = -25; j <= 25; j += 50) {
-                        if (i == -25 || i == 25) curAttack.hitboxes[set] = setBeam(new Point_ (location.x + i + 1, location.y + j*2 + 1));
-                        else curAttack.hitboxes[set] = setBeam(new Point_ (location.x + i + 1, location.y + j + 1));
+                        if (i == -25 || i == 25) curAttack.hitboxes[set] = setBeam(new Point_ (hitbox.p1.x + i + 1, hitbox.p1.y + j*2 + 1));
+                        else curAttack.hitboxes[set] = setBeam(new Point_ (hitbox.p1.x + i + 1, hitbox.p1.y + j + 1));
                         set++;
                     }
                 }
@@ -219,7 +219,7 @@ public class Beast extends Boss {
                 for (int i = -50; i <= 50; i += 50) {
                     for (int j = -50; j <= 50; j += 50) {
                         if (!(i == 0 && j == 0)) {
-                            curAttack.hitboxes[set] = setBeam(new Point_ (location.x + i + 1, location.y + j + 1));
+                            curAttack.hitboxes[set] = setBeam(new Point_ (hitbox.p1.x + i + 1, hitbox.p1.y + j + 1));
                             set++;
                         }
                     }
@@ -229,24 +229,24 @@ public class Beast extends Boss {
     }
 
     public Rectangle setBeam(Point_ p) {
-        float difX = (p.x-this.location.x);
-        float difY = (p.y-this.location.y);
+        float difX = (p.x-this.hitbox.p1.x);
+        float difY = (p.y-this.hitbox.p1.y);
         float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
 
-        Line path = new Line(difY/difX, location);
+        Line path = new Line(difY/difX, hitbox.p1);
 
         Point_ end = new Point_(
-            location.x + difX * radius * 5, 
-            location.y + difY * radius * 5
+            hitbox.p1.x + difX * hitbox.diameter * 5, 
+            hitbox.p1.y + difY * hitbox.diameter * 5
         );
-        return new Rectangle(location, path, 30, 1000*(int)(Math.abs(difX)/difX));
+        return new Rectangle(hitbox.p1, path, 30, 1000*(int)(Math.abs(difX)/difX));
     }
 
     public void setDash() {
-        float newX = location.x;
-        float newY = location.y;
-        float difX = (player.location.x - location.x);
-        float difY = (player.location.y - location.y);
+        float newX = hitbox.p1.x;
+        float newY = hitbox.p1.y;
+        float difX = (player.hitbox.p1.x - hitbox.p1.x);
+        float difY = (player.hitbox.p1.y - hitbox.p1.y);
         double difR = Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2));
         difX += (200*difX / difR);
         difY += (200*difY / difR);
@@ -256,31 +256,31 @@ public class Beast extends Boss {
         dashLocation = new Point_ (newX, newY);
 
         curAttack = new Attack();
-        curAttack.hitboxes = new Shape[]{new Rectangle(location, new Line(location, new Point_ (newX, newY)), 5, (int)(difR*(Math.abs(difX)/difX))), new Circle (new Point_(newX, newY),(int)radius/2)};
+        curAttack.hitboxes = new Shape[]{new Rectangle(hitbox.p1, new Line(hitbox.p1, new Point_ (newX, newY)), 5, (int)(difR*(Math.abs(difX)/difX))), new Circle (new Point_(newX, newY),(int)hitbox.diameter/2)};
     }
 
     public void blinkAttack() {
 
-        float newX = location.x + (player.location.x - location.x);
-        float newY = location.y + (player.location.y - location.y);
+        float newX = hitbox.p1.x + (player.hitbox.p1.x - hitbox.p1.x);
+        float newY = hitbox.p1.y + (player.hitbox.p1.y - hitbox.p1.y);
 
-        if (newY > constants.Display.HEIGHT - radius + 10) {
-            newY = constants.Display.HEIGHT - radius + 10; 
+        if (newY > constants.Display.HEIGHT - hitbox.diameter/2) {
+            newY = constants.Display.HEIGHT - hitbox.diameter/2; 
         }
-        if (newY < radius/2) {
-            newY = radius/2; 
+        if (newY < hitbox.diameter/2) {
+            newY = hitbox.diameter/2; 
         }
-        if (newX > constants.Display.WIDTH - radius + 35) {
-            newX = constants.Display.WIDTH-radius + 35; 
+        if (newX > constants.Display.WIDTH - hitbox.diameter/2) {
+            newX = constants.Display.WIDTH-hitbox.diameter/2; 
         }
-        if (newX < radius/2) {
-            newX = radius/2; 
+        if (newX < hitbox.diameter/2) {
+            newX = hitbox.diameter/2; 
         }
 
-        blinkedFrom = new Point_ (location.x, location.y);
+        blinkedFrom = new Point_ (hitbox.p1.x, hitbox.p1.y);
         blinkAnim = 50;
         dashLocation = new Point_(newX, newY);
-        curAttack.hitboxes = new Circle[]{new Circle (new Point_(newX, newY),(int)radius*3/2)};
+        curAttack.hitboxes = new Circle[]{new Circle (new Point_(newX, newY),(int)hitbox.diameter*3/2)};
     }
 
     public void kill() {

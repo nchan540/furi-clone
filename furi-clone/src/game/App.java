@@ -78,7 +78,7 @@ public class App extends JPanel {
 
     public static final int[][] placeholder = {{KeyEvent.VK_D, 1}, {KeyEvent.VK_W, -1}, {KeyEvent.VK_A, -1}, {KeyEvent.VK_S, 1}};
     public static boolean game = true;
-    public static boolean restart = false;
+    public static boolean restart = true;
 
     public App() {
         setBackground(Color.WHITE);
@@ -234,7 +234,6 @@ public class App extends JPanel {
                 a.update();
                 for (Bullet b : a.bullets) {
                     if (b != null) {
-                        b.changeTargets(new Shape[] {new Circle(player.location, (int)(player.radius / 2))});
                         if (b.hitDetect()[0]) player.hit();
                     }
                 }
@@ -245,8 +244,8 @@ public class App extends JPanel {
             if (b.hp > 0) { 
                 b.update();
             } else { 
-                b.location.x = -100; 
-                b.location.y = -100; 
+                b.hitbox.p1.x = -100; 
+                b.hitbox.p1.y = -100; 
             }
         }
 
@@ -286,7 +285,7 @@ public class App extends JPanel {
 
         //check player hit by boss (collision)
         for (Boss b: bosses) {
-            if (Point_.distanceFormula(b.location, player.location) < (b.radius + player.radius)/2) {
+            if (Point_.distanceFormula(b.hitbox.p1, player.hitbox.p1) < (b.hitbox.diameter + player.hitbox.diameter)/2) {
                 player.hit();
             }
         }
@@ -409,6 +408,7 @@ public class App extends JPanel {
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
         window.setResizable(false);
+        window.setUndecorated(true);
         try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
         catch (Exception e){
 

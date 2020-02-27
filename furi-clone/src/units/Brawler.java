@@ -33,10 +33,10 @@ public class Brawler extends Boss {
             --stunTime;
             --blinkAnim;
             if (--attackTime == 10) {
-                if (attack == 1) this.location = curAttack.hitboxes[0].getLocation();
+                if (attack == 1) this.hitbox.p1 = curAttack.hitboxes[0].getLocation();
             }
             if (attackTime > 0 && attackTime <= 10) {
-                if(curAttack.checkHit(new Circle(player.location, player.getRadius()/2)) && !hitPlayer) {
+                if(curAttack.checkHit(new Circle(player.hitbox.p1, player.getRadius()/2)) && !hitPlayer) {
                     player.hit();
                     if (!hitPlayer && blink) {player.takeDamage(1);}
                     hitPlayer = true;
@@ -47,17 +47,17 @@ public class Brawler extends Boss {
             }
         }
 
-        if (location.y > constants.Display.HEIGHT - radius + 10) {
-            location.y = constants.Display.HEIGHT - radius + 10; 
+        if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter/2) {
+            hitbox.p1.y = constants.Display.HEIGHT - hitbox.diameter/2; 
         }
-        if (location.y < radius/2) {
-            location.y = radius/2; 
+        if (hitbox.p1.y < hitbox.diameter/2) {
+            hitbox.p1.y = hitbox.diameter/2; 
         }
-        if (location.x > constants.Display.WIDTH - radius + 35) {
-            location.x = constants.Display.WIDTH-radius + 35; 
+        if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter/2) {
+            hitbox.p1.x = constants.Display.WIDTH-hitbox.diameter/2; 
         }
-        if (location.x < radius/2) {
-            location.x = radius/2; 
+        if (hitbox.p1.x < hitbox.diameter/2) {
+            hitbox.p1.x = hitbox.diameter/2; 
         }
     }
 
@@ -82,7 +82,7 @@ public class Brawler extends Boss {
         }
         g.setColor(HITBOXCOLOURS[2]);
         if (stunTime > 0 && attackTime == 0) g.setColor(HITBOXCOLOURS[5]);
-        constants.Display.drawCircle(g, new Circle(location, getRadius()));
+        constants.Display.drawCircle(g, this.hitbox);
     }
 
     public void wander() {
@@ -95,10 +95,10 @@ public class Brawler extends Boss {
                 dir[0] = (float)(Math.random()-0.5)*5;
                 dir[1] = (float)(Math.random()-0.5)*5;
 
-                if (location.x > constants.Display.WIDTH - radius*3) dir[0] = -1.5f;
-                if (location.x < radius*3) dir[0] = 1.5f;
-                if (location.y > constants.Display.HEIGHT - radius*3/2) dir[1] = -1.0f;
-                if (location.y < radius*3/2) dir[1] = 1.0f;
+                if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter*3) dir[0] = -1.5f;
+                if (hitbox.p1.x < hitbox.diameter*3) dir[0] = 1.5f;
+                if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter*3/2) dir[1] = -1.0f;
+                if (hitbox.p1.y < hitbox.diameter*3/2) dir[1] = 1.0f;
 
                 wanderTimer = 150;
             }
@@ -108,7 +108,7 @@ public class Brawler extends Boss {
     }
 
     public void chase() {
-        if (Point_.distanceFormula(location, player.location) < (radius * 5)) {
+        if (Point_.distanceFormula(hitbox.p1, player.hitbox.p1) < (hitbox.diameter * 5)) {
             chasing = true;
             wanderTimer = 0;
         }
@@ -116,8 +116,8 @@ public class Brawler extends Boss {
 
     public void chasing() {
         if (!(Math.abs(player.getX() - this.getX()) < 3 && Math.abs(player.getY()-this.getY()) < 3)) {
-            float difX = (player.location.x-this.location.x);
-            float difY = (player.location.y-this.location.y);
+            float difX = (player.hitbox.p1.x-this.hitbox.p1.x);
+            float difY = (player.hitbox.p1.y-this.hitbox.p1.y);
 
             float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
             float[] changeSpeed = new float[]{(difX*spd/r), difY*spd/r};
@@ -160,49 +160,49 @@ public class Brawler extends Boss {
             prediction = 1f;
         }
 
-        float newX = location.x + (player.location.x - location.x) * prediction;
-        float newY = location.y + (player.location.y - location.y) * prediction;
+        float newX = hitbox.p1.x + (player.hitbox.p1.x - hitbox.p1.x) * prediction;
+        float newY = hitbox.p1.y + (player.hitbox.p1.y - hitbox.p1.y) * prediction;
 
-        if (newY > constants.Display.HEIGHT - radius + 10) {
-            newY = constants.Display.HEIGHT - radius + 10; 
+        if (newY > constants.Display.HEIGHT - hitbox.diameter/2) {
+            newY = constants.Display.HEIGHT - hitbox.diameter/2; 
         }
-        if (newY < radius/2) {
-            newY = radius/2; 
+        if (newY < hitbox.diameter/2) {
+            newY = hitbox.diameter/2; 
         }
-        if (newX > constants.Display.WIDTH - radius + 35) {
-            newX = constants.Display.WIDTH-radius + 35; 
+        if (newX > constants.Display.WIDTH - hitbox.diameter/2) {
+            newX = constants.Display.WIDTH-hitbox.diameter/2; 
         }
-        if (newX < radius/2) {
-            newX = radius/2; 
+        if (newX < hitbox.diameter/2) {
+            newX = hitbox.diameter/2; 
         }
 
-        blinkedFrom = new Point_ (location.x, location.y);
+        blinkedFrom = new Point_ (hitbox.p1.x, hitbox.p1.y);
         blink = true;
         blinkAnim = 40;
-        curAttack.hitboxes = new Circle[]{new Circle (new Point_(newX, newY),(int)radius/2)};
+        curAttack.hitboxes = new Circle[]{new Circle (new Point_(newX, newY),(int)hitbox.diameter/2)};
     }
 
     public void lineAttack() {
-        float difX = (player.location.x-this.location.x);
-        float difY = (player.location.y-this.location.y);
+        float difX = (player.hitbox.p1.x-this.hitbox.p1.x);
+        float difY = (player.hitbox.p1.y-this.hitbox.p1.y);
         float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
 
-        Line path = new Line(difY/difX, location);
+        Line path = new Line(difY/difX, hitbox.p1);
 
         Point_ end = new Point_(
-            location.x + difX * radius * 2 / r, 
-            location.y + difY * radius * 2 / r
+            hitbox.p1.x + difX * hitbox.diameter * 2 / r, 
+            hitbox.p1.y + difY * hitbox.diameter * 2 / r
         );
 
         curAttack.hitboxes = new Shape[3];
-        curAttack.hitboxes[0] = new Rectangle(location, path, (int)radius/2, (int)radius*2*(int)(Math.abs(difX)/difX));
-        curAttack.hitboxes[1] = new Circle(new Point_(location.x + (end.x - location.x)/4, location.y + (end.y - location.y)/4), (int)(radius/2));
-        curAttack.hitboxes[2] = new Circle(new Point_(location.x + (end.x - location.x)*3/4, location.y + (end.y - location.y)*3/4), (int)(radius/2));
+        curAttack.hitboxes[0] = new Rectangle(hitbox.p1, path, (int)hitbox.diameter/2, (int)hitbox.diameter*2*(int)(Math.abs(difX)/difX));
+        curAttack.hitboxes[1] = new Circle(new Point_(hitbox.p1.x + (end.x - hitbox.p1.x)/4, hitbox.p1.y + (end.y - hitbox.p1.y)/4), (int)(hitbox.diameter/2));
+        curAttack.hitboxes[2] = new Circle(new Point_(hitbox.p1.x + (end.x - hitbox.p1.x)*3/4, hitbox.p1.y + (end.y - hitbox.p1.y)*3/4), (int)(hitbox.diameter/2));
         //Rectangle(Point_ p, Line centre, int width, int length)
     }
 
     public void tantrum() {
-        curAttack.hitboxes = new Circle[]{new Circle(location, getRadius()*3/2)};
+        curAttack.hitboxes = new Circle[]{new Circle(hitbox.p1, getRadius()*3/2)};
     }
 
 
