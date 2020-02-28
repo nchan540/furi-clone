@@ -1,5 +1,6 @@
 package shapes;
 import graph.*;
+import java.awt.Point;
 
 public class LineSegment implements Shape {
     public Line equation;
@@ -178,4 +179,7 @@ public class LineSegment implements Shape {
         return null;
     }
     public void setRadius(int add) {}
+    public boolean checkBounds(Point p) {
+        return (p.y == this.getYatX(p.x)[0]);
+    }
 }

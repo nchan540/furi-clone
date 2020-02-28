@@ -1,5 +1,6 @@
 package shapes;
 import graph.*;
+import java.awt.Point;
 
 public interface Shape {
 
@@ -49,4 +50,5 @@ public interface Shape {
     public LineSegment[] getLines();
     public void setRadius(int add);
     public LineSegment forDrawLaser();
+    public boolean checkBounds(Point p);
 }

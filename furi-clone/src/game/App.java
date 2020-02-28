@@ -27,6 +27,11 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
+import javax.swing.JButton;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.imageio.ImageIO;
+
 
 
 public class App extends JPanel {
@@ -69,7 +74,7 @@ public class App extends JPanel {
 
     //player input info
     private static HashSet<Integer> keyIn = new HashSet<>();
-    private static Point mouse;
+    public static Point mouse = new Point(500, 500);
     // private static boolean mouseClicked = false;
 
     //player movement info
@@ -104,7 +109,7 @@ public class App extends JPanel {
 
         //draw boss
         for (Boss b : bosses) {
-                b.draw(g, g2, HITBOXCOLOURS);
+            if (b.hp>0) b.draw(g, g2, HITBOXCOLOURS);
         }
 
         for (Add add : ads) {
@@ -135,7 +140,8 @@ public class App extends JPanel {
         g.fillRect(30, 75, 350, 20);
         g.setColor(Color.GRAY);
         g.fillRect(20, 70, 350, 20);
-        g.setColor(Color.CYAN);
+        if (player.energy > 4) g.setColor(Color.CYAN);
+        else g.setColor(Color.BLACK);
         g.fillRect(20, 70, (int)(player.energy * 17.5), 20);
 
         // g.drawString(Long.toString(System.currentTimeMillis() - nextGameTick), 30, 150);
@@ -143,11 +149,11 @@ public class App extends JPanel {
         //draw score
         if (player.score > 0) {
             g.setColor(Color.BLACK);
-            g.fillRect(30, 75, (130 + Integer.toString(player.score).length() * 18), 40);
+            g.fillRect(30, 105, (130 + Integer.toString(player.score).length() * 18), 40);
             g.setColor(Color.GRAY);
-            g.fillRect(20, 70, (130 + Integer.toString(player.score).length() * 18), 40);
+            g.fillRect(20, 100, (130 + Integer.toString(player.score).length() * 18), 40);
             g.setColor(Color.WHITE);
-            g.drawString("SCORE " + player.score, 28, 101);
+            g.drawString("SCORE " + player.score, 28, 131);
         }
 
         //draw boss health
@@ -348,8 +354,17 @@ public class App extends JPanel {
         window.setCursor(window.getToolkit().createCustomCursor(
             new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
             "null"));
+            window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.setSize(constants.Display.WIDTH+50, constants.Display.HEIGHT+50);
+        window.setResizable(false);
+        try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
+        catch (Exception e){}
+        window.setVisible(true);
 
-        window.addKeyListener(new KeyListener() {
+
+        //main game setting up
+        App panel = new App();
+        panel.addKeyListener(new KeyListener() {
 
             @Override
             public void keyPressed(KeyEvent e) {
@@ -370,7 +385,7 @@ public class App extends JPanel {
             }
         });
 
-        window.addMouseListener(new MouseListener() {
+        panel.addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e)  {
                 if (SwingUtilities.isLeftMouseButton(e)) {
@@ -396,7 +411,7 @@ public class App extends JPanel {
             }
         });
 
-        window.addMouseMotionListener(new MouseMotionListener() {
+        panel.addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
                 mouse = new Point(e.getX(), e.getY());
             }
@@ -404,22 +419,71 @@ public class App extends JPanel {
                 mouse = new Point(e.getX(), e.getY());
             }
         });
-        
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
-        window.setResizable(false);
-        window.setUndecorated(true);
-        try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
-        catch (Exception e){
 
+        //main
+        UIPanel main = new UIPanel(mouse);
+        main.setVisible(true);
+        main.addMouseMotionListener(new MouseMotionListener() {
+            public void mouseMoved(MouseEvent e) {
+                mouse = new Point(e.getX(), e.getY());
+                for (UIElementInteractable u: main.elements) {
+                    u.checkPos(mouse);
+                }
+            }
+            public void mouseDragged(MouseEvent e) {
+                mouse = new Point(e.getX(), e.getY());
+                for (UIElementInteractable u: main.elements) {
+                    u.checkPos(mouse);
+                }
+            }
+        });
+
+        main.addMouseListener(new MouseListener (){
+            public void mousePressed(MouseEvent e)  {
+
+            }
+            public void mouseExited(MouseEvent e)  {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            }
+            public void mouseReleased(MouseEvent e)  {
+                
+            }
+            public void mouseClicked(MouseEvent e)  {
+                for (UIElementInteractable u: main.elements) {
+                    u.click();
+                }
+            }
+            public void mouseEntered(MouseEvent e)  {
+                mouse = new Point(e.getX(), e.getY());
+            }
+        });
+
+        BufferedImage[] loadedImages = new BufferedImage[3];
+        try{
+            loadedImages[0] = ImageIO.read(App.class.getResourceAsStream("/0idle.png"));
+            loadedImages[1] = ImageIO.read(App.class.getResourceAsStream("/1hover.png"));
+            loadedImages[2] = ImageIO.read(App.class.getResourceAsStream("/2click.png"));
+        }
+        catch (Exception e){}
+        main.addUIElement(new UIButton(loadedImages, new Rectangle(new Point_(500, 500), 414, 264)));
+
+        //begin screen
+        window.add(main, 0);
+        window.setVisible(true);
+        while (true) {
+            main.update(mouse);
+            main.update();
+            window.repaint();
+            main.repaint();
+            try{Thread.sleep(TICKSPERFRAME);}
+            finally{}
+            if (main.bools[0]) break;
         }
 
-        App panel = new App();
-        JPanel something = new JPanel();
-        
+        main.setVisible(false);
+        //window.remove(main);
         window.add(panel, 0);
-        window.setVisible(true);
-        panel.setVisible(false);
 
         while (game) {
             try{
@@ -468,6 +532,7 @@ public class App extends JPanel {
 
     public static void restart(JPanel game) {
         game.setVisible(true);
+        game.requestFocus();
         mouse = new Point(-100, -100);
         player = new Player(720, 450, 50);
         player.hp = constants.Player.HEALTH;
@@ -480,6 +545,7 @@ public class App extends JPanel {
         bossesAlive = new boolean[]{false, false, false, false};
         restart = false;
         keyIn.remove(KeyEvent.VK_R);
+        System.gc();
     }
 
 }

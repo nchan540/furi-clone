@@ -1,5 +1,6 @@
 package shapes;
 import graph.*;
+import java.awt.Point;
 
 public class Rectangle implements Shape {
     
@@ -152,6 +153,10 @@ public class Rectangle implements Shape {
      */
     public float[] getYatX(float x) {
         return new float[] {0f};
+    }
+
+    public boolean checkBounds(Point check) {
+        return (check.x > points[0].x && check.x < points[1].x && check.y < points[2].y && check.y > points[0].y);
     }
 
     public int getRadius() {

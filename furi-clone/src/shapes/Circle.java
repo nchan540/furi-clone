@@ -1,5 +1,6 @@
 package shapes;
 import graph.*;
+import java.awt.Point;
 
 public class Circle implements Shape {
 
@@ -118,4 +119,8 @@ public class Circle implements Shape {
     public LineSegment forDrawLaser() {
         return null;
     }
+
+    public boolean checkBounds(Point check) {
+        return (Point_.distanceFormula(check, this.getLocation()) < this.getRadius());
+    } 
 }

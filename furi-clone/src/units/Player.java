@@ -62,7 +62,8 @@ public class Player extends Unit {
                 for (Unit u : attacked) {
                     if (!u.takeDamage(this.dmg) && u instanceof Boss) {
                         u.kill();
-                        if(hp<3)++hp;
+                        if(hp<constants.Player.HEALTH)++hp;
+                        if(hp<constants.Player.HEALTH)++hp;
                         ++score;
                         killedBoss = true;
                         if (u instanceof Boss) killed.add(u);
@@ -91,7 +92,8 @@ public class Player extends Unit {
             }
             setAttack();
             spd = 0;
-            attackFrames = 30;
+            if (attackType == 1) attackFrames = 30;
+            else attackFrames = 15;
             if (upgradeTimer > 0) dmg *= 3;
         }
     }
@@ -103,7 +105,7 @@ public class Player extends Unit {
                 float prevSpd = spd;
                 spd = constants.Player.DASH_DISTANCE;
                 move(x, y);
-                setAttack();
+                if (attackFrames > 0) setAttack();
                 spd = prevSpd;
                 if (!(x == 0 && y == 0)) { 
                     if (attackFrames > 10) {
@@ -122,7 +124,7 @@ public class Player extends Unit {
     //initial declaration of the attack coordinates RELATIVE to player position
     public void setAttack(Point p, boolean rightClick) {
         if (rightClick) attackType = 1;
-        else attackType = 2;
+        else {attackType = 2; energy -= 5;}
         if (!(Math.abs(p.x - this.getX()) < 1 && Math.abs(p.y-this.getY()) < 1)) {
 
             difX = (p.x-this.hitbox.p1.x);
@@ -138,19 +140,12 @@ public class Player extends Unit {
     public void setAttack() {
         if (attackType == 1) {
             for (int i = 0; i < 5; ++i) {
-                curAttack.hitboxes[i] = new Circle(new Point_(location.x + difX * ATTACK_LENGTHS[i] / difR, location.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
-                tip = new Point_(location.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, location.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
+                curAttack.hitboxes[i] = new Circle(new Point_(hitbox.p1.x + difX * ATTACK_LENGTHS[i] / difR, hitbox.p1.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
+                tip = new Point_(hitbox.p1.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, hitbox.p1.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
             }
         } else {
-            Point_ end = new Point_(location.x + difX, location.y+difY);
-            curAttack.hitboxes[0] = new Rectangle(end, new Line(location, end), 5, -1*Math.round(difR*(Math.abs(difX)/difX)));
-            energy -= 5;
-        }
-
-        
-        for (int i = 0; i < 5; ++i) {
-            curAttack.hitboxes[i] = new Circle(new Point_(hitbox.p1.x + difX * ATTACK_LENGTHS[i] / difR, hitbox.p1.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
-            tip = new Point_(hitbox.p1.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, hitbox.p1.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
+            Point_ end = new Point_(hitbox.p1.x + difX, hitbox.p1.y+difY);
+            curAttack.hitboxes[0] = new Rectangle(end, new Line(hitbox.p1, end), 5, -1*Math.round(difR*(Math.abs(difX)/difX)));
         }
     }
 
