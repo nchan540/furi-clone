@@ -311,45 +311,9 @@ public class App extends JPanel {
         }
     }
 
-    public static void spawnBoss() {
-        for (int i = 0; i < 2; i++) {
-            if (bosses[i].hp <= 0) {
-                switch(nextBoss) {
-                    case 0:
-                        bosses[i] = new Charger(bossSpawn[0], bossSpawn[1], player);
-                        bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
-                        break;
-                    case 1:
-                        bosses[i] = new Brawler(bossSpawn[0], bossSpawn[1], player);
-                        bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
-                        break;
-                    case 2:
-                        bosses[i] = new Laserman(bossSpawn[0], bossSpawn[1], player);
-                        bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
-                        break;
-                    case 3:
-                        bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
-                        bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
-                        break;
-                    default: break;
-                }
-                while (bossesAlive[nextBoss]) {
-                    nextBoss = Math.round(Math.round(Math.random() * 2));
-                }
-                setBossSpawn();
-                ++player.bossesAlive;
-                if (player.bossesAlive != 2) bossTimer = 1200;
-                return;
-            }
-        }
-    }
-
     public static void main(String[] args) throws Exception {
 
+        //setting up the jframe + mouse cursor
         JFrame window = new JFrame("Game");
         window.setCursor(window.getToolkit().createCustomCursor(
             new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
@@ -357,13 +321,14 @@ public class App extends JPanel {
             window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(constants.Display.WIDTH+50, constants.Display.HEIGHT+50);
         window.setResizable(false);
-        try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
-        catch (Exception e){}
         window.setVisible(true);
 
 
-        //main game setting up
+        //main game panel setting up
         App panel = new App();
+        panel.setVisible(false);
+        try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
+        catch (Exception e){}
         panel.addKeyListener(new KeyListener() {
 
             @Override
@@ -420,7 +385,9 @@ public class App extends JPanel {
             }
         });
 
-        //main
+
+
+        //main menu panel setting up + buttons
         UIPanel main = new UIPanel(mouse);
         main.setVisible(true);
         main.addMouseMotionListener(new MouseMotionListener() {
@@ -459,62 +426,75 @@ public class App extends JPanel {
             }
         });
 
-        BufferedImage[] loadedImages = new BufferedImage[3];
+        //set up images for main menu buttons
+        BufferedImage[] mainLoadedImages = new BufferedImage[3];
         try{
-            loadedImages[0] = ImageIO.read(App.class.getResourceAsStream("/0idle.png"));
-            loadedImages[1] = ImageIO.read(App.class.getResourceAsStream("/1hover.png"));
-            loadedImages[2] = ImageIO.read(App.class.getResourceAsStream("/2click.png"));
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream("/0idle.png"));
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream("/1hover.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream("/2click.png"));
         }
         catch (Exception e){}
-        main.addUIElement(new UIButton(loadedImages, new Rectangle(new Point_(500, 500), 414, 264)));
+        //set up play button
+        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1000, 500), 414, 264), false));
+        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1000, 100), 414, 264), true));
 
-        //begin screen
+
+
+        //begin the game
         window.add(main, 0);
         window.setVisible(true);
+        window.add(panel, 0);
         while (true) {
+            nextGameTick = System.currentTimeMillis();
+
             main.update(mouse);
             main.update();
             window.repaint();
             main.repaint();
-            try{Thread.sleep(TICKSPERFRAME);}
-            finally{}
-            if (main.bools[0]) break;
+
+            if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
+            
+            if (main.bools[0]) {
+                main.setVisible(false);
+                window.setVisible(true);
+                game = true;
+                restart = true;
+                while (game) {
+                    try{
+                        Thread.sleep(10);
+                    }catch(InterruptedException e) {
+        
+                    }
+                    if (restart) {
+                        restart(panel);
+                    }
+                    while (player.hp > 0) {
+                        keyIn.remove(KeyEvent.VK_R);
+                        setBossSpawn();
+        
+                        while (player.hp > 0) {
+                        nextGameTick = System.currentTimeMillis();          
+        
+                        gameLoop();
+                        window.repaint();
+        
+                        if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
+                        FPS();
+                        } 
+                    }
+                    if (keyIn.contains(KeyEvent.VK_ENTER)) {
+                        game = false;
+                    }
+                }
+                main.setVisible(true);
+                panel.setVisible(false);
+                main.bools[0] = false;
+            }
         }
+    }
 
-        main.setVisible(false);
-        //window.remove(main);
-        window.add(panel, 0);
-
-        while (game) {
-            try{
-                Thread.sleep(10);
-            }catch(InterruptedException e) {
-
-            }
-            if (restart) {
-                restart(panel);
-            }
-            while (player.hp > 0) {
-                keyIn.remove(KeyEvent.VK_R);
-                setBossSpawn();
-
-                while (player.hp > 0) {
-
-
-                nextGameTick = System.currentTimeMillis();          
-
-                gameLoop();
-                window.repaint();
-
-                if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
-
-                if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
-                } 
-            }
-            if (keyIn.contains(KeyEvent.VK_ESCAPE)) {
-                game = false;
-            }
-        }
+    public static void FPS() {
+        if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) try{Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));} catch (InterruptedException e){}
     }
 
     public static void loadPlayerImage (String read) {
@@ -525,11 +505,55 @@ public class App extends JPanel {
         }
     }
 
+
+
+
+
+    //any function needed to set up the game loop
+
     public static void spawnAdd() {
         ads.add(new Add(player, 1, (int)Math.round(Math.random() * 1040) + 200, (int)Math.round(Math.random() * 400) + 200, 40, 0.5f));
         addTimer = 400 + (50 * ads.size()) + (int)(Math.random() * 100);
     }
 
+    public static void spawnBoss() {
+        for (int i = 0; i < 2; i++) {
+            if (bosses[i].hp <= 0) {
+                switch(nextBoss) {
+                    case 0:
+                        bosses[i] = new Charger(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    case 1:
+                        bosses[i] = new Brawler(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    case 2:
+                        bosses[i] = new Laserman(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    case 3:
+                        bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        bossesAlive[nextBoss] = true;
+                        break;
+                    default: break;
+                }
+                while (bossesAlive[nextBoss]) {
+                    nextBoss = Math.round(Math.round(Math.random() * 2));
+                }
+                setBossSpawn();
+                ++player.bossesAlive;
+                if (player.bossesAlive != 2) bossTimer = 1200;
+                return;
+            }
+        }
+    }
+
+    //call this before any instance of the game to properly set it up
     public static void restart(JPanel game) {
         game.setVisible(true);
         game.requestFocus();
