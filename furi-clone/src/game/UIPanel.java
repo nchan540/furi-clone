@@ -26,8 +26,8 @@ public class UIPanel extends JPanel {
     }
 
     public void update() {
-        if (elements.get(0).getClicked()) bools[0] = true;
-        if (elements.get(1).getClicked()) bools[1] = true;
+        bools[0] = elements.get(0).getClicked();
+        bools[1] = elements.get(1).getClicked();
     }
 
     public void update(Point mouse) {

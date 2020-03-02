@@ -9,7 +9,7 @@ import java.awt.geom.Line2D;
 
 public class Display {
     public static final int HEIGHT = 800;
-    public static final int WIDTH = 1440;
+    public static final int WIDTH = 1500;
 
     public static final Font FONT = new Font("Arial", Font.ITALIC, 30);
 

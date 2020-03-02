@@ -1,5 +1,6 @@
 package units;
-
+import java.awt.Color;
+import java.awt.Graphics;
 public abstract class Boss extends Unit {
 
     public Attack curAttack;
@@ -28,4 +29,21 @@ public abstract class Boss extends Unit {
     }
     //Attacks for each boss will be methods that set curAttack shapes[] based on player coords and boss coords.
     
+    public void drawUI(Graphics g, int x, int y) {
+        g.setColor(Color.BLACK);
+        g.fillRect(x+10, y+5, 470, 40);
+        g.setColor(Color.GRAY);
+        g.fillRect(x, y, 470, 40);
+        g.setColor(Color.BLACK);
+        g.fillRect(x+5, y+5, 200, 30);
+        g.fillRect(x+215, y, 10, 40);
+        if (this.maxHp > 0) {
+            g.setColor(Color.WHITE);
+            g.drawString(this.toString(), x+10, y+30);
+            g.setColor(Color.BLACK);
+            g.fillRect(x+235, y+5, 225, 30);
+            g.setColor(Color.RED);
+            g.fillRect(x+235, y+5, (int)(225 * ((float)this.hp / this.maxHp)), 30);
+        }
+    }
 }

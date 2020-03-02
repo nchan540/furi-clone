@@ -66,7 +66,7 @@ public class Player extends Unit {
                         if(hp<constants.Player.HEALTH)++hp;
                         ++score;
                         killedBoss = true;
-                        if (u instanceof Boss) killed.add(u);
+                        killed.add(u);
                         --bossesAlive;
                     }
                     if (energy < 20 && attackType != 2) ++energy;

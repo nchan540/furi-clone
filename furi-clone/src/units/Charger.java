@@ -62,7 +62,6 @@ public class Charger extends Boss {
 
         if (bonkTimer == 60) {
             this.bonked = constants.Charger.STUNTIME + (int)(Math.sqrt(Math.pow(dir[0], 2) + Math.pow(dir[1], 2)) * 20 * spd);
-            System.out.println(bonked);
         }
 
         if (this.bonked > 0) {

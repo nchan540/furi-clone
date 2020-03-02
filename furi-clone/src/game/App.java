@@ -42,6 +42,13 @@ public class App extends JPanel {
     // private static final String PLAYERIMGPATH = ("playerSprites" + fileSeparator);
     // private static final String png = ".png";
 
+    //global jframe stuff (jframe and main game panel)
+    public static JFrame window;
+    public static JPanel panel;
+
+    //placeholder global settings
+    public static int MAXBOSSES = 2;
+
     //unused right now; graphics system
     public static String currentPlayerSprite;
     public static BufferedImage playerImg;
@@ -69,7 +76,8 @@ public class App extends JPanel {
     public static int bossTimer;
     public static int bossSpawn[];
     public static int nextBoss;
-    public static boolean[] bossesAlive; //0 = dead, 1 = alive, charger, brawler, laserman
+    //refs ID #'s. 0 = charger, 1 = brawler, ...
+    public static boolean[] bossesAllowed = {true, true, true, false};
     
 
     //player input info
@@ -157,37 +165,9 @@ public class App extends JPanel {
         }
 
         //draw boss health
-            g.setColor(Color.BLACK);
-            g.fillRect(30, 710, 545, 40);
-            g.setColor(Color.GRAY);
-            g.fillRect(20, 705, 545, 40);
-            g.setColor(Color.BLACK);
-            g.fillRect(25, 710, 200, 30);
-            g.fillRect(235, 705, 10, 40);
-            if (bosses[0].maxHp > 0) {
-                g.setColor(Color.WHITE);
-                g.drawString(bosses[0].toString(), 30, 735);
-                g.setColor(Color.BLACK);
-                g.fillRect(255, 710, 300, 30);
-                g.setColor(Color.RED);
-                g.fillRect(255, 710, (int)(300 * ((float)bosses[0].hp / bosses[0].maxHp)), 30);
-            }
-
-            g.setColor(Color.BLACK);
-            g.fillRect(860, 710, 545, 40);
-            g.setColor(Color.GRAY);
-            g.fillRect(850, 705, 545, 40);
-            g.setColor(Color.BLACK);
-            g.fillRect(855, 710, 200, 30);
-            g.fillRect(1065, 705, 10, 40);
-            if (bosses[1].maxHp > 0) {
-                g.setColor(Color.WHITE);
-                g.drawString(bosses[1].toString(), 860, 735);
-                g.setColor(Color.BLACK);
-                g.fillRect(1085, 710, 300, 30);
-                g.setColor(Color.RED);
-                g.fillRect(1085, 710, (int)(300 * ((float)bosses[1].hp / bosses[1].maxHp)), 30);
-            }
+        for (int i = 0; i < MAXBOSSES; ++i) {
+            if (bosses[i].alive) bosses[i].drawUI(g, 10 + i * 490, 750);
+        }
 
         //draw boss spawning
         if (bossTimer > 30 && bossTimer < 70) {
@@ -214,27 +194,22 @@ public class App extends JPanel {
     }
 
     public static void gameLoop() {
+
         //boss spawning
-        if (bossTimer == 0) spawnBoss();  
-        else --bossTimer;
+        if (bossTimer == 0) {if (player.bossesAlive < MAXBOSSES) spawnBoss();}  
+        else --bossTimer; 
 
         //update units
         player.update();
         if (player.killedBoss) {
-            if (player.bossesAlive > 0 && bossTimer == 0) {
-                bossTimer = 900;
-            } else {
+            if (bossTimer == 0) {
                 bossTimer = 120;
             }
-            for (Unit u : player.killed) {
-                bossesAlive[u.ID] = false;
-            }
-            nextBoss = Math.round(Math.round(Math.random() * 2));
             player.killedBoss = false;
         }
 
+        //spawn & update adds
         if (--addTimer == 0) spawnAdd();
-
         for (Add a : ads) {
             if (a != null) {
                 a.update();
@@ -246,16 +221,16 @@ public class App extends JPanel {
             }
         }
 
+        //update bosses
         for (Boss b : bosses) {
             if (b.hp > 0) { 
                 b.update();
-            } else { 
+            } else if (!(b instanceof EmptyBoss)) {
+                b = new EmptyBoss(player);
                 b.hitbox.p1.x = -100; 
                 b.hitbox.p1.y = -100; 
             }
         }
-
-        
 
         //movement
         for (int i = 0; i < 4; ++i) {
@@ -271,15 +246,17 @@ public class App extends JPanel {
                 }
             }
         }
+        //dash
         if(keyIn.contains(KeyEvent.VK_SPACE)) {
             if (player.dashTimer == 0) dash();
             keyIn.remove(KeyEvent.VK_SPACE);
         } else {
             player.move(placeholderX, placeholderY);
         }
+        //attack
         if (player.attackFrames > 5 && player.attackFrames <= 10) {
             for (Boss b : bosses) {
-                player.checkAttack(b);
+                if (b.alive) player.checkAttack(b);
             }
             
             for (Add a : ads) {
@@ -291,42 +268,33 @@ public class App extends JPanel {
 
         //check player hit by boss (collision)
         for (Boss b: bosses) {
-            if (Point_.distanceFormula(b.hitbox.p1, player.hitbox.p1) < (b.hitbox.diameter + player.hitbox.diameter)/2) {
+            if (b.alive && Point_.distanceFormula(b.hitbox.p1, player.hitbox.p1) < (b.hitbox.diameter + player.hitbox.diameter)/2) {
                 player.hit();
             }
         }
 
-        //resetting movement
+        //end of frame; resetting movement
         placeholderX = 0;
         placeholderY = 0;
-    }
-
-    public static void setBossSpawn() {
-        if (nextBoss != 2) {
-            bossSpawn[0] = 720;
-            bossSpawn[1] = 400;
-        } else {
-            bossSpawn[0] = 200;
-            bossSpawn[1] = 200;
-        }
     }
 
     public static void main(String[] args) throws Exception {
 
         //setting up the jframe + mouse cursor
-        JFrame window = new JFrame("Game");
+        window = new JFrame("Game");
         window.setCursor(window.getToolkit().createCustomCursor(
             new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB), new Point(0, 0),
             "null"));
             window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        window.setSize(constants.Display.WIDTH+50, constants.Display.HEIGHT+50);
+        window.setSize(constants.Display.WIDTH+17, constants.Display.HEIGHT+40);
         window.setResizable(false);
         window.setVisible(true);
 
 
         //main game panel setting up
-        App panel = new App();
+        panel = new App();
         panel.setVisible(false);
+        panel.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
         try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
         catch (Exception e){}
         panel.addKeyListener(new KeyListener() {
@@ -436,6 +404,12 @@ public class App extends JPanel {
         catch (Exception e){}
         //set up play button
         main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1000, 500), 414, 264), false));
+        try{
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream("/0diff.png"));
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream("/1diff.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream("/2diff.png"));
+        }
+        catch (Exception e){}
         main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1000, 100), 414, 264), true));
 
 
@@ -453,39 +427,14 @@ public class App extends JPanel {
             main.repaint();
 
             if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
-            
+
+            //main menu begin screen was clicked
             if (main.bools[0]) {
+                if (main.bools[1]) MAXBOSSES = 3;
+                else MAXBOSSES = 2;
                 main.setVisible(false);
-                window.setVisible(true);
-                game = true;
-                restart = true;
-                while (game) {
-                    try{
-                        Thread.sleep(10);
-                    }catch(InterruptedException e) {
-        
-                    }
-                    if (restart) {
-                        restart(panel);
-                    }
-                    while (player.hp > 0) {
-                        keyIn.remove(KeyEvent.VK_R);
-                        setBossSpawn();
-        
-                        while (player.hp > 0) {
-                        nextGameTick = System.currentTimeMillis();          
-        
-                        gameLoop();
-                        window.repaint();
-        
-                        if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
-                        FPS();
-                        } 
-                    }
-                    if (keyIn.contains(KeyEvent.VK_ENTER)) {
-                        game = false;
-                    }
-                }
+                panel.setVisible(true);
+                game();
                 main.setVisible(true);
                 panel.setVisible(false);
                 main.bools[0] = false;
@@ -516,40 +465,73 @@ public class App extends JPanel {
         addTimer = 400 + (50 * ads.size()) + (int)(Math.random() * 100);
     }
 
+    public static boolean checkBosses() {
+        for (Boss b : bosses) {
+            if (b.alive && b.ID == nextBoss) return true;
+        }
+        return false;
+    }
+
     public static void spawnBoss() {
-        for (int i = 0; i < 2; i++) {
+        do {
+            nextBoss = Math.round(Math.round(Math.random() * 3));
+        } while (!bossesAllowed[nextBoss] || checkBosses());
+        for (int i = 0; i < bosses.length; ++i) {
             if (bosses[i].hp <= 0) {
                 switch(nextBoss) {
                     case 0:
                         bosses[i] = new Charger(bossSpawn[0], bossSpawn[1], player);
                         bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
                         break;
                     case 1:
                         bosses[i] = new Brawler(bossSpawn[0], bossSpawn[1], player);
                         bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
                         break;
                     case 2:
                         bosses[i] = new Laserman(bossSpawn[0], bossSpawn[1], player);
                         bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
                         break;
                     case 3:
                         bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
                         bosses[i].spawn();
-                        bossesAlive[nextBoss] = true;
                         break;
                     default: break;
                 }
-                while (bossesAlive[nextBoss]) {
-                    nextBoss = Math.round(Math.round(Math.random() * 2));
-                }
-                setBossSpawn();
                 ++player.bossesAlive;
-                if (player.bossesAlive != 2) bossTimer = 1200;
+                if (player.bossesAlive < MAXBOSSES) bossTimer = 120;
                 return;
             }
+        }
+    }
+
+    public static void game() {
+        game = true;
+        restart = true;
+        while (game) {
+            nextGameTick = System.currentTimeMillis();   
+
+            if (restart) {
+                restart(panel);
+            }
+            while (player.hp > 0) {
+                keyIn.remove(KeyEvent.VK_R);
+
+                while (player.hp > 0) {
+                nextGameTick = System.currentTimeMillis();          
+
+                gameLoop();
+                window.repaint();
+
+                if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
+                FPS();
+                } 
+            }
+            if (keyIn.contains(KeyEvent.VK_ENTER)) {
+                game = false;
+                keyIn.remove(KeyEvent.VK_ENTER);
+            }
+
+            FPS();
         }
     }
 
@@ -560,13 +542,16 @@ public class App extends JPanel {
         mouse = new Point(-100, -100);
         player = new Player(720, 450, 50);
         player.hp = constants.Player.HEALTH;
-        bosses = new Boss[]{new EmptyBoss(player), new EmptyBoss(player)};
+        bosses = new Boss[MAXBOSSES];
+        for (int i = 0; i < MAXBOSSES; ++i) {
+            bosses[i] = new EmptyBoss(player);
+        }
         ads.clear();
         addTimer = 200;
         bossTimer = 120;
-        bossSpawn = new int[]{0, 0};
-        nextBoss = Math.round(Math.round(Math.random() * 2));
-        bossesAlive = new boolean[]{false, false, false, false};
+        bossSpawn = new int[]{720, 400};
+        nextBoss = Math.round(Math.round(Math.random() * 3));
+        bossesAllowed = new boolean[]{true, true, true, false};
         restart = false;
         keyIn.remove(KeyEvent.VK_R);
         System.gc();
