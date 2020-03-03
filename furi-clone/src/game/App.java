@@ -27,13 +27,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseEvent;
 import javax.swing.SwingUtilities;
 
-import javax.swing.JButton;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.imageio.ImageIO;
-
-
-
 public class App extends JPanel {
 
     //unused right now; graphics system
@@ -64,7 +57,7 @@ public class App extends JPanel {
     private static long nextGameTick;
 
     //player info
-    public static Player player = new Player(720, 450, 50);
+    public static Player player = new Player(720, 450, 50, 100, true);
     public static int[] dashAnim = {0, 0, 0};
 
     //add info
@@ -196,7 +189,9 @@ public class App extends JPanel {
     public static void gameLoop() {
 
         //boss spawning
-        if (bossTimer == 0) {if (player.bossesAlive < MAXBOSSES) spawnBoss();}  
+        if (bossTimer == 0) {
+            if ((player.arcade || (player.bossesAlive < player.bossesToKill)) && player.bossesAlive < MAXBOSSES) spawnBoss();
+        }  
         else --bossTimer; 
 
         //update units
@@ -302,7 +297,7 @@ public class App extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 keyIn.add(e.getKeyCode());
-                if (keyIn.contains(KeyEvent.VK_R) && player.hp <= 0) {
+                if (keyIn.contains(KeyEvent.VK_R) && !checkGameCondition()) {
                     restart = true;
                 }
             }
@@ -324,7 +319,7 @@ public class App extends JPanel {
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     if (mouse.getX() > -1 && mouse.getY() > -1 && player.attackFrames == 0) player.setAttack(mouse, true);
                     player.attack();
-                } else if (player.energy >= 5) {
+                } else if (player.energy > 4) {
                     player.setAttack(mouse, false);
                     player.attack();
                 }
@@ -356,7 +351,7 @@ public class App extends JPanel {
 
 
         //main menu panel setting up + buttons
-        UIPanel main = new UIPanel(mouse);
+        MainPanel main = new MainPanel(mouse);
         main.setVisible(true);
         main.addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
@@ -498,11 +493,13 @@ public class App extends JPanel {
                     default: break;
                 }
                 ++player.bossesAlive;
-                if (player.bossesAlive < MAXBOSSES) bossTimer = 120;
+                if ((player.arcade || (player.bossesAlive < player.bossesToKill)) && player.bossesAlive < MAXBOSSES) bossTimer = 120;
                 return;
             }
         }
     }
+    
+    //game window
 
     public static void game() {
         game = true;
@@ -513,10 +510,7 @@ public class App extends JPanel {
             if (restart) {
                 restart(panel);
             }
-            while (player.hp > 0) {
-                keyIn.remove(KeyEvent.VK_R);
-
-                while (player.hp > 0) {
+            while (checkGameCondition()) {
                 nextGameTick = System.currentTimeMillis();          
 
                 gameLoop();
@@ -524,8 +518,7 @@ public class App extends JPanel {
 
                 if (player.dramaticPause) try{Thread.sleep(200);}catch(InterruptedException e){}finally{player.dramaticPause = false;}
                 FPS();
-                } 
-            }
+            } 
             if (keyIn.contains(KeyEvent.VK_ENTER)) {
                 game = false;
                 keyIn.remove(KeyEvent.VK_ENTER);
@@ -540,7 +533,7 @@ public class App extends JPanel {
         game.setVisible(true);
         game.requestFocus();
         mouse = new Point(-100, -100);
-        player = new Player(720, 450, 50);
+        player = new Player(720, 450, 50, 3, true);
         player.hp = constants.Player.HEALTH;
         bosses = new Boss[MAXBOSSES];
         for (int i = 0; i < MAXBOSSES; ++i) {
@@ -555,6 +548,13 @@ public class App extends JPanel {
         restart = false;
         keyIn.remove(KeyEvent.VK_R);
         System.gc();
+    }
+
+    public static boolean checkGameCondition() {
+        if (player.hp <= 0) return false;
+        if (!player.arcade && player.bossesToKill == 0) return false;
+
+        return true;
     }
 
 }

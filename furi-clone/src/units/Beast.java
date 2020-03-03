@@ -231,14 +231,9 @@ public class Beast extends Boss {
     public Rectangle setBeam(Point_ p) {
         float difX = (p.x-this.hitbox.p1.x);
         float difY = (p.y-this.hitbox.p1.y);
-        float r = (float)(Math.abs(Math.sqrt(Math.pow(difX, 2) + Math.pow(difY, 2))));
 
         Line path = new Line(difY/difX, hitbox.p1);
 
-        Point_ end = new Point_(
-            hitbox.p1.x + difX * hitbox.diameter * 5, 
-            hitbox.p1.y + difY * hitbox.diameter * 5
-        );
         return new Rectangle(hitbox.p1, path, 30, 1000*(int)(Math.abs(difX)/difX));
     }
 
@@ -288,11 +283,7 @@ public class Beast extends Boss {
     }
 
     public String toString() {
-        return "THE BEAST";
+        return "The Beast";
     }
 
-    public boolean n() {
-        System.out.println(attackTimer + "????????????????????????????????????????");
-        return true;
-    }
 }

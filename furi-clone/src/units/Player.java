@@ -4,8 +4,6 @@ import shapes.*;
 
 import java.util.HashSet;
 
-import constants.Display;
-
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -18,9 +16,9 @@ public class Player extends Unit {
     float difX, difY, difR;
     public int attackType;
 
-    public int iFrames, dashTimer, attackFrames, score, bossesAlive, energy = 0;
+    public int iFrames, dashTimer, attackFrames, score, bossesAlive, energy, bossesToKill = 0;
     public int upgradeTimer = 0;
-    public boolean dramaticPause, dashQueued, killedBoss = false;
+    public boolean dramaticPause, dashQueued, killedBoss, arcade = false;
     public int[] queueXY = {0, 0};
     public HashSet<Unit> attacked = new HashSet<>();
     public HashSet<Unit> killed = new HashSet<>();
@@ -30,9 +28,11 @@ public class Player extends Unit {
     public final int[] ATTACK_LENGTHS = {40, 65, 87, 106, 123};
     public Point_ tip;
 
-    public Player(int x, int y, int r) {
+    public Player(int x, int y, int r, int winCon, boolean arcade) {
         super (constants.Player.HEALTH, 0, constants.Player.DAMAGE, x, y, r, constants.Player.SPEED);
         ID = constants.Player.ID;
+        bossesToKill = winCon;
+        this.arcade = arcade;
     }
 
     public LineSegment[] getAttackGraphic() {
@@ -65,6 +65,7 @@ public class Player extends Unit {
                         if(hp<constants.Player.HEALTH)++hp;
                         if(hp<constants.Player.HEALTH)++hp;
                         ++score;
+                        if (!arcade) --bossesToKill;
                         killedBoss = true;
                         killed.add(u);
                         --bossesAlive;
@@ -88,6 +89,7 @@ public class Player extends Unit {
             if (attackType == 1) {
                 curAttack.hitboxes = new Circle[5];
             } else {
+                energy -= 5;
                 curAttack.hitboxes = new Rectangle[1];
             }
             setAttack();
@@ -124,7 +126,7 @@ public class Player extends Unit {
     //initial declaration of the attack coordinates RELATIVE to player position
     public void setAttack(Point p, boolean rightClick) {
         if (rightClick) attackType = 1;
-        else {attackType = 2; energy -= 5;}
+        else attackType = 2;
         if (!(Math.abs(p.x - this.getX()) < 1 && Math.abs(p.y-this.getY()) < 1)) {
 
             difX = (p.x-this.hitbox.p1.x);
