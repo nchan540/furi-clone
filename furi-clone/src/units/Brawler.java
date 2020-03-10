@@ -36,7 +36,7 @@ public class Brawler extends Boss {
                 if (attack == 1) this.hitbox.p1 = curAttack.hitboxes[0].getLocation();
             }
             if (attackTime > 0 && attackTime <= 10) {
-                if(curAttack.checkHit(new Circle(player.hitbox.p1, player.getRadius()/2)) && !hitPlayer) {
+                if(curAttack.checkHit(new Circle(player.hitbox.p1, player.getRadius())) && !hitPlayer) {
                     player.hit();
                     if (!hitPlayer && blink) {player.takeDamage(1);}
                     hitPlayer = true;
@@ -66,14 +66,14 @@ public class Brawler extends Boss {
             if (attackTime > 10) g.setColor(HITBOXCOLOURS[3]);
             else g.setColor(HITBOXCOLOURS[2]);
             
-            if (!(attack == 3)) constants.Display.drawCircle(g, new Circle(curAttack.hitboxes[0].getLocation(), curAttack.hitboxes[0].getRadius()*2));
+            if (!(attack == 3)) constants.Display.drawCircle(g, new Circle(curAttack.hitboxes[0].getLocation(), curAttack.hitboxes[0].getRadius()));
             else {
                 for (LineSegment l : curAttack.hitboxes[0].getLines()) {
                     g2.setStroke(new BasicStroke(10, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
                     constants.Display.drawLine(g2, l);
                 }
-                constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[1].getLocation(), curAttack.hitboxes[1].getRadius()*2));
-                constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[2].getLocation(), curAttack.hitboxes[2].getRadius()*2));
+                constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[1].getLocation(), curAttack.hitboxes[1].getRadius()));
+                constants.Display.drawCircle(g2, new Circle(curAttack.hitboxes[2].getLocation(), curAttack.hitboxes[2].getRadius()));
             }
         }
         if (blinkAnim > 0 && blinkAnim <= 6 ) {
@@ -179,7 +179,7 @@ public class Brawler extends Boss {
         blinkedFrom = new Point_ (hitbox.p1.x, hitbox.p1.y);
         blink = true;
         blinkAnim = 40;
-        curAttack.hitboxes = new Circle[]{new Circle (new Point_(newX, newY),(int)hitbox.diameter/2)};
+        curAttack.hitboxes = new Circle[]{new Circle (new Point_(newX, newY),(int)hitbox.diameter)};
     }
 
     public void lineAttack() {
@@ -196,13 +196,13 @@ public class Brawler extends Boss {
 
         curAttack.hitboxes = new Shape[3];
         curAttack.hitboxes[0] = new Rectangle(hitbox.p1, path, (int)hitbox.diameter/2, (int)hitbox.diameter*2*(int)(Math.abs(difX)/difX));
-        curAttack.hitboxes[1] = new Circle(new Point_(hitbox.p1.x + (end.x - hitbox.p1.x)/4, hitbox.p1.y + (end.y - hitbox.p1.y)/4), (int)(hitbox.diameter/2));
-        curAttack.hitboxes[2] = new Circle(new Point_(hitbox.p1.x + (end.x - hitbox.p1.x)*3/4, hitbox.p1.y + (end.y - hitbox.p1.y)*3/4), (int)(hitbox.diameter/2));
+        curAttack.hitboxes[1] = new Circle(new Point_(hitbox.p1.x + (end.x - hitbox.p1.x)/4, hitbox.p1.y + (end.y - hitbox.p1.y)/4), (int)(hitbox.diameter));
+        curAttack.hitboxes[2] = new Circle(new Point_(hitbox.p1.x + (end.x - hitbox.p1.x)*3/4, hitbox.p1.y + (end.y - hitbox.p1.y)*3/4), (int)(hitbox.diameter));
         //Rectangle(Point_ p, Line centre, int width, int length)
     }
 
     public void tantrum() {
-        curAttack.hitboxes = new Circle[]{new Circle(hitbox.p1, getRadius()*3/2)};
+        curAttack.hitboxes = new Circle[]{new Circle(hitbox.p1, getRadius()*3)};
     }
 
 
