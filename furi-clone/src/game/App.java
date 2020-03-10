@@ -3,6 +3,7 @@ import graph.*;
 import projectiles.*;
 import shapes.*;
 import units.*;
+import constants.Settings;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -31,7 +32,7 @@ public class App extends JPanel {
 
     //unused right now; graphics system
     private static final long serialVersionUID = 1L;
-    // private static final String fileSeparator = System.getProperty("file.separator");
+    private static final String fileSeparator = System.getProperty("file.separator");
     // private static final String PLAYERIMGPATH = ("playerSprites" + fileSeparator);
     // private static final String png = ".png";
 
@@ -273,7 +274,7 @@ public class App extends JPanel {
         placeholderY = 0;
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         //setting up the jframe + mouse cursor
         window = new JFrame("Game");
@@ -288,7 +289,6 @@ public class App extends JPanel {
 
         //main game panel setting up
         panel = new App();
-        panel.setVisible(false);
         panel.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
         try{backgroundImg = ImageIO.read(App.class.getResourceAsStream(BACKGROUND));}
         catch (Exception e){}
@@ -352,7 +352,7 @@ public class App extends JPanel {
 
         //main menu panel setting up + buttons
         MainPanel main = new MainPanel(mouse);
-        main.setVisible(true);
+        main.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
         main.addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
                 mouse = new Point(e.getX(), e.getY());
@@ -390,49 +390,145 @@ public class App extends JPanel {
         });
 
         //set up images for main menu buttons
+        String buttonLoad = "/buttonassets"+fileSeparator;
         BufferedImage[] mainLoadedImages = new BufferedImage[3];
-        try{
-            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream("/0idle.png"));
-            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream("/1hover.png"));
-            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream("/2click.png"));
-        }
-        catch (Exception e){}
         //set up play button
-        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1000, 500), 414, 264), false));
         try{
-            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream("/0diff.png"));
-            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream("/1diff.png"));
-            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream("/2diff.png"));
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"arcade0.png"));
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"arcade1.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"arcade2.png"));
         }
         catch (Exception e){}
-        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1000, 100), 414, 264), true));
+        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1300, 350), 170, 120)));
+        //set up three vs two boss
+        try{
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"bosses0.png"));
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"bosses1.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"bosses2.png"));
+        }
+        catch (Exception e){}
+        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1300, 500), 170, 120), true));
+        //campaign mode
+        try{
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"camp0.png"));
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"camp1.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"camp2.png"));
+        }
+        catch (Exception e){}
+        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1300, 650), 170, 120)));
 
 
+        //setting up campaign panel
+        String[] campaignLoadImages = {"Lev1.png", "Lev2.png", "Lev3.png", "Lev4.png", "Lev5.png", "Lev6.png"};
+        Point_[] campaignLoadPoints = {new Point_(200, 200), new Point_(400, 200),new Point_(600, 200),new Point_(200, 400),new Point_(400, 400),new Point_(600, 400)};
+        CampaignPanel campaign = new CampaignPanel(mouse);
+        campaign.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
+        mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"campHover.png"));
+        mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"campClicked.png"));
+        for (String load : campaignLoadImages) {
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+load));
+            campaign.addUIElement(new UIButton(mainLoadedImages, new Rectangle(campaignLoadPoints[campaign.elements.size()], 170, 120)));
+        }
+        mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"0campBack.png"));
+        mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"1campBack.png"));
+        mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"2campBack.png"));
+        campaign.addUIElement(new UIButton(mainLoadedImages, new Rectangle (new Point_(800, 400), 170, 120)));
 
-        //begin the game
-        window.add(main, 0);
-        window.setVisible(true);
+
+        campaign.addMouseMotionListener(new MouseMotionListener() {
+            public void mouseMoved(MouseEvent e) {
+                mouse = new Point(e.getX(), e.getY());
+                for (UIElementInteractable u: campaign.elements) {
+                    u.checkPos(mouse);
+                }
+                System.out.println("click");
+            }
+            public void mouseDragged(MouseEvent e) {
+                mouse = new Point(e.getX(), e.getY());
+                for (UIElementInteractable u: campaign.elements) {
+                    u.checkPos(mouse);
+                }
+            }
+        });
+
+        campaign.addMouseListener(new MouseListener (){
+            public void mousePressed(MouseEvent e)  {
+
+            }
+            public void mouseExited(MouseEvent e)  {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            }
+            public void mouseReleased(MouseEvent e)  {
+                
+            }
+            public void mouseClicked(MouseEvent e)  {
+                for (UIElementInteractable u: campaign.elements) {
+                    u.click();
+                    System.out.println("click");
+                }
+            }
+            public void mouseEntered(MouseEvent e)  {
+                mouse = new Point(e.getX(), e.getY());
+            }
+        });
+
+        //let us start the game
         window.add(panel, 0);
+        panel.setVisible(false);
+        window.add(campaign, 1);
+        campaign.setVisible(false);
+        window.add(main, 2); 
+        main.setVisible(true);
+        window.setVisible(true);
+        Settings settings = new Settings();
         while (true) {
             nextGameTick = System.currentTimeMillis();
 
             main.update(mouse);
             main.update();
             window.repaint();
-            main.repaint();
 
             if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
 
             //main menu begin screen was clicked
             if (main.bools[0]) {
-                if (main.bools[1]) MAXBOSSES = 3;
-                else MAXBOSSES = 2;
+                if (main.bools[1]) settings.arcadePreset(3);
+                else settings.arcadePreset(2);
                 main.setVisible(false);
                 panel.setVisible(true);
-                game();
+                game(settings);
                 main.setVisible(true);
                 panel.setVisible(false);
                 main.bools[0] = false;
+            }
+
+            if (main.bools[2]) {
+                campaign.setVisible(true);
+                main.setVisible(false);
+                campaign.grabFocus();
+                while (!campaign.bools[6]) {
+                    nextGameTick = System.currentTimeMillis();
+                    campaign.update(mouse);
+                    campaign.update();
+                    campaign.repaint();
+
+                    if (campaign.checkGame() >= 0) {
+                        settings.campaignPreset(campaign.checkGame());
+                        campaign.setVisible(false);
+                        panel.setVisible(true);
+                        game(settings);
+                        campaign.setVisible(true);
+                        panel.setVisible(false);
+                        campaign.resetBools();
+                    }
+
+                    FPS();
+                }
+                main.setVisible(true);
+                campaign.setVisible(false);
+                main.bools[2] = false;
+                campaign.resetBools();
             }
         }
     }
@@ -501,14 +597,14 @@ public class App extends JPanel {
     
     //game window
 
-    public static void game() {
+    public static void game(Settings settings) {
         game = true;
         restart = true;
         while (game) {
             nextGameTick = System.currentTimeMillis();   
 
             if (restart) {
-                restart(panel);
+                restart(panel, settings);
             }
             while (checkGameCondition()) {
                 nextGameTick = System.currentTimeMillis();          
@@ -529,22 +625,22 @@ public class App extends JPanel {
     }
 
     //call this before any instance of the game to properly set it up
-    public static void restart(JPanel game) {
-        game.setVisible(true);
-        game.requestFocus();
+    public static void restart(JPanel game, Settings settings) {
+        panel.grabFocus();
         mouse = new Point(-100, -100);
-        player = new Player(720, 450, 50, 3, true);
+        player = new Player(720, 450, 50, settings.bossesToKill, settings.arcade);
         player.hp = constants.Player.HEALTH;
-        bosses = new Boss[MAXBOSSES];
-        for (int i = 0; i < MAXBOSSES; ++i) {
+        bosses = new Boss[settings.maxBosses];
+        for (int i = 0; i < settings.maxBosses; ++i) {
             bosses[i] = new EmptyBoss(player);
         }
+        MAXBOSSES = settings.maxBosses;
         ads.clear();
         addTimer = 200;
         bossTimer = 120;
         bossSpawn = new int[]{720, 400};
         nextBoss = Math.round(Math.round(Math.random() * 3));
-        bossesAllowed = new boolean[]{true, true, true, false};
+        bossesAllowed = settings.bossesAllowed;
         restart = false;
         keyIn.remove(KeyEvent.VK_R);
         System.gc();
