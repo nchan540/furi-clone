@@ -98,7 +98,7 @@ public class Brawler extends Boss {
                 if (hitbox.p1.x > constants.Display.WIDTH - hitbox.diameter*3) dir[0] = -1.5f;
                 if (hitbox.p1.x < hitbox.diameter*3) dir[0] = 1.5f;
                 if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.diameter*3/2) dir[1] = -1.0f;
-                if (hitbox.p1.y < hitbox.diameter*3/2) dir[1] = 1.0f;
+                if (hitbox.p1.y < hitbox.diameter*3) dir[1] = 1.0f;
 
                 wanderTimer = 150;
             }

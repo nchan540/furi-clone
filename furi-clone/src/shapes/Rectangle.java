@@ -79,6 +79,26 @@ public class Rectangle implements Shape {
         this.points[3] = bL;
     }
 
+    public void refresh() {
+        Line centre = forDrawLaser.equation;
+        Point_ p = forDrawLaser.p1;
+        float width = Point_.distanceFormula(points[0], points[3]);
+        float length = (float)forDrawLaser.getArea();
+        LineSegment temp = new LineSegment(new Line((-1f / centre.m), p), p, width);
+        Point_ bR = temp.p2;
+        float x = p.x + (p.x - temp.p2.x);
+        Point_ bL = new Point_(x, temp.equation.getY(x)); 
+        this.lines[3] = new LineSegment(bL, bR);
+        this.lines[2] = new LineSegment(new Line(centre.m, bR), bR, length);
+        this.lines[1] = new LineSegment(new Line(centre.m, bL), bL, length);
+        this.lines[0] = new LineSegment(lines[1].p2, lines[2].p2);
+
+        this.points[0] = lines[1].p2;
+        this.points[1] = lines[2].p2;
+        this.points[2] = bR;
+        this.points[3] = bL;
+    }
+
     /**
      * Checks if overlap occurs with a point
      * @param target point being checked against
