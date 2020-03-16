@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
 
 public class CampaignPanel extends UIPanel {
     private static final long serialVersionUID = 1L;
-    public boolean[] bools = {false, false, false, false, false, false, false};
+    public boolean[] bools = {false, false, false, false, false, false, false, false};
 
     public CampaignPanel(Point mouse) {
         super(mouse);

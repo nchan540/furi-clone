@@ -419,8 +419,8 @@ public class App extends JPanel {
 
 
         //setting up campaign panel
-        String[] campaignLoadImages = {"Lev1.png", "Lev2.png", "Lev3.png", "Lev4.png", "Lev5.png", "Lev6.png"};
-        Point_[] campaignLoadPoints = {new Point_(200, 200), new Point_(400, 200),new Point_(600, 200),new Point_(200, 400),new Point_(400, 400),new Point_(600, 400)};
+        String[] campaignLoadImages = {"Lev1.png", "Lev2.png", "Lev3.png", "Lev4.png", "Lev5.png", "Lev6.png", "Lev7.png"};
+        Point_[] campaignLoadPoints = {new Point_(200, 200), new Point_(400, 200),new Point_(600, 200),new Point_(200, 400),new Point_(400, 400),new Point_(600, 400), new Point_(20, 670)};
         CampaignPanel campaign = new CampaignPanel(mouse);
         campaign.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
         mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"campHover.png"));
@@ -507,7 +507,7 @@ public class App extends JPanel {
                 campaign.setVisible(true);
                 main.setVisible(false);
                 campaign.grabFocus();
-                while (!campaign.bools[6]) {
+                while (!campaign.bools[7]) {
                     nextGameTick = System.currentTimeMillis();
                     campaign.update(mouse);
                     campaign.update();
@@ -565,7 +565,7 @@ public class App extends JPanel {
 
     public static void spawnBoss() {
         do {
-            nextBoss = Math.round(Math.round(Math.random() * 3));
+            nextBoss = Math.round(Math.round(Math.random() * (bossesAllowed.length-1)));
         } while (!bossesAllowed[nextBoss] || checkBosses());
         for (int i = 0; i < bosses.length; ++i) {
             if (bosses[i].hp <= 0) {
@@ -583,6 +583,10 @@ public class App extends JPanel {
                         bosses[i].spawn();
                         break;
                     case 3:
+                        bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i].spawn();
+                        break;
+                    case 4:
                         bosses[i] = new Devourer(bossSpawn[0], bossSpawn[1], player);
                         bosses[i].spawn();
                         break;
