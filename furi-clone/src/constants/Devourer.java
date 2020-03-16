@@ -1,6 +1,6 @@
 package constants;
 
 public class Devourer {
-    public static final int HEALTH = 500;
-    public static final int MAXBULLETS = 12;
+    public static final int HEALTH = 150;
+    public static final int MAXBULLETS = 20;
 }

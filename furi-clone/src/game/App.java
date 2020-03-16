@@ -583,7 +583,7 @@ public class App extends JPanel {
                         bosses[i].spawn();
                         break;
                     case 3:
-                        bosses[i] = new Beast(bossSpawn[0], bossSpawn[1], player);
+                        bosses[i] = new Devourer(bossSpawn[0], bossSpawn[1], player);
                         bosses[i].spawn();
                         break;
                     default: break;

@@ -4,19 +4,19 @@ import shapes.*;
 
 public class Bounce extends Projectile {
 
-    public float acceleration;
+    public float acceleration = 1;
     public Circle hitbox;
 
     public Bounce(Shape[] targets, Circle hitbox, float speed, Line direction) {
         super(hitbox, targets, speed, direction);
-        acceleration = 1;
+        this.hitbox = hitbox;
     }
 
     public void accelerate() {
         xSpeed *= acceleration;
         ySpeed *= acceleration;
-        if (xSpeed < 0.1) xSpeed = 0;
-        if (ySpeed < 0.1) ySpeed = 0;
+        if (Math.abs(xSpeed) < 0.1) xSpeed = 0;
+        if (Math.abs(ySpeed) < 0.1) ySpeed = 0;
     }
 
     public boolean[] hitDetect() {
@@ -30,28 +30,27 @@ public class Bounce extends Projectile {
 
     @Override
     public void move () {
-        this.hitbox.getLocation().x += xSpeed;
-        this.hitbox.getLocation().y += ySpeed;
-
-        if (hitbox.getLocation().y > constants.Display.HEIGHT - hitbox.getRadius()/2) {
-            hitbox.getLocation().y = constants.Display.HEIGHT - hitbox.getRadius()/2; 
+        if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.getRadius()/2) {
+            hitbox.p1.y = constants.Display.HEIGHT - hitbox.getRadius()/2; 
             ySpeed = -ySpeed;
-            acceleration -= (1 - acceleration + 0.01);
+            acceleration -= 0.004;
         }
-        if (hitbox.getLocation().y < hitbox.getRadius()/2) {
-            hitbox.getLocation().y = hitbox.getRadius()/2; 
+        if (hitbox.p1.y < hitbox.getRadius()/2) {
+            hitbox.p1.y = hitbox.getRadius()/2; 
             ySpeed = -ySpeed;
-            acceleration -= (1 - acceleration + 0.01);
+            acceleration -= 0.004;
         }
-        if (hitbox.getLocation().x > constants.Display.WIDTH - hitbox.getRadius()/2) {
-            hitbox.getLocation().x = constants.Display.WIDTH-hitbox.getRadius()/2; 
+        if (hitbox.p1.x > constants.Display.WIDTH - hitbox.getRadius()/2) {
+            hitbox.p1.x = constants.Display.WIDTH - hitbox.getRadius()/2; 
             xSpeed = -xSpeed;
-            acceleration -= (1 - acceleration + 0.01);
+            acceleration -= 0.004;
         }
-        if (hitbox.getLocation().x < hitbox.getRadius()/2) {
-            hitbox.getLocation().x = hitbox.getRadius()/2; 
+        if (hitbox.p1.x < hitbox.getRadius()/2) {
+            hitbox.p1.x = hitbox.getRadius()/2; 
             xSpeed = -xSpeed;
-            acceleration -= (1 - acceleration + 0.01);
+            acceleration -= 0.004;
         }
+        this.hitbox.p1.x += xSpeed;
+        this.hitbox.p1.y += ySpeed;
     }
 }

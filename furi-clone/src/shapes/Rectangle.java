@@ -80,10 +80,11 @@ public class Rectangle implements Shape {
     }
 
     public void refresh() {
+        forDrawLaser.refresh();
         Line centre = forDrawLaser.equation;
         Point_ p = forDrawLaser.p1;
-        float width = Point_.distanceFormula(points[0], points[3]);
-        float length = (float)forDrawLaser.getArea();
+        float width = 10;
+        float length = (float)forDrawLaser.getArea() * ((forDrawLaser.p2.x-forDrawLaser.p1.x)/Math.abs(forDrawLaser.p2.x-forDrawLaser.p1.x));
         LineSegment temp = new LineSegment(new Line((-1f / centre.m), p), p, width);
         Point_ bR = temp.p2;
         float x = p.x + (p.x - temp.p2.x);
