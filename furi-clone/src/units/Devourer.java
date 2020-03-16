@@ -62,7 +62,7 @@ public class Devourer extends Boss {
                 shoot();
             } else {
                 sweep();
-                if (attackTimer > 0 && attackTimer < 60) {
+                if (attackTimer > 0 && attackTimer < 90) {
                     if(curAttack.checkHit(player.hitbox)) {
                         player.hit();
                     }
@@ -115,12 +115,12 @@ public class Devourer extends Boss {
 
     public void sweep() {
         if (phase == 1) {
-            attackTimer = 90;
+            attackTimer = 120;
             phase = 2;
             curAttack.hitboxes[0] = new Rectangle(this.hitbox.getLocation(), new Line(this.hitbox.getLocation(), new Point_(this.hitbox.getLocation().x+1, this.hitbox.getLocation().y-100)), 10, 2000);
-        } else if (phase == 2 && attackTimer < 60) {
-            curAttack.hitboxes[0].forDrawLaser().p2.x = hitbox.p1.x + (float)Math.sin((60-attackTimer-1)*Math.PI/29)*2000;
-            curAttack.hitboxes[0].forDrawLaser().p2.y = hitbox.p1.y + (float)-Math.cos((60-attackTimer-1)*Math.PI/29)*2000;
+        } else if (phase == 2 && attackTimer < 90) {
+            curAttack.hitboxes[0].forDrawLaser().p2.x = hitbox.p1.x + (float)Math.sin((90-attackTimer-1)*Math.PI/44)*2000;
+            curAttack.hitboxes[0].forDrawLaser().p2.y = hitbox.p1.y + (float)-Math.cos((90-attackTimer-1)*Math.PI/44)*2000;
             curAttack.hitboxes[0].refresh();
         }
         curAttack.hitboxes[0].forDrawLaser().p1 = hitbox.p1;
@@ -143,7 +143,7 @@ public class Devourer extends Boss {
 
         if (attack == 2) {
             if (attackTimer > 0) {
-                if (attackTimer >= 60) {
+                if (attackTimer >= 90) {
                     g.setColor(HITBOXCOLOURS[3]);
                 } else {
                     g.setColor(HITBOXCOLOURS[2]);
