@@ -1,6 +1,9 @@
 package projectiles;
+
 import graph.*;
 import shapes.*;
+
+import java.awt.Graphics;
 
 public abstract class Projectile {
     public Shape hitbox;
@@ -56,5 +59,7 @@ public abstract class Projectile {
         this.targets = newTargets;
     }
 
+    public abstract void update();
+    public abstract void draw(Graphics g);
     public abstract boolean[] hitDetect();
 }

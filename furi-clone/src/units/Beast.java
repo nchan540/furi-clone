@@ -86,7 +86,7 @@ public class Beast extends Boss {
         for (Bullet[] bulls : bullets) {
             for (Bullet b : bulls) {
                 if (b != null) {
-                    b.move();
+                    b.update();
                     b.changeTargets(new Shape[] {new Circle(player.hitbox.p1, (int)(player.hitbox.diameter / 2))});
                     if(b.hitDetect()[0]) player.hit();
                 }
@@ -119,7 +119,7 @@ public class Beast extends Boss {
         for (Bullet[] bulls : bullets) {
             for (Bullet b : bulls) {
                 if (b != null) {
-                    constants.Display.drawCircle(g, b.hitbox);
+                    b.draw(g);
                 }
             }
         }

@@ -133,7 +133,7 @@ public class Laserman extends Boss {
                 } 
             } else if (attackType == 3) {
                 if (attackTimer > 5) {
-                    curAttack[0].hitboxes[0].setRadius(2);
+                    curAttack[0].hitboxes[0].increaseRadius(2);
                 }
             }
         }

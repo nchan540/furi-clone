@@ -20,4 +20,8 @@ public class Point_ {
     public static float distanceFormula(Point p1, Point_ p2) {
         return (float)(Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y-p2.y, 2)));
     }
+
+    public boolean equals(Point_ p) {
+        return (int)this.x == (int)p.x && (int)this.y == (int)p.y;
+    }
 }

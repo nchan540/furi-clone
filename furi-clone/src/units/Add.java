@@ -73,7 +73,7 @@ public class Add extends Unit {
         }
 
         for (Bullet b : this.bullets) {
-            if (b != null) b.move();
+            if (b != null) b.update();
         }
 
         if (this.alive && this.hp <= 0) this.kill();
@@ -94,7 +94,7 @@ public class Add extends Unit {
             g.setColor(Color.PINK);
             for (Bullet b : this.bullets) {
                 if (b != null) {
-                    constants.Display.drawCircle(g, b.hitbox);
+                    b.draw(g);
                 }
             }
         }
