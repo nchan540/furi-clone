@@ -51,4 +51,5 @@ public interface Shape {
     public void increaseRadius(int add);
     public LineSegment forDrawLaser();
     public boolean checkBounds(Point p);
+    public void refresh();
 }

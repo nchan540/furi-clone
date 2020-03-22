@@ -123,4 +123,6 @@ public class Circle implements Shape {
     public boolean checkBounds(Point check) {
         return (Point_.distanceFormula(check, this.getLocation()) < this.getRadius());
     } 
+
+    public void refresh() {}
 }

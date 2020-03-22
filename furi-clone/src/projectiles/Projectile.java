@@ -33,6 +33,18 @@ public abstract class Projectile {
         this.ySpeed = deltaY * ratio;
     }
 
+    public void setSpeed (float speed, Point_ direction) {
+        float deltaY = direction.y - this.hitbox.getLocation().y;
+        float deltaX = 1;
+
+        // 1 (deltaX) squared is 1, and deltaX will always be 1, so the value can be put in to improve speed
+        // the ratio of speed : hypotenuse is the same as the ratio of xSpeed : deltaX and ySpeed : deltaY
+        float ratio = speed / (float)(Math.abs(Math.sqrt(1 + Math.pow(deltaY, 2))));
+        // speed / xSpeed = deltaX / ratio
+        this.xSpeed = deltaX * ratio;
+        this.ySpeed = deltaY * ratio;
+    }
+
     public void setSpeed(float speed) {
         float deltaY = direction.getY(1) - direction.getY(0);
         float deltaX = 1;
