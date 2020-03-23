@@ -1,7 +1,10 @@
 package projectiles;
+
 import graph.*;
 import shapes.*;
 import units.Unit;
+
+import java.awt.Graphics;
 
 public class Bullet extends Projectile {
 
@@ -10,6 +13,10 @@ public class Bullet extends Projectile {
     public Bullet(Unit[] targets, Circle hitbox, float speed, Line direction) {
         super(hitbox, targets, speed, direction);
         this.hitbox = hitbox;
+    }
+
+    public void update() {
+        this.move();
     }
 
     public boolean[] hitDetect() {
@@ -22,4 +29,7 @@ public class Bullet extends Projectile {
     }
 
     public void resetAcceleration(){}
+    public void draw(Graphics g) {
+        constants.Display.drawCircle(g, this.hitbox);
+    }
 }

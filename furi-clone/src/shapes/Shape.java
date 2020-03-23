@@ -48,7 +48,7 @@ public interface Shape {
     public boolean checkOverlap(LineSegment target);
 
     public LineSegment[] getLines();
-    public void setRadius(int add);
+    public void increaseRadius(int add);
     public LineSegment forDrawLaser();
     public boolean checkBounds(Point p);
     public void refresh();

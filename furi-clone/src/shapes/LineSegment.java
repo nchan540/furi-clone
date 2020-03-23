@@ -185,7 +185,7 @@ public class LineSegment implements Shape {
     public LineSegment forDrawLaser() {
         return null;
     }
-    public void setRadius(int add) {}
+    public void increaseRadius(int add) {}
     public boolean checkBounds(Point p) {
         return (p.y == this.getYatX(p.x)[0]);
     }

@@ -187,7 +187,7 @@ public class Rectangle implements Shape {
     public LineSegment[] getLines() {
         return lines;
     }
-    public void setRadius(int add) {
+    public void increaseRadius(int add) {
         
     }
     public LineSegment forDrawLaser() {

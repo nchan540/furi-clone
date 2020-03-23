@@ -92,7 +92,7 @@ public class Beast extends Boss {
         for (Bullet[] bulls : bullets) {
             for (int j = 0; j < bulls.length; ++j) {
                 if (bulls[j] != null) {
-                    bulls[j].move();
+                    bulls[j].update();
                     boolean[] hits = bulls[j].hitDetect();
                     boolean hit = false;
                     for (int i = 0; i < hits.length; ++i) {
@@ -134,7 +134,7 @@ public class Beast extends Boss {
         for (Bullet[] bulls : bullets) {
             for (Bullet b : bulls) {
                 if (b != null) {
-                    constants.Display.drawCircle(g, b.hitbox);
+                    b.draw(g);
                 }
             }
         }
