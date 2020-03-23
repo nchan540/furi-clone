@@ -2,6 +2,7 @@ package projectiles;
 
 import graph.*;
 import shapes.*;
+import units.Unit;
 
 import java.awt.Graphics;
 
@@ -10,7 +11,7 @@ public class TargetBullet extends Bullet {
     public Point_ destination;
     public boolean alive;
 
-    public TargetBullet(Shape[] targets, Circle hitbox, float speed, Line direction, Point_ destination) {
+    public TargetBullet(Unit[] targets, Circle hitbox, float speed, Line direction, Point_ destination) {
         super(targets, hitbox, speed, direction);
         this.destination = destination;
         this.alive = true;

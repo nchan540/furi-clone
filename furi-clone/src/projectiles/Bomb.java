@@ -2,6 +2,7 @@ package projectiles;
 
 import graph.*;
 import shapes.*;
+import units.Unit;
 
 import java.awt.Graphics;
 
@@ -19,10 +20,10 @@ public class Bomb extends Projectile {
      * @param direction direction bomb is thrown in
      * @param destination location bomb is thrown to
      */
-    public Bomb(Shape[] targets, Circle hitbox, int size, float speed, Line direction, Point_ destination) {
+    public Bomb(Unit[] targets, Circle hitbox, int size, float speed, Line direction, Point_ destination) {
         super(hitbox, targets, speed, direction);
         this.hitbox = hitbox;
-        this.path = new TargetBullet(new Shape[] {}, hitbox, speed, direction, destination);
+        this.path = new TargetBullet(new Unit[]{}, hitbox, speed, direction, destination);
         this.size = size;
     }
 
@@ -56,8 +57,10 @@ public class Bomb extends Projectile {
         if (targets.length == 0) return new boolean[] {false};
         boolean[] hits = new boolean[targets.length];
         for (int i = 0; i < targets.length; ++i) {
-            hits[i] = this.targets[i].checkOverlap(this.hitbox);
+            if (targets[i] != null) hits[i] = this.targets[i].hitbox.checkOverlap(this.hitbox);
         }
         return hits;
     }
+
+    public void resetAcceleration(){}
 }
