@@ -1,6 +1,7 @@
 package units;
 import graph.*;
 import shapes.*;
+import projectiles.Projectile;
 
 import java.awt.Graphics;
 import java.awt.Color;
@@ -36,10 +37,9 @@ public class Brawler extends Boss {
                 if (attack == 1) this.hitbox.p1 = curAttack.hitboxes[0].getLocation();
             }
             if (attackTime > 0 && attackTime <= 10) {
-                if(curAttack.checkHit(new Circle(player.hitbox.p1, player.getRadius())) && !hitPlayer) {
-                    player.hit();
-                    if (!hitPlayer && blink) {player.takeDamage(1);}
-                    hitPlayer = true;
+                if(curAttack.checkHit(new Circle(player.hitbox.p1, player.getRadius()))) {
+                    if (blink) player.takeDamage(2);
+                    else player.takeDamage(1);
                 }
             }
             if (attackTime == 0) {
@@ -59,6 +59,8 @@ public class Brawler extends Boss {
         if (hitbox.p1.x < hitbox.diameter/2) {
             hitbox.p1.x = hitbox.diameter/2; 
         }
+
+        if (hp < 0 && this.alive) {kill();player.killedBoss = true;}
     }
 
     public void draw(Graphics g, Graphics2D g2, Color[] HITBOXCOLOURS) {
@@ -212,5 +214,9 @@ public class Brawler extends Boss {
 
     public void kill() {
         alive = false;
+    }
+
+    public Projectile[] getBullets() {
+        return null;
     }
 }

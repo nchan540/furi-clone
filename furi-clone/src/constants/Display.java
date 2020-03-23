@@ -38,4 +38,8 @@ public class Display {
             }
         }
     }
+
+    public static void drawLine(Graphics2D g2, int x, int y, int x2, int y2) {
+        g2.drawLine(x, y, x2, y2);
+    }
 }

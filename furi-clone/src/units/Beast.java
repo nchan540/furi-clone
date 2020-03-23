@@ -28,6 +28,7 @@ public class Beast extends Boss {
     public int volleying = 0;
     public boolean volleyed = false;
     public Bullet[][] bullets = new Bullet[3][constants.Beast.MAXBULLETS];
+    public Bullet[] forDeflect = new Bullet[constants.Beast.MAXBULLETS*3];
 
     public int ID = 3;
 
@@ -35,8 +36,13 @@ public class Beast extends Boss {
         super(constants.Beast.HEALTH, 0, 1, x, y, 80, 1f, p);
         for (Bullet[] bulls : bullets) {
             for (Bullet b : bulls) {
-                b = new Bullet(new Shape[] {new Circle(player.hitbox.p1, (int)(player.hitbox.diameter / 2))}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*2, new Line(this.hitbox.p1, player.hitbox.p1));
+                b = new Bullet(new Unit[] {player}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*2, new Line(this.hitbox.p1, player.hitbox.p1));
                 b = null;
+            }
+        }
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < constants.Beast.MAXBULLETS; ++j) {
+                forDeflect[i*constants.Beast.MAXBULLETS+j] = bullets[i][j];
             }
         }
     }
@@ -64,7 +70,7 @@ public class Beast extends Boss {
 
                 if (((dashSequence > 0 && attackTimer == 0) || attackTimer <= 5) && !volleyed) {
                     if(curAttack != null && curAttack.checkHit(new Circle(player.hitbox.p1, player.getRadius()/2)) && !hitPlayer) {
-                        player.hit();
+                        player.takeDamage(1);
                         hitPlayer = true;
                     }
                     if (dashSequence > 0) {
@@ -84,14 +90,23 @@ public class Beast extends Boss {
         clearBullets();
 
         for (Bullet[] bulls : bullets) {
-            for (Bullet b : bulls) {
-                if (b != null) {
-                    b.move();
-                    b.changeTargets(new Shape[] {new Circle(player.hitbox.p1, (int)(player.hitbox.diameter / 2))});
-                    if(b.hitDetect()[0]) player.hit();
+            for (int j = 0; j < bulls.length; ++j) {
+                if (bulls[j] != null) {
+                    bulls[j].move();
+                    boolean[] hits = bulls[j].hitDetect();
+                    boolean hit = false;
+                    for (int i = 0; i < hits.length; ++i) {
+                        if (hits[i]) {
+                            bulls[j].targets[i].takeDamage(bulls[j].damage);
+                            hit = true;
+                        }
+                    }
+                    if (hit) bulls[j] = null;
                 }
             }
         }
+
+        if (hp < 0 && this.alive) {kill();player.killedBoss = true;}
     }
 
     public void draw(Graphics g, Graphics2D g2, Color[] HITBOXCOLOURS) {
@@ -181,7 +196,7 @@ public class Beast extends Boss {
             attackTimer = 10;
             for (int i = 0; i < constants.Beast.MAXBULLETS; i++) {
                 Point_ target = new Point_ (player.hitbox.p1.x + (Math.random() * 100 - 50), player.hitbox.p1.y + (Math.random() * 100 - 50));
-                bullets[volleying - 1][i] = new Bullet(new Shape[] {new Circle(player.hitbox.p1, (int)(player.hitbox.diameter / 2))}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*Math.round(Math.random()*2+1), new Line(this.hitbox.p1, target));
+                bullets[volleying - 1][i] = new Bullet(new Unit[] {player}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*Math.round(Math.random()*2+1), new Line(this.hitbox.p1, target));
                 if (target.x < this.hitbox.p1.x) bullets[volleying - 1][i].setSpeed(constants.Add.BULLETSPEED*Math.round(Math.random()*(-2) - 1));
             }
         }
@@ -284,6 +299,10 @@ public class Beast extends Boss {
 
     public String toString() {
         return "The Beast";
+    }
+
+    public Projectile[] getBullets() {
+        return forDeflect;
     }
 
 }

@@ -1,4 +1,5 @@
 package units;
+import projectiles.Projectile;
 
 import java.awt.Graphics;
 import java.awt.Color;
@@ -26,6 +27,10 @@ public class EmptyBoss extends Boss {
 
     public void kill() {
 
+    }
+
+    public Projectile[] getBullets() {
+        return null;
     }
 
 }

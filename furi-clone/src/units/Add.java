@@ -29,10 +29,14 @@ public class Add extends Unit {
         this.attackDelay = constants.Add.ATTACKDELAY;
     }
 
+    public Projectile[] getBullets() {
+        return bullets;
+    }
+
     public void attack() {
         if (this.attackDelay == 0) {
             this.attackDelay = constants.Add.ATTACKDELAY;
-            bullets[bulletAvailable] = new Bullet(new Circle[] {target.hitbox}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED, new Line(this.hitbox.p1, target.hitbox.p1));
+            bullets[bulletAvailable] = new Bullet(new Unit[] {target}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED, new Line(this.hitbox.p1, target.hitbox.p1));
             if (target.hitbox.p1.x < this.hitbox.p1.x) bullets[bulletAvailable].setSpeed(-constants.Add.BULLETSPEED);
             if (++bulletAvailable >= 10) bulletAvailable = 0;
         }
@@ -76,7 +80,7 @@ public class Add extends Unit {
             if (b != null) b.move();
         }
 
-        if (this.alive && this.hp <= 0) this.kill();
+        if (this.alive && this.hp <= 0) {this.kill();}
     }
 
     public void kill() {

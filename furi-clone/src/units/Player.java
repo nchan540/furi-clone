@@ -1,6 +1,7 @@
 package units;
 import graph.*;
 import shapes.*;
+import projectiles.Projectile;
 
 import java.util.HashSet;
 
@@ -27,6 +28,7 @@ public class Player extends Unit {
 
     public final int[] ATTACK_LENGTHS = {40, 65, 87, 106, 123};
     public Point_ tip;
+    public Line attackDirection;
 
     public Player(int x, int y, int r, int winCon, boolean arcade) {
         super (constants.Player.HEALTH, 0, constants.Player.DAMAGE, x, y, r, constants.Player.SPEED);
@@ -144,6 +146,7 @@ public class Player extends Unit {
             for (int i = 0; i < 5; ++i) {
                 curAttack.hitboxes[i] = new Circle(new Point_(hitbox.p1.x + difX * ATTACK_LENGTHS[i] / difR, hitbox.p1.y + difY * ATTACK_LENGTHS[i] / difR), (25 - 3*i));
                 tip = new Point_(hitbox.p1.x + difX * (ATTACK_LENGTHS[i] + 13) / difR, hitbox.p1.y + difY * (ATTACK_LENGTHS[i] + 13) / difR);
+                attackDirection = new Line(hitbox.p1, tip);
             }
         } else {
             Point_ end = new Point_(hitbox.p1.x + difX, hitbox.p1.y+difY);
@@ -159,8 +162,24 @@ public class Player extends Unit {
         return false;
     }
     
-    public void hit () {
-        if(iFrames == 0) {hp -= 1;iFrames = 60;dramaticPause = true;}
+    public void deflect(Projectile[] p, Boss[] bosses) {
+        if (p != null && attackType == 1) {    
+            for (Projectile b : p) {
+                if (b != null && b.targets[0] instanceof Player && curAttack.checkHit(new Circle(b.hitbox.getLocation(), b.hitbox.getRadius()))) {
+                    b.changeTargets(bosses);
+                    System.out.println(b.targets[0] + "||" + bosses[0].hitbox);
+                    b.setSpeed(constants.Add.BULLETSPEED, attackDirection);
+                    if (tip.x < hitbox.p1.x) b.setSpeed(-constants.Add.BULLETSPEED);
+                    b.damage = dmg;
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean takeDamage (int h) {
+        if(iFrames == 0) {hp -= h;iFrames = 60;dramaticPause = true;}
+        return false;
     }
 
     public void draw(Graphics g, Graphics2D g2D, Color[] HITBOXCOLOURS) {
@@ -201,6 +220,5 @@ public class Player extends Unit {
     }
 
     public void kill() {
-
     }
 }

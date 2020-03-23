@@ -1,4 +1,5 @@
 package units;
+import projectiles.Projectile;
 
 import java.awt.Graphics;
 import java.awt.Color;
@@ -71,6 +72,8 @@ public class Charger extends Boss {
         if (bonkTimer > 0) {
             --bonkTimer;
         }
+
+        if (hp < 0 && this.alive) {kill();player.killedBoss = true;}
     }
 
     public void changeDir() {
@@ -109,5 +112,9 @@ public class Charger extends Boss {
         this.hp -= damage + (bonked / 3);
         if (this.hp > this.maxHp) this.hp = this.maxHp;
         return this.hp > 0;
+    }
+
+    public Projectile[] getBullets() {
+        return null;
     }
 }

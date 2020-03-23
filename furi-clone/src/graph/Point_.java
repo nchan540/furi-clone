@@ -14,6 +14,11 @@ public class Point_ {
         this.y = (float) y;
     }
 
+    public void set (float[] c) {
+        x = c[0];
+        y = c[1];
+    }
+
     public static float distanceFormula(Point_ p1, Point_ p2) {
         return (float)(Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y-p2.y, 2)));
     }

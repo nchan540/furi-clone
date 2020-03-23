@@ -209,9 +209,17 @@ public class App extends JPanel {
         for (Add a : ads) {
             if (a != null) {
                 a.update();
-                for (Bullet b : a.bullets) {
-                    if (b != null) {
-                        if (b.hitDetect()[0]) player.hit();
+                for (int i = 0; i < a.bullets.length; ++i) {
+                    if (a.bullets[i] != null) {
+                        boolean[] hits = a.bullets[i].hitDetect();
+                        boolean hit = false;
+                        for (int j = 0; j < hits.length; ++j) {
+                            if (hits[j]) {
+                                a.bullets[i].targets[j].takeDamage(a.bullets[i].damage);
+                                hit = true;
+                            }
+                        }
+                        if (hit) a.bullets[i] = null;
                     }
                 }
             }
@@ -252,12 +260,16 @@ public class App extends JPanel {
         //attack
         if (player.attackFrames > 5 && player.attackFrames <= 10) {
             for (Boss b : bosses) {
-                if (b.alive) player.checkAttack(b);
+                if (b.alive) {
+                    player.checkAttack(b);
+                    player.deflect(b.getBullets(), bosses);
+                }
             }
             
             for (Add a : ads) {
                 if (a != null) {
                     player.checkAttack(a);
+                    player.deflect(a.getBullets(), bosses);
                 }
             }
         }
@@ -265,7 +277,7 @@ public class App extends JPanel {
         //check player hit by boss (collision)
         for (Boss b: bosses) {
             if (b.alive && Point_.distanceFormula(b.hitbox.p1, player.hitbox.p1) < (b.hitbox.diameter + player.hitbox.diameter)/2) {
-                player.hit();
+                player.takeDamage(1);
             }
         }
 

@@ -2,6 +2,7 @@ package projectiles;
 import graph.*;
 import shapes.*;
 import units.Boss;
+import units.Unit;
 
 public class ReturningBounce extends Bounce {
 
@@ -9,7 +10,7 @@ public class ReturningBounce extends Bounce {
     public int returnTime = 0;
     public boolean returning = false;
 
-    public ReturningBounce(Shape[] targets, Circle hitbox, float speed, Line direction, Boss origin) {
+    public ReturningBounce(Unit[] targets, Circle hitbox, float speed, Line direction, Boss origin) {
         super(targets, hitbox, speed, direction);
         this.origin = origin;
         acceleration = 1;
@@ -29,7 +30,7 @@ public class ReturningBounce extends Bounce {
             returnTime = 50;
             returning = true;
             acceleration = 1.01f;
-            
+            targets = new Unit[]{null, origin.player};
         }
     }
 

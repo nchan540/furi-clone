@@ -1,15 +1,17 @@
 package projectiles;
 import graph.*;
 import shapes.*;
+import units.Unit;
 
 public abstract class Projectile {
     public Shape hitbox;
-    public Shape[] targets;
+    public Unit[] targets;
     public float xSpeed;
     public float ySpeed;
     public Line direction;
+    public int damage = 1;
 
-    public Projectile(Shape hitbox, Shape[] targets, float speed, Line direction) {
+    public Projectile(Shape hitbox, Unit[] targets, float speed, Line direction) {
         this.hitbox = hitbox;
         this.targets = targets;
         
@@ -64,9 +66,11 @@ public abstract class Projectile {
         this.hitbox.getLocation().y = destination.y;
     }
 
-    public void changeTargets(Shape[] newTargets) {
+    public void changeTargets(Unit[] newTargets) {
         this.targets = newTargets;
     }
 
+
+    public abstract void resetAcceleration();
     public abstract boolean[] hitDetect();
 }

@@ -1,6 +1,7 @@
 package units;
 import java.awt.Color;
 import java.awt.Graphics;
+import projectiles.Projectile;
 public abstract class Boss extends Unit {
 
     public Attack curAttack;
@@ -17,6 +18,8 @@ public abstract class Boss extends Unit {
     public abstract void update();
 
     public abstract void kill();
+
+    public abstract Projectile[] getBullets();
 
     public void move() {
         this.hitbox.p1.x += dir[0]*spd;

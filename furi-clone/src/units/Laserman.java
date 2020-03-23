@@ -1,6 +1,7 @@
 package units;
 import shapes.*;
 import graph.*;
+import projectiles.Projectile;
 
 import java.awt.Graphics;
 import java.awt.Color;
@@ -109,21 +110,21 @@ public class Laserman extends Boss {
             if ((attackType == 1)) {
                 if (attackTimer <= 15 && attackTimer > 10) {
                     if(curAttack[0].checkHit(new Circle(player.hitbox.p1, player.getRadius()))) {
-                        player.hit();
+                        player.takeDamage(1);
                     }
                 } else if (attackTimer <= 10 && attackTimer > 5) {
                     if(curAttack[1].checkHit(new Circle(player.hitbox.p1, player.getRadius()/2))) {
-                        player.hit();
+                        player.takeDamage(1);
                     }
                 } else if (attackTimer <= 5) {
                     if(curAttack[2].checkHit(new Circle(player.hitbox.p1, player.getRadius()/2)) ) {
-                        player.hit();
+                        player.takeDamage(1);
                     }
                 }
             } else if (attackTimer <= 5) {
                 for (Attack a : curAttack) {
                     if(a.checkHit(new Circle(player.hitbox.p1, player.getRadius()/2))) {
-                        player.hit();
+                        player.takeDamage(1);
                     }
                 }
             }
@@ -141,6 +142,8 @@ public class Laserman extends Boss {
             attackType = 0;
             move(); 
         }
+
+        if (hp < 0 && this.alive) {kill();player.killedBoss = true;--player.bossesToKill;--player.bossesAlive;}
     }
 
     public void wander() {
@@ -244,6 +247,10 @@ public class Laserman extends Boss {
         curAttack = new Attack[] {};
         attackTimer = 0;
         alive = false;
+    }
+
+    public Projectile[] getBullets() {
+        return null;
     }
 
 }
