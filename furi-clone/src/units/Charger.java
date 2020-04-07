@@ -72,8 +72,6 @@ public class Charger extends Boss {
         if (bonkTimer > 0) {
             --bonkTimer;
         }
-
-        if (hp < 0 && this.alive) {kill();player.killedBoss = true;}
     }
 
     public void changeDir() {

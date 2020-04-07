@@ -13,6 +13,7 @@ public abstract class Projectile {
     public float ySpeed;
     public Line direction;
     public int damage = 1;
+    private boolean ally = false;
 
     public Projectile(Shape hitbox, Unit[] targets, float speed, Line direction) {
         this.hitbox = hitbox;
@@ -78,4 +79,12 @@ public abstract class Projectile {
     public abstract void update();
     public abstract void draw(Graphics g);
     public abstract boolean[] hitDetect();
+
+    public boolean isAlly() {
+        return ally;
+    }
+
+    public void deflect() {
+        ally = true;
+    }
 }

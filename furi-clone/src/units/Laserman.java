@@ -142,8 +142,6 @@ public class Laserman extends Boss {
             attackType = 0;
             move(); 
         }
-
-        if (hp < 0 && this.alive) {kill();player.killedBoss = true;--player.bossesToKill;--player.bossesAlive;}
     }
 
     public void wander() {

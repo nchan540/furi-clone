@@ -106,7 +106,6 @@ public class Beast extends Boss {
             }
         }
 
-        if (hp < 0 && this.alive) {kill();player.killedBoss = true;}
     }
 
     public void draw(Graphics g, Graphics2D g2, Color[] HITBOXCOLOURS) {

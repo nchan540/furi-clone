@@ -114,7 +114,6 @@ public class Devourer extends Boss {
             }
         }
 
-        if (hp < 0 && this.alive) {kill();player.killedBoss = true;}
     }
 
     public void target() {
@@ -224,6 +223,7 @@ public class Devourer extends Boss {
         for (ReturningBounce b : bullets) {
             if (b != null) {
                 if (b.returning()) g.setColor(Color.RED);
+                else if (b.isAlly()) g.setColor(HITBOXCOLOURS[0]);
                 else g.setColor(Color.PINK);
                 
                 constants.Display.drawCircle(g, b.hitbox);

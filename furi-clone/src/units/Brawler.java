@@ -60,7 +60,6 @@ public class Brawler extends Boss {
             hitbox.p1.x = hitbox.diameter/2; 
         }
 
-        if (hp < 0 && this.alive) {kill();player.killedBoss = true;}
     }
 
     public void draw(Graphics g, Graphics2D g2, Color[] HITBOXCOLOURS) {

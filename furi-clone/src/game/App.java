@@ -42,6 +42,7 @@ public class App extends JPanel {
 
     //placeholder global settings
     public static int MAXBOSSES = 2;
+    public static boolean arcade = true;
 
     //unused right now; graphics system
     public static String currentPlayerSprite;
@@ -58,7 +59,7 @@ public class App extends JPanel {
     private static long nextGameTick;
 
     //player info
-    public static Player player = new Player(720, 450, 50, 100, true);
+    public static Player player = new Player(720, 450, 50);
     public static int[] dashAnim = {0, 0, 0};
 
     //add info
@@ -72,6 +73,8 @@ public class App extends JPanel {
     public static int nextBoss;
     //refs ID #'s. 0 = charger, 1 = brawler, ...
     public static boolean[] bossesAllowed = {true, true, true, false};
+    public static int bossesToKill;
+    public static int bossesAlive;
     
 
     //player input info
@@ -191,18 +194,12 @@ public class App extends JPanel {
 
         //boss spawning
         if (bossTimer == 0) {
-            if ((player.arcade || (player.bossesAlive < player.bossesToKill)) && player.bossesAlive < MAXBOSSES) spawnBoss();
+            if ((arcade || (bossesAlive < bossesToKill)) && bossesAlive < MAXBOSSES) spawnBoss();
         }  
         else --bossTimer; 
 
         //update units
         player.update();
-        if (player.killedBoss) {
-            if (bossTimer == 0) {
-                bossTimer = 120;
-            }
-            player.killedBoss = false;
-        }
 
         //spawn & update adds
         if (--addTimer == 0) spawnAdd();
@@ -229,10 +226,20 @@ public class App extends JPanel {
         for (Boss b : bosses) {
             if (b.hp > 0) { 
                 b.update();
-            } else if (!(b instanceof EmptyBoss)) {
+            }
+            if (b.hp <= 0 && b.alive) {  
+                b.kill();
+                ++player.score;
+                if(player.hp<constants.Player.HEALTH)++player.hp;
+                if(player.hp<constants.Player.HEALTH)++player.hp;
+                --bossesAlive;
                 b = new EmptyBoss(player);
+                if (!arcade) --bossesToKill;
                 b.hitbox.p1.x = -100; 
                 b.hitbox.p1.y = -100; 
+                if (bossTimer == 0) {
+                    bossTimer = 120;
+                }
             }
         }
 
@@ -604,8 +611,8 @@ public class App extends JPanel {
                         break;
                     default: break;
                 }
-                ++player.bossesAlive;
-                if ((player.arcade || (player.bossesAlive < player.bossesToKill)) && player.bossesAlive < MAXBOSSES) bossTimer = 120;
+                ++bossesAlive;
+                if ((arcade || (bossesAlive < bossesToKill)) && bossesAlive < MAXBOSSES) bossTimer = 120;
                 return;
             }
         }
@@ -643,20 +650,28 @@ public class App extends JPanel {
     //call this before any instance of the game to properly set it up
     public static void restart(JPanel game, Settings settings) {
         panel.grabFocus();
+
+        arcade = settings.arcade;
+
         mouse = new Point(-100, -100);
-        player = new Player(720, 450, 50, settings.bossesToKill, settings.arcade);
+        player = new Player(720, 450, 50);
         player.hp = constants.Player.HEALTH;
         bosses = new Boss[settings.maxBosses];
         for (int i = 0; i < settings.maxBosses; ++i) {
             bosses[i] = new EmptyBoss(player);
         }
+
         MAXBOSSES = settings.maxBosses;
         ads.clear();
         addTimer = 200;
+
         bossTimer = 120;
         bossSpawn = new int[]{720, 400};
         nextBoss = Math.round(Math.round(Math.random() * 3));
         bossesAllowed = settings.bossesAllowed;
+        bossesToKill = settings.bossesToKill;
+        bossesAlive = 0;
+
         restart = false;
         keyIn.remove(KeyEvent.VK_R);
         System.gc();
@@ -664,7 +679,7 @@ public class App extends JPanel {
 
     public static boolean checkGameCondition() {
         if (player.hp <= 0) return false;
-        if (!player.arcade && player.bossesToKill == 0) return false;
+        if (!arcade && bossesToKill == 0) return false;
 
         return true;
     }

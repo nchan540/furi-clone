@@ -17,9 +17,9 @@ public class Player extends Unit {
     float difX, difY, difR;
     public int attackType;
 
-    public int iFrames, dashTimer, attackFrames, score, bossesAlive, energy, bossesToKill = 0;
+    public int iFrames, dashTimer, attackFrames, score, energy = 0;
     public int upgradeTimer = 0;
-    public boolean dramaticPause, dashQueued, killedBoss, arcade = false;
+    public boolean dramaticPause, dashQueued, killedBoss = false;
     public int[] queueXY = {0, 0};
     public HashSet<Unit> attacked = new HashSet<>();
     public HashSet<Unit> killed = new HashSet<>();
@@ -30,11 +30,9 @@ public class Player extends Unit {
     public Point_ tip;
     public Line attackDirection;
 
-    public Player(int x, int y, int r, int winCon, boolean arcade) {
+    public Player(int x, int y, int r) {
         super (constants.Player.HEALTH, 0, constants.Player.DAMAGE, x, y, r, constants.Player.SPEED);
         ID = constants.Player.ID;
-        bossesToKill = winCon;
-        this.arcade = arcade;
     }
 
     public LineSegment[] getAttackGraphic() {
@@ -62,16 +60,15 @@ public class Player extends Unit {
             if (!attacked.isEmpty()) {
                 if(attackType == 2) dmg = 5;
                 for (Unit u : attacked) {
-                    if (!u.takeDamage(this.dmg) && u instanceof Boss) {
-                        u.kill();
-                        if(hp<constants.Player.HEALTH)++hp;
-                        if(hp<constants.Player.HEALTH)++hp;
-                        ++score;
-                        if (!arcade) --bossesToKill;
-                        killedBoss = true;
-                        killed.add(u);
-                        --bossesAlive;
-                    }
+                    u.takeDamage(this.dmg);
+                    // u.kill();
+                    // if(hp<constants.Player.HEALTH)++hp;
+                    // if(hp<constants.Player.HEALTH)++hp;
+                    // ++score;
+                    // if (!arcade) --bossesToKill;
+                    // killedBoss = true;
+                    // killed.add(u);
+                    // --bossesAlive;
                     if (energy < 20 && attackType != 2) ++energy;
                 }
             }
@@ -171,6 +168,7 @@ public class Player extends Unit {
                     b.setSpeed(constants.Add.BULLETSPEED, attackDirection);
                     if (tip.x < hitbox.p1.x) b.setSpeed(-constants.Add.BULLETSPEED);
                     b.damage = dmg;
+                    b.deflect();
                 }
             }
         }
