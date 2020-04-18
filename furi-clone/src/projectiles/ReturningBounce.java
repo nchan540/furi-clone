@@ -31,6 +31,7 @@ public class ReturningBounce extends Bounce {
             returning = true;
             acceleration = 1.01f;
             targets = new Unit[]{null, origin.player};
+            damage = 1;
         }
     }
 
