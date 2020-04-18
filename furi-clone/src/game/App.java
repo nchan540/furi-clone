@@ -497,7 +497,7 @@ public class App extends JPanel {
         panel.setVisible(false);
         window.add(campaign, 1);
         campaign.setVisible(false);
-        window.add(main, 2); 
+        window.add(main, 0); 
         main.setVisible(true);
         window.setVisible(true);
         Settings settings = new Settings();
