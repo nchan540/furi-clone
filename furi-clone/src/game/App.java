@@ -435,6 +435,14 @@ public class App extends JPanel {
         }
         catch (Exception e){}
         main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1300, 650), 170, 120)));
+        //whether or not to include superbosses
+        try{
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"super0.png"));
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"super1.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"super2.png"));
+        }
+        catch (Exception e){}
+        main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1300, 200), 170, 120), true));
 
 
         //setting up campaign panel
@@ -511,22 +519,21 @@ public class App extends JPanel {
             if (TICKSPERFRAME > System.currentTimeMillis() - nextGameTick) Thread.sleep((TICKSPERFRAME - (System.currentTimeMillis() - nextGameTick)));
 
             //main menu begin screen was clicked
-            if (main.bools[0]) {
-                if (main.bools[1]) settings.arcadePreset(3);
-                else settings.arcadePreset(2);
+            if (main.bools.get(0)) {
+                settings.arcadePreset(main.bools.get(1) ? 3 : 2, main.bools.get(3));
                 main.setVisible(false);
                 panel.setVisible(true);
                 game(settings);
                 main.setVisible(true);
                 panel.setVisible(false);
-                main.bools[0] = false;
+                main.bools.set(0, false);
             }
 
-            if (main.bools[2]) {
+            if (main.bools.get(2)) {
                 campaign.setVisible(true);
                 main.setVisible(false);
                 campaign.grabFocus();
-                while (!campaign.bools[7]) {
+                while (!campaign.bools.get(7)) {
                     nextGameTick = System.currentTimeMillis();
                     campaign.update(mouse);
                     campaign.update();
@@ -546,7 +553,7 @@ public class App extends JPanel {
                 }
                 main.setVisible(true);
                 campaign.setVisible(false);
-                main.bools[2] = false;
+                main.bools.set(2, false);
                 campaign.resetBools();
             }
         }

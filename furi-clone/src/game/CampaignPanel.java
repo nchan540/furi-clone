@@ -6,31 +6,31 @@ import graph.*;
 import java.awt.Point;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 public class CampaignPanel extends UIPanel {
     private static final long serialVersionUID = 1L;
-    public boolean[] bools = {false, false, false, false, false, false, false, false};
+    public ArrayList<Boolean> bools = new ArrayList<Boolean>();
 
     public CampaignPanel(Point mouse) {
         super(mouse);
-        bools[0] = false;
     }
 
     public void update() {
-        for (int i = 0; i < bools.length; ++i) {
-            bools[i] = elements.get(i).getClicked();
+        for (int i = 0; i < bools.size(); ++i) {
+            bools.set(i, elements.get(i).getClicked());
         }
     }
 
     public void resetBools() {
-        for (int i = 0; i < bools.length; ++i) {
-            bools[i] = false;
+        for (int i = 0; i < bools.size(); ++i) {
+            bools.set(i, false);
         }
     }
 
     public int checkGame() {
-        for (int i = 0; i < bools.length-1; ++i) {
-            if (bools[i]) {
+        for (int i = 0; i < bools.size()-1; ++i) {
+            if (bools.get(i)) {
                 return i;
             }
         }
@@ -39,6 +39,7 @@ public class CampaignPanel extends UIPanel {
 
     public void addUIElement(UIElementInteractable u) {
         elements.add(u);
+        bools.add(false);
     }
 
     @Override

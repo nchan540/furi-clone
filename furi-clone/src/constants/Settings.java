@@ -23,8 +23,8 @@ public class Settings {
 
     }
 
-    public void arcadePreset(int maxBosses) {
-        bossesAllowed = new boolean[]{true, true, true, false, false};
+    public void arcadePreset(int maxBosses, boolean pain) {
+        bossesAllowed = new boolean[]{true, true, true, pain, pain};
         this.maxBosses = maxBosses;
         bossesToKill = 3;
         arcade = true;
