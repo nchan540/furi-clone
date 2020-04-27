@@ -367,8 +367,6 @@ public class App extends JPanel {
             }
         });
 
-
-
         //main menu panel setting up + buttons
         MainPanel main = new MainPanel(mouse);
         main.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
@@ -409,7 +407,7 @@ public class App extends JPanel {
         });
 
         //set up images for main menu buttons
-        String buttonLoad = "/buttonassets"+fileSeparator;
+        String buttonLoad = "/buttonassets/";
         BufferedImage[] mainLoadedImages = new BufferedImage[3];
         //set up play button
         try{
@@ -444,23 +442,31 @@ public class App extends JPanel {
         catch (Exception e){}
         main.addUIElement(new UIButton(mainLoadedImages, new Rectangle(new Point_(1300, 200), 170, 120), true));
 
-
         //setting up campaign panel
         String[] campaignLoadImages = {"Lev1.png", "Lev2.png", "Lev3.png", "Lev4.png", "Lev5.png", "Lev6.png", "Lev7.png"};
         Point_[] campaignLoadPoints = {new Point_(200, 200), new Point_(400, 200),new Point_(600, 200),new Point_(200, 400),new Point_(400, 400),new Point_(600, 400), new Point_(20, 670)};
         CampaignPanel campaign = new CampaignPanel(mouse);
+        
         campaign.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
-        mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"campHover.png"));
-        mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"campClicked.png"));
+        try{
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"campHover.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"campClicked.png"));
+        } catch (Exception e){}
+
         for (String load : campaignLoadImages) {
-            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+load));
+            try{
+                mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+load));
+            }
+            catch (Exception e){}
             campaign.addUIElement(new UIButton(mainLoadedImages, new Rectangle(campaignLoadPoints[campaign.elements.size()], 170, 120)));
         }
-        mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"0campBack.png"));
-        mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"1campBack.png"));
-        mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"2campBack.png"));
-        campaign.addUIElement(new UIButton(mainLoadedImages, new Rectangle (new Point_(800, 400), 170, 120)));
 
+        try{
+            mainLoadedImages[0] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"0campBack.png"));
+            mainLoadedImages[1] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"1campBack.png"));
+            mainLoadedImages[2] = ImageIO.read(App.class.getResourceAsStream(buttonLoad+"2campBack.png"));
+        } catch (Exception e){}
+        campaign.addUIElement(new UIButton(mainLoadedImages, new Rectangle (new Point_(800, 400), 170, 120)));
 
         campaign.addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
@@ -507,7 +513,6 @@ public class App extends JPanel {
         campaign.setVisible(false);
         window.add(main, 0); 
         main.setVisible(true);
-        window.setVisible(true);
         Settings settings = new Settings();
         while (true) {
             nextGameTick = System.currentTimeMillis();
