@@ -1,6 +1,5 @@
 package game;
 import graph.*;
-import projectiles.*;
 import shapes.*;
 import units.*;
 import constants.Settings;
@@ -32,7 +31,7 @@ public class App extends JPanel {
 
     //unused right now; graphics system
     private static final long serialVersionUID = 1L;
-    private static final String fileSeparator = System.getProperty("file.separator");
+    // private static final String fileSeparator = System.getProperty("file.separator");
     // private static final String PLAYERIMGPATH = ("playerSprites" + fileSeparator);
     // private static final String png = ".png";
 
