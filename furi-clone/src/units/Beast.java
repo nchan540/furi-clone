@@ -37,6 +37,7 @@ public class Beast extends Boss {
         for (Bullet[] bulls : bullets) {
             for (Bullet b : bulls) {
                 b = new Bullet(new Unit[] {player}, new Circle(this.hitbox.p1, constants.Add.BULLETSIZE), constants.Add.BULLETSPEED*2, new Line(this.hitbox.p1, player.hitbox.p1));
+                b.isAlly();
                 b = null;
             }
         }
