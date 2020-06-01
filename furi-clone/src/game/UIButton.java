@@ -25,7 +25,11 @@ public class UIButton extends UIElementInteractable {
     private BufferedImage lockImg;
     private boolean hovered, toggled = false;
     
-    //creating a vanilla button
+    /**
+     * Creates a button with a specified image
+     * @param load Button image
+     * @param area Button shape
+     */
     public UIButton(BufferedImage[] load, Shape area) {
         for (int i = 0; i < 3; ++i) {
             stages[i] = load[i];
@@ -35,7 +39,12 @@ public class UIButton extends UIElementInteractable {
         else imgLocation = new Point_ (area.getLines()[0].p1.x + 10, area.getLines()[0].p1.y + 10);
     }
 
-    //creating a toggleable button
+    /**
+     * Creates a toggleable button with a specified image
+     * @param load Button image
+     * @param area Button shape
+     * @param toggleable True for toggleable, false for untoggleable
+     */
     public UIButton(BufferedImage[] load, Shape area, boolean toggleable) {
         for (int i = 0; i < 3; ++i) {
             stages[i] = load[i];
@@ -46,11 +55,19 @@ public class UIButton extends UIElementInteractable {
         else imgLocation = new Point_ (area.getLines()[0].p1.x + 10, area.getLines()[0].p1.y + 10);
     }
 
-    //creating a locked button
+    /**
+     * Creates a locked button with a specified image
+     * @param load Button image
+     * @param area Button shape
+     * @param toggleable True for toggleable, false for untoggleable
+     * @param locked True for locked, false for unlocked
+     * @param lockImg Button image when locked
+     */
     public UIButton(BufferedImage[] load, Shape area, boolean toggleable, boolean locked, BufferedImage lockImg) {
         for (int i = 0; i < 3; ++i) {
             stages[i] = load[i];
         }
+        this.locked = locked;
         this.lockImg = lockImg;
         button = area;
         this.toggleable = toggleable;
@@ -58,6 +75,9 @@ public class UIButton extends UIElementInteractable {
         else imgLocation = new Point_ (area.getLines()[0].p1.x + 10, area.getLines()[0].p1.y + 10);
     }
 
+    /**
+     * Updates the hovered state of the button
+     */
     public void checkPos(Point p) {
         if (locked) hovered = false;
         if (button instanceof Rectangle) {
@@ -69,10 +89,17 @@ public class UIButton extends UIElementInteractable {
         }
     }
 
+    /**
+     * If hovered, toggles button if untoggled and untoggles if toggled
+     */
     public void click() {
         if (hovered) toggled = !toggled;
     }
 
+    /**
+     * Checks if button was clicked
+     * @return True if clicked, false if not
+     */
     public boolean getClicked() {
         if (!locked & toggled && !toggleable) {
             toggled = false;
@@ -81,6 +108,11 @@ public class UIButton extends UIElementInteractable {
         return toggled;
     }
 
+    /**
+     * Draws button
+     * @param g Graphics to draw button on
+     * @param g2 Graphics2D to draw button on
+     */
     public void draw(Graphics g, Graphics2D g2) {
         g.setColor(Color.BLACK);
         constants.Display.drawShape(g, g2, button);

@@ -7,6 +7,11 @@ public class Circle implements Shape {
     public Point_ p1;
     public int diameter;
 
+    /**
+     * Constructor for a circle of raiuds r located at P()
+     * @param p Point circle is located at
+     * @param r Radius of circle
+     */
     public Circle(Point_ p, int r) {
         this.p1 = new Point_(p.x, p.y);
         this.diameter = r;

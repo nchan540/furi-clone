@@ -182,6 +182,9 @@ public class App extends JPanel {
         }
     }
 
+    /**
+     * Moves the player by a multiple of its speed
+     */
     public static void dash() {
             dashAnim[0] = 5;
             dashAnim[1] = player.getX();
