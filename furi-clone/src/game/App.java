@@ -354,16 +354,16 @@ public class App extends JPanel {
                 
             }
             public void mouseEntered(MouseEvent e)  {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
             }
         });
 
         panel.addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
             }
             public void mouseDragged(MouseEvent e) {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
             }
         });
 
@@ -372,13 +372,13 @@ public class App extends JPanel {
         main.setSize(constants.Display.WIDTH, constants.Display.HEIGHT);
         main.addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
                 for (UIElementInteractable u: main.elements) {
                     u.checkPos(mouse);
                 }
             }
             public void mouseDragged(MouseEvent e) {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
                 for (UIElementInteractable u: main.elements) {
                     u.checkPos(mouse);
                 }
@@ -402,7 +402,7 @@ public class App extends JPanel {
                 }
             }
             public void mouseEntered(MouseEvent e)  {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
             }
         });
 
@@ -470,14 +470,13 @@ public class App extends JPanel {
 
         campaign.addMouseMotionListener(new MouseMotionListener() {
             public void mouseMoved(MouseEvent e) {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
                 for (UIElementInteractable u: campaign.elements) {
                     u.checkPos(mouse);
                 }
-                System.out.println("click");
             }
             public void mouseDragged(MouseEvent e) {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
                 for (UIElementInteractable u: campaign.elements) {
                     u.checkPos(mouse);
                 }
@@ -498,11 +497,10 @@ public class App extends JPanel {
             public void mouseClicked(MouseEvent e)  {
                 for (UIElementInteractable u: campaign.elements) {
                     u.click();
-                    System.out.println("click");
                 }
             }
             public void mouseEntered(MouseEvent e)  {
-                mouse = new Point(e.getX(), e.getY());
+                mouse.setLocation(e.getX(), e.getY());
             }
         });
 
@@ -525,6 +523,7 @@ public class App extends JPanel {
 
             //main menu begin screen was clicked
             if (main.bools.get(0)) {
+                //set up the game depending on the chosen settings on the main screen
                 settings.arcadePreset(main.bools.get(1) ? 3 : 2, main.bools.get(3));
                 main.setVisible(false);
                 panel.setVisible(true);
@@ -534,6 +533,7 @@ public class App extends JPanel {
                 main.bools.set(0, false);
             }
 
+            //campaign menu option was clicked
             if (main.bools.get(2)) {
                 campaign.setVisible(true);
                 main.setVisible(false);
@@ -621,9 +621,9 @@ public class App extends JPanel {
                         bosses[i] = new Devourer(bossSpawn[0], bossSpawn[1], player);
                         bosses[i].spawn();
                         break;
-                    default: break;
                 }
                 ++bossesAlive;
+                //in arcade, boss spawning will always happen if allowed, in a campaign fight, spawning is restricted by the number of enemies you have to defeat.
                 if ((arcade || (bossesAlive < bossesToKill)) && bossesAlive < MAXBOSSES) bossTimer = 120;
                 return;
             }
@@ -665,7 +665,7 @@ public class App extends JPanel {
 
         arcade = settings.arcade;
 
-        mouse = new Point(-100, -100);
+        mouse.setLocation(-100, -100);
         player = new Player(720, 450, 50);
         player.hp = constants.Player.HEALTH;
         bosses = new Boss[settings.maxBosses];
