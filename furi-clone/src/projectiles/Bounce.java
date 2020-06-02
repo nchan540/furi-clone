@@ -11,11 +11,21 @@ public class Bounce extends Projectile {
     public float acceleration = 1;
     public Circle hitbox;
 
+    /**
+     * Constructor for a bouncing projectile
+     * @param targets Targets to be damaged
+     * @param hitbox Projectile hitbox
+     * @param speed Projectile speed
+     * @param direction Projectile direction
+     */
     public Bounce(Unit[] targets, Circle hitbox, float speed, Line direction) {
         super(hitbox, targets, speed, direction);
         this.hitbox = hitbox;
     }
 
+    /**
+     * Accelerates projectile
+     */
     public void accelerate() {
         xSpeed *= acceleration;
         ySpeed *= acceleration;
@@ -25,6 +35,10 @@ public class Bounce extends Projectile {
             ySpeed = 0;
     }
 
+    /**
+     * Detects if any of the targets have been hit
+     * @return Array of hit detections for each target
+     */
     public boolean[] hitDetect() {
         if (targets.length == 0)
             return new boolean[] { false };
@@ -35,10 +49,16 @@ public class Bounce extends Projectile {
         return hits;
     }
 
+    /**
+     * Resets the projectile's acceleration
+     */
     public void resetAcceleration() {
         acceleration = 1;
     }
 
+    /**
+     * Moves the projectile
+     */
     @Override
     public void move() {
         if (hitbox.p1.y > constants.Display.HEIGHT - hitbox.getRadius() / 2) {

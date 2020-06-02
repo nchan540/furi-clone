@@ -57,7 +57,9 @@ public class LineSegment implements Shape {
         this.equation = new Line(m, b);
     }
 
-
+    /**
+     * Updates line segment
+     */
     public void refresh() {
         float m = (this.p2.y - this.p1.y) / (this.p2.x - this.p1.x);
         float b = this.p1.y - m*this.p1.x;
@@ -182,6 +184,9 @@ public class LineSegment implements Shape {
         return new float[]{equation.getY(x)};
     }
 
+    /**
+     * As Damien does...
+     */
     public LineSegment forDrawLaser() {
         return null;
     }

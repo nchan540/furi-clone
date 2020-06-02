@@ -32,6 +32,11 @@ public class Line {
         this.b = p.y - this.m * p.x;
     }
 
+    /**
+     * Constructor for a line
+     * @param p1 First point that the line passes through
+     * @param p2 Second point that the line passes through
+     */
     public Line(Point_ p1, Point_ p2) {
         if (p1.x == p2.x) p2.x += 0.00001f;
         this.m = (p2.y - p1.y) / (p2.x - p1.x);

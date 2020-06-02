@@ -60,6 +60,13 @@ public class Rectangle implements Shape {
         this.lines[3] = new LineSegment(bL, bR);
     }
 
+    /**
+     * Constructor for a rectangle
+     * @param p End point of the centre line
+     * @param centre Centre line of rectangle
+     * @param width Rectangle width
+     * @param length Rectangle length
+     */
     public Rectangle(Point_ p, Line centre, int width, int length) {
         LineSegment mid = new LineSegment(centre, p, length);
         forDrawLaser = mid;
@@ -79,6 +86,9 @@ public class Rectangle implements Shape {
         this.points[3] = bL;
     }
 
+    /**
+     * Updates rectangle
+     */
     public void refresh() {
         forDrawLaser.refresh();
         Line centre = forDrawLaser.equation;

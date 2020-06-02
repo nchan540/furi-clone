@@ -10,12 +10,23 @@ public class ReturningBounce extends Bounce {
     public int returnTime = 0;
     public boolean returning = false;
 
+    /**
+     * Constructor for a returning bounce projectile
+     * @param targets Targets to be damaged
+     * @param hitbox Projectile hitbox
+     * @param speed Projectile speed
+     * @param direction Projectile direction
+     * @param origin Projectile origin
+     */
     public ReturningBounce(Unit[] targets, Circle hitbox, float speed, Line direction, Boss origin) {
         super(targets, hitbox, speed, direction);
         this.origin = origin;
         acceleration = 1;
     }
 
+    /**
+     * Updates projectile
+     */
     public void update() {
         if (returning) {
             if (returnTime == 0) {

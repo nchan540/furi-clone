@@ -4,6 +4,7 @@ import graph.*;
 
 
 import java.awt.Point;
+import java.lang.annotation.Inherited;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -16,17 +17,28 @@ public class MainPanel extends UIPanel {
         super(mouse);
     }
 
+    /**
+     * Checks for any updates to button states
+     */
     public void update() {
         for (int i = 0; i < bools.size(); ++i) {
             bools.set(i, elements.get(i).getClicked());
         }
     }
 
+    /**
+     * Adds a UIElement to the UIPanel
+     * @param u UIElement being added
+     */
     public void addUIElement(UIElementInteractable u) {
         elements.add(u);
         bools.add(false);
     }
 
+    /**
+     * Displays the panel
+     * @param g Graphics to display panel on
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
