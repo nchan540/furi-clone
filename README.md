@@ -14,7 +14,7 @@ movement restrictions before attacking.
 + **SPACEBAR** to blink
 + **Left-click** for short-ranged attack
 + **Right-click** for long-ranged attack
-  + Charged by defeating *ads*
+  + Charged by landing short-ranged attacks
 
 ### Story Mode ###
 
@@ -24,8 +24,8 @@ movement restrictions before attacking.
 
 ### Arcade ###
 
-+ **HP** restored on kill
-  + **HP** restoration stops after a number of *points*
++ **HP** restored on defeating a *boss*
+  + **HP** restoration reduced after a number of *points*
 + *Bosses* spawn regularly with a maximum of 2 or 3 (settings)
   + 1 point for each *boss* defeated
 + *Ads* spawn regularly with no limit
@@ -40,9 +40,9 @@ movement restrictions before attacking.
 ### Damien ###
 
 + Graphics
-+ UI
 + Bosses
 + Bullet deflection
++ Some projectiles
 
 ### Noah ###
 
