@@ -9,11 +9,16 @@ import java.awt.Graphics2D;
 
 public class Add extends Unit {
     
+    // Unit to fire bullets at
     public Unit target;
+    // Targets bullets can hit
     public Shape[] bulletTarget;
     public Bullet[] bullets = new Bullet[constants.Add.MAXBULLETS];
+    // Index in bullets
     public int bulletAvailable;
+    // Direction for movement
     public float dir[] = new float[]{0, 0};
+    // Delay between firing bullets
     public int attackDelay;
     public boolean alive;
 
@@ -33,6 +38,9 @@ public class Add extends Unit {
         return bullets;
     }
 
+    /**
+     * Shoots a bullet if possible
+     */
     public void attack() {
         if (this.attackDelay == 0) {
             this.attackDelay = constants.Add.ATTACKDELAY;
@@ -43,6 +51,9 @@ public class Add extends Unit {
         --attackDelay;
     }
 
+    /**
+     * Removes all the bullets that the ad has fired
+     */
     public void clearBullets() {
         for (Bullet b : this.bullets) {
             if (b != null
@@ -56,6 +67,9 @@ public class Add extends Unit {
         this.hitbox.p1.y += dir[1]*spd;
     }
 
+    /**
+     * Makes the ad wander randomly
+     */
     public void wander() {
         dir[0] = (float)(Math.random()-0.5)*5;
         dir[1] = (float)(Math.random()-0.5)*5;
@@ -66,6 +80,9 @@ public class Add extends Unit {
         if (hitbox.p1.y < hitbox.diameter*3/2) dir[1] = 1.0f;
     }
 
+    /**
+     * Updates bullets and movement, checks if ad is still alive
+     */
     public void update() {
         if (this.alive) {
             if (--wanderTimer == 0) {
@@ -83,6 +100,9 @@ public class Add extends Unit {
         if (this.alive && this.hp <= 0) {this.kill();}
     }
 
+    /**
+     * "Kills" the ad
+     */
     public void kill() {
         this.alive = false;
         for (int i = 0; i < bullets.length; ++i) {

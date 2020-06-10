@@ -10,7 +10,7 @@ import java.awt.BasicStroke;
 
 public class Beast extends Boss {
 
-
+    // Current attack being used
     public Attack curAttack = null;
     public int attackTimer = 0;
     public int attackDelay = 30;

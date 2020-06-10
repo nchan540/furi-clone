@@ -8,6 +8,7 @@ import java.awt.Graphics;
 
 public abstract class Projectile {
     public Shape hitbox;
+    // Units that the projectile can hit
     public Unit[] targets;
     public float xSpeed;
     public float ySpeed;

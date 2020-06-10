@@ -6,7 +6,9 @@ import units.Unit;
 
 public class ReturningBounce extends Bounce {
 
+    // Boss that fired the bullet
     public Boss origin;
+    // Timer when bullet is returning to origin
     public int returnTime = 0;
     public boolean returning = false;
 

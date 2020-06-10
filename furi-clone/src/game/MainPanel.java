@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class MainPanel extends UIPanel {
     private static final long serialVersionUID = 1L;
+    // Booleans for components with states
     public ArrayList<Boolean> bools = new ArrayList<Boolean>();
 
     public MainPanel(Point mouse) {

@@ -8,7 +8,7 @@ public class Rectangle implements Shape {
     public LineSegment[] lines = new LineSegment[4];
     // [0] = top left, [1] = top right, [2] = bottom right, [3] = bottom left
     public Point_[] points = new Point_[4];
-
+    // "Direction" of rectangle
     public LineSegment forDrawLaser;
 
     /**

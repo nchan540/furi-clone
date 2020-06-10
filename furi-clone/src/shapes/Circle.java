@@ -4,6 +4,7 @@ import java.awt.Point;
 
 public class Circle implements Shape {
 
+    // Location of centre
     public Point_ p1;
     public int diameter;
 

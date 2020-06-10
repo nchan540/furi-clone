@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public abstract class UIPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     protected Point mouse;
+    // Elements on the UIPanel
     public ArrayList<UIElementInteractable> elements = new ArrayList<UIElementInteractable>();
 
     /**

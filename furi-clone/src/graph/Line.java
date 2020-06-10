@@ -1,7 +1,9 @@
 package graph;
 
 public class Line {
+    // Slope
     public float m;
+    // Vertical shift
     public float b;
 
     /**

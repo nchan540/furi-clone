@@ -2,6 +2,7 @@ package graph;
 
 import java.awt.Point;
 public class Point_ {
+    // Coordinates
     public float x, y;
 
     /**

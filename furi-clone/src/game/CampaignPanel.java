@@ -9,7 +9,9 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class CampaignPanel extends UIPanel {
+    // Version number
     private static final long serialVersionUID = 1L;
+    // Booleans for components with states
     public ArrayList<Boolean> bools = new ArrayList<Boolean>();
 
     public CampaignPanel(Point mouse) {
@@ -34,6 +36,9 @@ public class CampaignPanel extends UIPanel {
         }
     }
 
+    /**
+     * Finds the selected fight
+     */
     public int checkGame() {
         for (int i = 0; i < bools.size()-1; ++i) {
             if (bools.get(i)) {

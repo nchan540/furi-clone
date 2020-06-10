@@ -22,6 +22,7 @@ public class UIButton extends UIElementInteractable {
 
     //0 is idle, 1 is hovered, 2 is pressed
     private BufferedImage[] stages = new BufferedImage[3];
+    // Image when locked
     private BufferedImage lockImg;
     private boolean hovered, toggled = false;
     
